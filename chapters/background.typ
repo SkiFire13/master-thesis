@@ -187,8 +187,41 @@ In order to describe the meaning of such system of fixpoint equations we'll need
     sol(E) &= (sol(E[x_n := s_n]), s_n)
   $
 
-  where $s_n = eta_n(lambda x. f_n(sol(E[x_n := x]), x))$.
+  where $s_n = eta_n (lambda x. f_n (sol(E[x_n := x]), x))$.
 ]
 
-// TODO: Order of equations important.
-// TODO: Example where changing order matters.
+#example("solving a fixpoint system")[
+  Consider the following system of fixpoint equations $E$ on some powerset $2^X$:
+  $
+    syseq(
+      x_1 &feq(mu) x_1 union x_2 \
+      x_2 &feq(nu) x_1 sect x_2 \ 
+    )
+  $
+  Solving this system of equations will require the following steps:
+  - $sol(E) = (sol(E[x_2 := s_2]), s_2)$ with $s_2 = nu(lambda x. sol(E[x_2 := x]) sect x)$
+  - $sol(E[x_2 := x]) = (sol(emptyset), s_1)$ with $s_1 = mu(lambda x'. x' union x)$
+  - solving $s_1$ gives $s_1 = x$
+  - solving $s_2$ gives $s_2 = nu(lambda x. x sect x) = X$
+  - $sol(E) = (X, X)$
+]
+
+Notice that the way the solution of a system of fixpoint equations is defined depends on the order of the equations. Indeed different orders can result in different solutions.
+
+#example("different order of equations")[
+  Consider $E'$ the same system of fixpoint equations as before, but with the equations swapped:
+  $
+    syseq(
+      x_1 &feq(nu) x_1 sect x_2 \
+      x_2 &feq(mu) x_1 union x_2 \
+    )
+  $
+  Solving this system of equations will require the following steps:
+  - $sol(E') = (sol(E'[x_2 := s_2]), s_2)$ with $s_2 = mu(lambda x. sol(E'[x_2 := x]) union x)$
+  - $sol(E'[x_2 := x]) = (sol(emptyset), s_1)$ with $s_1 = nu(lambda x'. x' sect x)$
+  - solving $s_1$ gives $s_1 = x$
+  - solving $s_2$ gives $s_2 = mu(lambda x. x sect x) = emptyset$
+  - $sol(E') = (emptyset, emptyset)$
+
+  Notice that $sol(E) = (X, X) != (emptyset, emptyset) = sol(E')$
+]
