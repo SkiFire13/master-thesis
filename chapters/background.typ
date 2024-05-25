@@ -225,3 +225,12 @@ Notice that the way the solution of a system of fixpoint equations is defined de
 
   Notice that $sol(E) = (X, X) != (emptyset, emptyset) = sol(E')$
 ]
+
+// TODO: Examples with mu-calculus
+
+// TODO: Equivalence with parity game
+// TODO: Selections and moves as formulas
+
+// TODO: Local strategy iteration
+
+// TODO: (For chapter after background) integrating formulas with local strategy iteration
