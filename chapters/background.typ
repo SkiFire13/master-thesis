@@ -1,6 +1,6 @@
 #let environment(name) = {
   let env_counter = counter(name)
-  (subject, body) => [
+  (subject, body) => block(inset: (y: 5pt))[
     *#name #env_counter.step() #env_counter.display()*
     (#subject).
     _#(body)_
@@ -226,11 +226,16 @@ Notice that the way the solution of a system of fixpoint equations is defined de
   Notice that $sol(E) = (X, X) != (emptyset, emptyset) = sol(E')$
 ]
 
+== $mu$-calculus
 // TODO: Examples with mu-calculus
 
+== Parity games
 // TODO: Equivalence with parity game
+
+== Selections and symbolic formulation
 // TODO: Selections and moves as formulas
 
+== Local strategy iteration
 // TODO: Local strategy iteration
 
 // TODO: (For chapter after background) integrating formulas with local strategy iteration

@@ -76,6 +76,10 @@
       text(size: 24pt, it)
       v(1.5em)
     }
+    show heading.where(level: 2): it => {
+      text(size: 18pt, it)
+      v(0.5em)
+    }
 
     body
   }
