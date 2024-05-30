@@ -15,8 +15,12 @@
 // - observation 1: the expansion of the graph can either end by reaching
 //   an existing vertex or create a new cycle;
 // - observation 2: when the expansion ends by reaching an existing vertex
-//   the initial strategy for the expanded part contains no cycles
-//   and thus the valuation can quickly be computed incrementally.
+//   then no matter which initial strategy is chosen for the just expanded
+//   part, it will be:
+//   - acyclic
+//   - unreachable from the existing graph by following the current strategy
+//   Thus its valuation can quickly be computed starting from the valuation
+//   of the existing vertex it reached.
 // - observation 3: in order for an expansion to be useful it has to
 //   potentially improve the valuation of some already existing vertex.  
 // Together these observations mean that:
@@ -41,3 +45,6 @@
 // Note: when expanding from p1 nodes the most favourable valuation becomes
 // the "smallest" one.
 // TODO: maybe do something smart with nodes in the expansion too?
+// TODO: this means that subsequent expansions without recomputing valuations
+//       will see stale/wrong valuations unless we reached a vertex with no
+//       improving successors.
