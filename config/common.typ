@@ -1,0 +1,37 @@
+#let environment(name) = {
+  let env_counter = counter(name)
+  (subject, body) => block(inset: (y: 5pt))[
+    *#name #env_counter.step() #env_counter.display()*
+    (#subject).
+    _#(body)_
+  ]
+}
+
+#let definition = environment("Definition")
+#let lemma = environment("Lemma")
+#let example = environment("Example")
+#let notation = environment("Notation")
+
+#let sub = math.class("relation", sym.subset.eq.sq)
+#let meet = math.class("unary", sym.sect.sq)
+#let join = math.class("unary", sym.union.sq)
+
+#let lfp = math.class("unary", sym.mu)
+#let gfp = math.class("unary", sym.nu)
+
+#let tup(a) = math.bold(a)
+#let range(end) = math.underline(end)
+#let XX = math.bold("X")
+
+#let syseq(x) = math.lr(sym.brace.l + block(math.equation(x, block: true, numbering: none)))
+#let feq(kind) = math.class("relation", math.attach("=", br: kind))
+#let sol = math.op("sol")
+
+#let varempty = text(font: "", sym.emptyset)
+#let disjunion = math.accent(sym.union, ".")
+#let eq-columns(..cols) = stack(
+  dir: ltr,
+  h(1fr),
+  ..cols.pos().map(align.with(horizon)).intersperse(h(1fr)),
+  h(1fr),
+)

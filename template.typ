@@ -81,6 +81,13 @@
       v(0.5em)
     }
 
+    set list(indent: 0.5em)
+    
+    show math.equation: it => {
+      show ".": math.class("punctuation", ".")
+      it
+    }
+
     body
   }
 }
