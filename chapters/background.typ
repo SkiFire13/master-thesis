@@ -305,7 +305,7 @@ A winning strategy is memoryless, that is it doesn't need to know which moves we
     - $p((b, i)) < p((b', j))$ if $i < j$.
 ]
 
-The given priority function is not fully specified, but it can be shown that there exist a mapping to $bb(N)$ that satisfies the given order and partition into even/odd.
+The given priority function is not fully specified, but it can be shown that there exist a mapping to $bb(N)$ that satisfies the given order and partition into even/odd. An intuitive way would be to just list the priorities in order and give to map each of them to the next available even or odd natural number.
 
 // TODO: theorem?
 #lemma("correctness and completeness of the powerset game")[
@@ -315,6 +315,47 @@ The given priority function is not fully specified, but it can be shown that the
 // TODO: ref to paper proving this.
 
 // TODO: Example ?
+
+
+// TODO for selections:
+//  - selection
+//  - upward closure
+//  - hoare preorder
+//  - least selection
+//  - logic for upward closed sets
+//  - symbolic moves
+//  - composition of moves (mention?)
+
+// Alternative:
+//  - skip selection
+//  - observation that some moves are useless
+//  - minimal set of moves not always possible
+//  - symbolic moves
+
+In practice it's not feasible to consider all the possible edges for player 0. We can however observe that many of them are useless. For every $X$ and $Y$ such that $join X sub join Y$ we'll have $b sub f_i(join X) sub f_i (sub Y)$. This in turn will give player 1 strictly more moves, which intuitively is never better for player 0. Thus all those moves can be excluded. In practice considering the minimal set of moves for player 0 is not feasible, but we can reasonably approximate it in a compact way using symbolic moves.
+
+// TODO: ref to symbolic moves paper
+
+#definition("logic for symbolic moves")[
+  Let $(L, sub)$ be a complete lattice and $B_L$ a basis of $L$. Given $n in bb(N)$ we can define the following logic, where $b in B_L$ and $i in range(n)$:
+
+  $
+    phi := [b, i] | and.big_(k in K) phi_k | or.big_(k in K) phi_k
+  $
+]
+
+#definition("generator for symbolic moves")[
+  Let $(L, sub)$ be a complete lattice, $B_L$ a basis of $L$, $n in bb(N)$, $i in range(n)$ and $phi$ a logic formula for symbolic moves. We can define the following generator of reduced moves for player 0:
+
+  $
+    M([b, i]) &= { tup(X) } "with" X_i = { b } "and" forall j != i. X_j = emptyset \
+    // TODO: Is join correct here?
+    M\(and.big_(k in K) phi_k\) &= union.big { join tup(X) | tup(X) in product_(k in K) M(phi_k) } \
+    M\(or.big_(k in K) phi_k\) &= union.big { M(phi_k) | k in K }
+  $
+]
+
+// TODO: Comment, example?
 
 == Local strategy iteration
 // TODO: Local strategy iteration
