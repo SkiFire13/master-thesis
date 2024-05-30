@@ -317,4 +317,10 @@ In practice it's not feasible to consider all the possible edges for player 0. W
 == Local strategy iteration
 // TODO: Local strategy iteration
 
+// TODO: Prerequisites to valuation (various orders)
+// TODO: Valuation
+// TODO: Strategy iteration
+// TODO: Prerequisites to local algorithm (escaping set)
+// TODO: Local algorithm
+
 // TODO: (For chapter after background) integrating formulas with local strategy iteration
