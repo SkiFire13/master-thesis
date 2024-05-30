@@ -28,6 +28,7 @@
 #let sol = math.op("sol")
 
 #let varempty = text(font: "", sym.emptyset)
+#let disjunion = math.accent(sym.union, ".")
 #let eq-columns(..cols) = stack(
   dir: ltr,
   h(1fr),
@@ -83,6 +84,8 @@ Meet and join don't always exist, but when they do it can be proven that they ar
 
 From now on we will mostly work with finite, and thus complete, lattices.
 
+// TODO: Image example of complete lattice?
+
 #definition("powerset")[
   Let $X$ be a set. Its powerset, written $2^X$, is the set of all subsets of $X$, that is $2^X = {S | S subset.eq X}$.
 ]
@@ -91,9 +94,13 @@ From now on we will mostly work with finite, and thus complete, lattices.
   Given a set $X$, the pair $(2^X, subset.eq)$ is a complete lattice.
 ]
 
+// TODO: Image example of powerset lattice
+
 #definition("basis")[
   Let $(L, sub)$ be a lattice. A basis is a subset $B_L subset.eq L$ such that all elements of $L$ can be defined by joining subsets of the basis, that is $forall l in L. l = join { b in B_L | b sub l }$.
 ]
+
+// TODO: Image example of basis of non-powerset
 
 #example("basis of powerset")[
   Given a set $X$, a basis of the poset $(2^X, subset.eq)$ is the set of singletons $B_(2^X) = { {x} | x in X }$.
@@ -111,7 +118,9 @@ From now on we will mostly work with finite, and thus complete, lattices.
   Thanks to the Knaster-Tarski theorem the existance and uniqueness of the least and greatest fixpoints is guaranteed.
 ]
 
-// TODO: Kleene iteration, not feasible
+// TODO: Mention Kleene iteration and say it is not always feasible (can take omega steps)
+
+// TODO: Image example of fixpoint?
 
 == Tuples
 
@@ -232,8 +241,80 @@ Notice that the way the solution of a system of fixpoint equations is defined de
 == Parity games
 // TODO: Equivalence with parity game
 
-== Selections and symbolic formulation
+#definition("parity graph")[
+  Let $V$ be a finite set of vertixes partitioneds into $V_0$ and $V_1$, that is $V = V_0 disjunion V_1$, and $p: V -> bb(N)$ be a function. A parity graph is a graph $G = (V_0, V_1, E, p)$, where $E subset.eq V times V$ is a set of edges. $p$ is also called the *priority function* or coloring of the graph.
+]
+
+Sometimes a parity graph is also defined as a biparite graph by requiring $E subset.eq V_0 times V_1 union V_1 times V_0$. This will be the case in this thesis and can help practical implementations, but is not required in general.
+
+The codomain of $p$ is traditionally taken to be $bb(N)$, but it can be shown to be equivalent to any finite totally ordered set $P$ partitioned into $P_0$ and $P_1$, respectively corresponding to the set of even and odd priorities.
+
+#definition("parity game")[
+  Let $G = (V_0, V_1, E, p)$ be a parity graph. A parity game is a game on this graph played by two players, called 0 and 1. The game starts from an initial vertex $v_0$ moves along the edges of the graph, such that if the current vertex is in $V_0$ (resp. $V_1$) then the next move is chosen by player 0 (resp. player 1).
+  
+  The game continues either infinitely or until a player has no moves available. This gives rise to a potentially infinite sequence of vertices $v_0 v_1 v_2...$ called a *play*, where for each pair $(v_i, v_(i+1)) in E$.
+
+  The winner is decided by the play:
+  - if the play is infinite then the highest priority according to $p$ of the infinitely occurring vertexes in the play is considered: is if's even player 0 wins, otherwise player 1 wins;
+  - if the play is finite then the last vertex $v_n$ is considered, if $v_n in V_0$ then player 0 wins, otherwise player 1 wins.
+]
+
+Players are also sometimes called $lozenge$ and $square$ or $exists$ and $forall$ due to their meaning when using parity games for solving $mu$-calculus or fixpoints.
+
+Sometimes parity graphs are required to contain at least a successor for every node, leading to a parity game where every play is infinite. We'll see later how we can modify an existing parity game to satisfy this constraint without affecting the outcome.
+// TODO: Later need to show this.
+
+// TODO: Image example of parity game?
+
+#definition("strategy")[
+  Let $G = (V_0, V_1, E, p)$ be a parity graph. A strategy for player $i$ is a function $sigma: V_i -> V_(1-i)$ such that $forall v in V_i. (v, sigma(v)) in E$.
+]
+
+#definition("winning strategy")[
+  Let $G = (V_0, V_1, E, p)$ be a parity graph. A winning strategy for player $i$ starting from $v$ is strategy such that the resulting play will be winning for player $i$ no matter which move player $1-i$ will choose.
+]
+
+A winning strategy is memoryless, that is it doesn't need to know which moves were performed earlier in the play. This is reflected in the fact that the strategy is a function of the current vertex only.
+
+#lemma("determinacy of parity games")[
+  Every parity game $G = (V_0, V_1, E, p)$ is deterministic. The set of vertexes $V$ can be partitioned in two *winning sets* $W_0$ and $W_1$ of the vertexes where player 0 (resp. player 1) has a winning strategy starting from vertexes in that set.
+]
+
+== Symbolic formulation and selections
 // TODO: Selections and moves as formulas
+
+#definition("powerset game")[
+  Let $(L, sub)$ be a complete lattice and $B_L$ a basis of $L$. Let $E = tup(x) feq(tup(eta)) tup(f) (tup(x))$ be a system of $n$ fixpoint equations.
+
+  The powerset game is a parity game associated with $E$ defined as:
+
+  - the vertexes for player 0 are $V_0 = B_L times range(n) = { (b, i) | b in B_L and i in range(n) }$
+  
+  - the vertexes for player 1 are $V_1 = (2^(B_L))^n = { (X_1, ..., X_n) | X_i in 2^(B_L) }$
+
+  - the edges from player 0 vertexes are $E(b, i) = { tup(X) | tup(X) in (2^(B_L))^n and b sub f_i (join tup(X)) }$
+
+  - the edges from player 1 vertexes are $A(tup(X)) = { (b, i) | i in range(n) and b in X_i }$
+
+  - the priority function is defined such that:
+    
+    - $p(tup(X)) = 0$;
+
+    - $p((b, i))$ is even if $eta_i = nu$ and odd if $eta_i = mu$;
+
+    - $p((b, i)) < p((b', j))$ if $i < j$.
+]
+
+The given priority function is not fully specified, but it can be shown that there exist a mapping to $bb(N)$ that satisfies the given order and partition into even/odd.
+
+// TODO: theorem?
+#lemma("correctness and completeness of the powerset game")[
+  Let $E$ be a system of $n$ fixpoint equations over a complete lattice $L$ with solution $s$. For all $b in B_L$ and $i in range(n)$, we have $b sub s_i$ if and only if the player 0 has a winning strategy on the powerset game associated to $E$ starting from the vertex $(b, i)$.
+]
+
+// TODO: ref to paper proving this.
+
+// TODO: Example ?
 
 == Local strategy iteration
 // TODO: Local strategy iteration
