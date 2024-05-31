@@ -18,6 +18,7 @@
 //   - existing strategy cannot go out of existing graph
 //   - play profiles of existing graph don't depend on expansion
 //   - so play profiles of expansion can freely depend on existing graph
+//     - that is, no cycles between existing graph and expansion
 //   - two cases for how expansion ends:
 //     - on vertex in expansion -> compute play profile of cycle
 //     - on vertex in existing graph -> compute play profile of chain
