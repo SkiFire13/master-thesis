@@ -2,16 +2,13 @@
 
 = Symbolic local algorithm
 
-// TODO: Integration of symbolic formulas with local strategy iteration
-// - TODO: all successors => W0/L0/W1/L1 nodes
-// - TODO: lazy edges -> changed complexity (?)
+- TODO: Prevent finite plays in powerset graph (W0/L0/W1/L1 and proof)
+- TODO: Ok Not immediately visiting all edges (complexity?)
+- TODO: Ok removing edges to unfavorable definitely-winning vertexes
+- TODO: How to remove edges lazily in formulas (set atom to T/F)
+- TODO: (Maybe) Compute play profiles of expanded nodes
+- TODO: (Maybe) Only consider unknown/improving vertexes
 
-// Ideas:
-// - formula pruning
-//   TODO: permanently, using W0/W1 sets
-//   TODO: on-the-fly, computing expected valuation
-
-// On-the-fly pruning:
 // - observations:
 //   - expansion for p0 is useful if it improves play profiles
 //   - play profiles depends only on transitive successors

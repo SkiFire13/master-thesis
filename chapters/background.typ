@@ -193,8 +193,12 @@ Notice that the way the solution of a system of fixpoint equations is defined de
   Notice that $sol(E) = (X, X) != (emptyset, emptyset) = sol(E')$
 ]
 
-== $mu$-calculus
-// TODO: Examples with mu-calculus
+== Applications
+
+- TODO: $mu$-calculus
+- TODO: bisimilarity
+- TODO: parity games as fixpoint on boolean lattice
+- TODO: other (take from notes)
 
 == Parity games
 // TODO: Equivalence with parity game
@@ -289,6 +293,12 @@ The given priority function is not fully specified, but it can be shown that the
 //  - minimal set of moves not always possible
 //  - symbolic moves
 
+// Selection
+// Selections are equivalent (no proof)
+// Symbolic moves
+// Symbolic moves are representation of all possible moves
+// Symbolic moves are a selection
+
 In practice it's not feasible to consider all the possible edges for player 0. We can however observe that many of them are useless. For every $X$ and $Y$ such that $join X sub join Y$ we'll have $b sub f_i(join X) sub f_i (sub Y)$. This in turn will give player 1 strictly more moves, which intuitively is never better for player 0. Thus all those moves can be excluded. In practice considering the minimal set of moves for player 0 is not feasible, but we can reasonably approximate it in a compact way using symbolic moves.
 
 // TODO: ref to symbolic moves paper
@@ -315,12 +325,12 @@ In practice it's not feasible to consider all the possible edges for player 0. W
 // TODO: Comment, example?
 
 == Local strategy iteration
-// TODO: Local strategy iteration
 
-// TODO: Prerequisites to valuation (various orders)
-// TODO: Valuation
-// TODO: Strategy iteration
-// TODO: Prerequisites to local algorithm (escaping set)
-// TODO: Local algorithm
-
-// TODO: (For chapter after background) integrating formulas with local strategy iteration
+- TODO: Strategy iteration: various orders
+- TODO: Strategy iteration: play profile
+- TODO: Strategy iteration: optimality condition
+- TODO: Strategy iteration: algorithm possible and complexity
+- TODO: Local algorithm: escaping set
+- TODO: Local algorithm: can only consider subgraph
+- TODO: Local algorithm: expansion
+- TODO: Local algorithm: complexities (?)
