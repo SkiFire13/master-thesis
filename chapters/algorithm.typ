@@ -12,39 +12,36 @@
 //   TODO: on-the-fly, computing expected valuation
 
 // On-the-fly pruning:
-// - observation 1: the expansion of the graph can either end by reaching
-//   an existing vertex or create a new cycle;
-// - observation 2: when the expansion ends by reaching an existing vertex
-//   then no matter which initial strategy is chosen for the just expanded
-//   part, it will be:
-//   - acyclic
-//   - unreachable from the existing graph by following the current strategy
-//   Thus its valuation can quickly be computed starting from the valuation
-//   of the existing vertex it reached.
-// - observation 3: in order for an expansion to be useful it has to
-//   potentially improve the valuation of some already existing vertex.  
-// Together these observations mean that:
-// - when an expansion is trying to reach an existing vertex
-// - the new valuation for the rest of the expansion can be computed
-// - in particular we're interested in the valuation for the first vertex
-//   in the expansion
-// - and we can require this to be better than the best valuation of the
-//   successors of the starting vertex from the existing graph.
+// - observations:
+//   - expansion for p0 is useful if it improves play profiles
+//   - play profiles depends only on transitive successors
+//   - existing strategy cannot go out of existing graph
+//   - play profiles of existing graph don't depend on expansion
+//   - so play profiles of expansion can freely depend on existing graph
+//   - two cases for how expansion ends:
+//     - on vertex in expansion -> compute play profile of cycle
+//     - on vertex in existing graph -> compute play profile of chain
+//   - computed incrementally and on-the-fly to prune p0 moves
+//     - require improving play profile
+//     - possibly winning for p0
+//   - note: once done the play profiles are no longer optimal
+//     - assumption: symmetric expansion and not repeated
+//     - unless non-improving expansion, then it can be re-expanded.
 // Pratically speaking:
 // - when picking the existing p0 vertex from which to expand we can
 //   store the valuation of its strategy successor
 // - when expanding we should keep track of:
 //   - the distance traveled
-//   - the priorities see
+//   - the nodes seen sorted by priority
 // - when generating moves from formulas we can inspect each (b, i) and
 //   - they could be unexplored, thus can be kept
-//   - their valuation, when extended with the new distance and priorities,
-//     could be worse than the one stored, in which case ignore them
-//   - they valuation could be very favourable, in which case prefer them
-//     (TODO: test if this is convenient or too costly)
-// Note: when expanding from p1 nodes the most favourable valuation becomes
-// the "smallest" one.
+//   - they could be explored, thus compute the profile for the initial
+//     successor. Ignore this node if the profile is not improving.
+//   (TODO: test if this is convenient or too costly)
+// Note: when expanding from p1 nodes the most favourable profile
+// becomes the "smallest" one.
+//
 // TODO: maybe do something smart with nodes in the expansion too?
-// TODO: this means that subsequent expansions without recomputing valuations
-//       will see stale/wrong valuations unless we reached a vertex with no
-//       improving successors.
+// TODO: this means that subsequent expansions without recomputing
+//       profiles will see stale/wrong valuations unless we reached
+//       a vertex with no improving successors.
