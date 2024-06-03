@@ -350,7 +350,7 @@ Strategy iteration is an algorithm that computes the winning sets and the optima
 ]
 
 #definition("reward ordering")[
-  Let $G = (V_0, V_1, E, p)$ be a parity graph with a relevance ordering $<$, and let $v, u in V$. We write $u lt.curly v$ when $u$'s reward is less than $v$'s, namely when $u < v$ and $p(v)$ is even or $v < u$ and $p(u)$ is odd.
+  Let $G = (V_0, V_1, E, p)$ be a parity graph with a relevance ordering $<$, and let $v, u in V$. We write $u lt.curly v$ when $u$'s reward is less than $v$'s, namely when $u < v$ and $v in V_+$ or $v < u$ and $u in V_-$.
   $
     u lt.curly v <=> (u < v and v in V_+) or (v < u and u in V_-)
   $
@@ -361,7 +361,7 @@ The intuition behind the reward ordering is that is represents how "good" a vert
 #definition("reward ordering on sets")[
   Let $G = (V_0, V_1, E, p)$ be a parity graph with a relevance ordering $<$ and let $P, Q subset.eq 2^V$ be two different sets of vertexes.
 
-  Let $v = max_< P Delta Q$. We write $P lt.curly Q$ when $P$'s reward is less than $Q$'s, namely when $v in Q$ and $p(v)$ even, or when $v in P$ and $p(v)$ odd.
+  Let $v = max_< P Delta Q$. We write $P lt.curly Q$ when $P$'s reward is less than $Q$'s, namely when $v in Q$ and $v in V_+$, or when $v in P$ and $v in V_-$.
   $
     P lt.curly Q <=> P != Q and "max"_< P Delta Q in Q Delta V_-
   $
@@ -387,8 +387,8 @@ Valuations and play profiles help understand how "good" the strategies are for t
     (u, P, e) lt.curly (v, Q, f) <=> cases(
       & u lt.curly v \
       or & (u = v and P lt.curly Q) \
-      or & (u = v and P = Q and p(u) "odd" and e < f) \
-      or & (u = v and P = Q and p(u) "even" and e > f)
+      or & (u = v and P = Q and u in V_- and e < f) \
+      or & (u = v and P = Q and u in V_+ and e > f)
     )
   $
 ]
