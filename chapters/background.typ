@@ -209,7 +209,15 @@ Notice that the way the solution of a system of fixpoint equations is defined de
 
 Sometimes a parity graph is also defined as a biparite graph by requiring $E subset.eq V_0 times V_1 union V_1 times V_0$. This will be the case in this thesis and can help practical implementations, but is not required in general.
 
-The codomain of $p$ is traditionally taken to be $bb(N)$, but it can be shown to be equivalent to any finite totally ordered set $P$ partitioned into $P_0$ and $P_1$, respectively corresponding to the set of even and odd priorities.
+The codomain of $p$ is traditionally taken to be $bb(N)$, but it can be shown to be equivalent to any totally ordered set $P$ partitioned into $P_0$ and $P_1$, respectively corresponding to the set of even and odd priorities.
+
+#notation("successors and predecessors")[
+  Let $G = (V, E)$ be a graph.
+  
+  Given $u, v in V$ we write $u E v$ if the graph contains the edge from $u$ to $v$.
+
+  We write $u E$ as a shorthand for the set ${ v in V | u E v }$ and $E v$ as a shorthand for the set ${ u in V | u E v }$
+]
 
 #definition("parity game")[
   Let $G = (V_0, V_1, E, p)$ be a parity graph. A parity game is a game on this graph played by two players, called 0 and 1. The game starts from an initial vertex $v_0$ moves along the edges of the graph, such that if the current vertex is in $V_0$ (resp. $V_1$) then the next move is chosen by player 0 (resp. player 1).
@@ -326,10 +334,86 @@ In practice it's not feasible to consider all the possible edges for player 0. W
 
 == Local strategy iteration
 
-- TODO: Strategy iteration: various orders
-- TODO: Strategy iteration: play profile
-- TODO: Strategy iteration: optimality condition
-- TODO: Strategy iteration: algorithm possible and complexity
+// TODO: Cite paper introducing it.
+In this section we will assume all parity games to only have infinite plays, in other words for all parity graphs to have no vertex without successors.
+
+=== Strategy iteration
+
+Strategy iteration is an algorithm that computes the winning sets and the optimal strategies for the two players of a parity game. It is based on the notion of _play profiles_, which describe how "good" a play induced by a strategy is.
+
+#definition("positive and negative vertexes")[
+  Let $G = (V_0, V_1, E, p)$ be a parity graph. We define $V_+ = { v in V | p(v) "even" }$ and $V_- = { v in V | p(v) "odd" }$.
+]
+
+#definition("relevance ordering")[
+  Let $G = (V_0, V_1, E, p)$ be a parity graph. A relevance ordering $<$ is a total order that extends the partial order induced by the $p$ function. In particular $<$ is such that $forall u, v. p(u) < p(v) => u < v$.
+]
+
+#definition("reward ordering")[
+  Let $G = (V_0, V_1, E, p)$ be a parity graph with a relevance ordering $<$, and let $v, u in V$. We write $u lt.curly v$ when $u$'s reward is less than $v$'s, namely when $u < v$ and $p(v)$ is even or $v < u$ and $p(u)$ is odd.
+  $
+    u lt.curly v <=> (u < v and v in V_+) or (v < u and u in V_-)
+  $
+]
+
+The intuition behind the reward ordering is that is represents how "good" a vertex is for each player.
+
+#definition("reward ordering on sets")[
+  Let $G = (V_0, V_1, E, p)$ be a parity graph with a relevance ordering $<$ and let $P, Q subset.eq 2^V$ be two different sets of vertexes.
+
+  Let $v = max_< P Delta Q$. We write $P lt.curly Q$ when $P$'s reward is less than $Q$'s, namely when $v in Q$ and $p(v)$ even, or when $v in P$ and $p(v)$ odd.
+  $
+    P lt.curly Q <=> P != Q and "max"_< P Delta Q in Q Delta V_-
+  $
+]
+
+#definition("valuation and play profile")[
+  Let $G = (V_0, V_1, E, p)$ be a parity graph with a relevance ordering $<$.
+  A valuation $phi$ is a function that associates to each vertex a play profile. We are interested in valuations induced by a pair of strategies for the two players.
+
+  Let $u in V$ and consider the play $pi$ starting from $u$ and induced by the two strategies.
+  Let $w$ be the most relevant vertex of $pi$ that is visited infinitely often and let $alpha$ be the set of vertexes visited in $pi$ before the first occurrence of $w$.
+  The play profile $phi(u)$ for $u$ is a tuple of:
+  - the vertex $w$;
+  - the subset of $alpha$ of vertexes more relevant than $w$: $alpha sect {v in V | v > w}$;
+  - the size of $alpha$: $|alpha|$.
+]
+
+Valuations and play profiles help understand how "good" the strategies are for the two players. To do that we'll also need an ordering on them:
+
+#definition("play profile ordering")[
+  Let $G = (V_0, V_1, E, p)$ be a parity graph with a relevance ordering $<$, and $(u, P, e)$ and $(v, Q, f)$ be two play profiles. Then we have:
+  $
+    (u, P, e) lt.curly (v, Q, f) <=> cases(
+      & u lt.curly v \
+      or & (u = v and P lt.curly Q) \
+      or & (u = v and P = Q and p(u) "odd" and e < f) \
+      or & (u = v and P = Q and p(u) "even" and e > f)
+    )
+  $
+]
+
+Intuitively, play profiles extend the notion of which player is winning (represented by the first element of the play profile) with informations about how many chances a player has to improve its situation. The ordering between play profiles captures the notion of "how many chances" a player has to do so.
+
+// TODO: does this need to explain progress relation too or can we assume
+// it from the fact a valuation is induced by a pair of strategies?
+
+#definition("optimal strategies")[
+  Let $G = (V_0, V_1, E, p)$ be a parity graph with a relevance ordering $<$, and $sigma$ and $tau$ be two strategies for respectively player 0 and 1.
+  We say that $sigma$ is optimal against $tau$ if $forall u in V_0. forall v in u E. phi(v) lt.curly.eq phi(sigma(u))$ and we say that $tau$ is optimal against $sigma$ if $forall u in V_1. forall v in u E. phi(tau(u)) lt.curly.eq phi(v)$.
+]
+
+This allows us to idenfity when a strategy is optimal or can be improved. When the two strategies are both optimal the game is then solved.
+
+In practice the strategy improvement algorithm will alternate a _valuation_ phase, where given a strategy for player 0 an optimal strategy for player 1 is created and a valuation for both is computed, with a _improvement_ phase, where the strategy for player 0 is improved according to the optimality condition. The algorithm repeates the two phases until the optimality condition is true.
+
+// TODO: Further details redirect to the paper?
+
+Each iteration has worst-case complexity $O(|V| dot |E|)$, and in the worst case requires $Pi_(v in V_0) "out-deg"(v)$ many improvement steps.
+
+=== Local algorithm
+
+- TODO: Problem with non-local algorithm
 - TODO: Local algorithm: escaping set
 - TODO: Local algorithm: can only consider subgraph
 - TODO: Local algorithm: expansion
