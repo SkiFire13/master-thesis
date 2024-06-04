@@ -415,9 +415,9 @@ Each iteration has worst-case complexity $O(|V| dot |E|)$, and in the worst case
 
 The strategy improvement algorithm has the downside of requiring to visit the whole graph. In some cases this may be a problem, as the graph could be very large but only a small portion may need to be visited to solve the game.
 
-The local strategy iteration algorithm fills this gap, by providing a sound way to perform strategy iteration on a subgraph and deciding when this is enough to make conclusions valid for the whole graph. The basic idea will be to start with a subgraph we're interested in and then expand it until it's big enough to make the conclusions we're interested in.
-
 // TODO: Example where this matters?
+
+The local strategy iteration algorithm fills this gap, by providing a way to perform strategy iteration on an expanding subgame until it has enough informations to decide the winner. To do this we'll need to define what a subgame and a partially expanded game is, how to expand it and what is the condition that decides the winner of a vertex.
 
 #definition("induced subgames")[
   Let $G = (V_0, V_1, E, p)$ be a parity graph and $U subset.eq V$. The $U$-induced subgame of $G$, written $G|_U$, is the parity game $(U sect V_0, U sect V_1, E sect (U times U), p|_U)$, where $p|_U$ is the function $p$ with domain restricted to $U$.
@@ -451,7 +451,7 @@ Intuitively the escape set represents the vertexes in the $U$-exterior that are 
   $
 ]
 
-That is, a vertex is definitely winning for a player if it's winning in the current $U$-induced subgame and the opposing player has no way to force a play to reach the $U$-exterior, thus every play starting from that vertex stays in the current subgame and conclusions made there stay valid for the whole game. 
+That is, a vertex is definitely winning for a player if it's winning in the current $U$-induced subgame and the opposing player has no way to force a play to reach the $U$-exterior, thus every play starting from that vertex stays in the current subgame and conclusions made there stay valid for the whole game.
 
 - TODO: Local algorithm: expansion
 - TODO: Local algorithm: complexities (?)
