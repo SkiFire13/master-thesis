@@ -55,15 +55,15 @@
       academic-year
     )
     copyright(candidate.name, title, date)
-    pagebreak-to-right()
+    pagebreak-to-right(weak: true)
     dedication()
-    pagebreak-to-right()
+    pagebreak-to-right(weak: true)
     summary()
-    pagebreak-to-right()
+    pagebreak-to-right(weak: true)
     acknowledgements()
-    pagebreak-to-right()
+    pagebreak-to-right(weak: true)
     toc()
-    pagebreak-to-right()
+    pagebreak-to-right(weak: true)
   }
 
   {
