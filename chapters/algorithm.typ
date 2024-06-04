@@ -1,9 +1,51 @@
 #import "../config/common.typ": *
 
+// TODO: Better section title?
 = Symbolic local algorithm
 
-- TODO: Prevent finite plays in powerset graph (W0/L0/W1/L1 and proof)
+== Adapting the algorithm
+
+Our goal will be to adapt and improve the local strategy iteration algorithm to solve systems of fixpoint equations expressed as parity games using the symbolic formulation.
+
+=== Handling finite plays
+
+The parity game formulation of a system of fixpoint equations admits positions where a player has no available moves, however the strategy improvement algorithm does not, and instead requires all vertexes to have at least one successor. We thus need to convert our parity game in an equivalent one that can be handled by the strategy improvement algorithm.
+
+Let $G = (V_0, V_1, E, p)$ be a parity graph where some vertexes have no successor. We can define the following equivalent parity graph $G' = (V'_0, V'_1, E', p')$ where all vertexes have at least one successor:
+
+#let p_offset = 2em
+
+- $V'_0 = V_0 union { w0, l0 }$
+
+- $V'_1 = V_1 union { w1, l1 }$
+
+- $E' = E union { (v, w_i) | i in {0,1} and v in V_(1-i) and v E = varempty } union { (w0, l1), (l1, w0), (w1, l0), (l0, w1) }$ #v(p_offset)
+
+- #move(dy: -p_offset, box(math.equation(block: true, $p'(v) = cases(
+    p(v) & "if" v in V \
+    "any even" & "if" v in { w_0, l_1 } \
+    "any odd" & "if" v in { w_1, l_0 } \
+  )$))) #v(-p_offset)
+
+Intuitively we are extending the graph by providing a successor to every vertex without one. These successors are two fake nodes $w0$ and $w1$, who can only infinitely loop respectively with $l1$ and $l0$. The priorities are then chosen so that these loops are winning for the same player that would have won the finite play.
+
+// TODO: definition for play, winner of a play, (tail, etc etc?)
+Formally we want to show that every vertex in $G$ has the same winner in $G'$. To do this we'll show a stronger property, that every play startingin $G$ has an equivalent play won by the same player in $G'$ and vice-versa, every play in $G'$ starting from vertexes in $V$ has an equivalent in $G$.
+
+// TODO: This is just sketched, need to write more formally and nicely
+- ($G$ to $G'$) we can distinguish two kind of plays:
+  - (infinite play $v_1 v_2 ...$) the same play is possible in $G'$;
+  - (finite play $v_1 v_2 ... v_n$) take $i$ such that $v_n in V_i$, then the play $v_1 v_2 ... v_n w_(1-i) l_i w_(1-i) ...$ is equivalent to the given play. The set of infinitely repeating vertexes is ${ w_(1-i), l_i }$, both of which have the same parity in favour of the player $1-i$;
+- ($G'$ to $G$) we can distinguish two kind of plays:
+  - (infinite play $... v_n w_(1-i) l_i w_(1-i) ...$ with $v_n$ in $V_i$) this play is winning for player $1-i$, and so is the finite play $... v_n$;
+  - (infinite play $... v_n v_(n+1) v_(n+2) ...$) the same play is possible in $G$.
+
+=== Lazy successors
+
 - TODO: Ok Not immediately visiting all edges (complexity?)
+
+.
+
 - TODO: Ok removing edges to unfavorable definitely-winning vertexes
 - TODO: How to remove edges lazily in formulas (set atom to T/F)
 - TODO: (Maybe) Compute play profiles of expanded nodes

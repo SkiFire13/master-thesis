@@ -37,3 +37,8 @@
 )
 
 #let dom = math.op("dom")
+
+#let w0 = $w_0$
+#let l0 = $l_0$
+#let w1 = $w_1$
+#let l1 = $l_1$
