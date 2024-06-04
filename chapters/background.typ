@@ -361,9 +361,9 @@ The intuition behind the reward ordering is that is represents how "good" a vert
 #definition("reward ordering on sets")[
   Let $G = (V_0, V_1, E, p)$ be a parity graph with a relevance ordering $<$ and let $P, Q subset.eq 2^V$ be two different sets of vertexes.
 
-  Let $v = max_< P Delta Q$. We write $P lt.curly Q$ when $P$'s reward is less than $Q$'s, namely when $v in Q$ and $v in V_+$, or when $v in P$ and $v in V_-$.
+  Let $v = max_< P Delta Q$. We write $P lt.curly Q$ when $P$'s reward is less than $Q$'s, namely when $v in P$ and $v in V_-$, or when $v in Q$ and $v in V_+$.
   $
-    P lt.curly Q <=> P != Q and "max"_< P Delta Q in Q Delta V_-
+    P lt.curly Q <=> P != Q and "max"_< P Delta Q in (P sect V_-) union (Q sect V_+)
   $
 ]
 
@@ -379,7 +379,7 @@ The intuition behind the reward ordering is that is represents how "good" a vert
   - the size of $alpha$: $|alpha|$.
 ]
 
-Valuations and play profiles help understand how "good" the strategies are for the two players. To do that we'll also need an ordering on them:
+Valuations and play profiles help understand how "good" the strategies are for the two players. This is then described by an ordering on them:
 
 #definition("play profile ordering")[
   Let $G = (V_0, V_1, E, p)$ be a parity graph with a relevance ordering $<$, and $(u, P, e)$ and $(v, Q, f)$ be two play profiles. Then we have:
@@ -413,8 +413,45 @@ Each iteration has worst-case complexity $O(|V| dot |E|)$, and in the worst case
 
 === Local algorithm
 
-- TODO: Problem with non-local algorithm
-- TODO: Local algorithm: escaping set
-- TODO: Local algorithm: can only consider subgraph
+The strategy improvement algorithm has the downside of requiring to visit the whole graph. In some cases this may be a problem, as the graph could be very large but only a small portion may need to be visited to solve the game.
+
+The local strategy iteration algorithm fills this gap, by providing a sound way to perform strategy iteration on a subgraph and deciding when this is enough to make conclusions valid for the whole graph. The basic idea will be to start with a subgraph we're interested in and then expand it until it's big enough to make the conclusions we're interested in.
+
+// TODO: Example where this matters?
+
+#definition("induced subgames")[
+  Let $G = (V_0, V_1, E, p)$ be a parity graph and $U subset.eq V$. The $U$-induced subgame of $G$, written $G|_U$, is the parity game $(U sect V_0, U sect V_1, E sect (U times U), p|_U)$, where $p|_U$ is the function $p$ with domain restricted to $U$.
+]
+
+#definition("partially expanded game")[
+  Let $G = (V_0, V_1, E, p)$ be a parity graph and $U subset.eq V$. The $U$-induced subgame $G|_U$ is called a partially expanded game if all its vertexes have at least one successor.
+]
+
+#definition($U$ + "-exterior")[
+  Let $G = (V_0, V_1, E, p)$ be a parity graph and $U subset.eq V$. The $U$-exterior of $G|_U$, also written $D_G (U)$, is the set of successors of vertexes in $G|_U$ that are not themselves in $G|_U$. That is:
+  $
+    D_G (U) = union.big_(v in U) v E sect (V without U)
+  $
+]
+
+#definition("escape set")[
+  Let $G = (V_0, V_1, E, p)$ be a parity graph and $U subset.eq V$. Let $sigma$ be an optimal strategy for player 0 on $G|_U$ and $tau$ one for player 1.
+  Let $E_sigma = { (u, v) in E | u in dom(sigma) => sigma(u) = v }$ (resp. $E_tau$) be the set of edges restricted to the strategy for player 0 (resp. 1), and let $E_sigma^*$ (resp. $E_tau^*$) be its transitive-reflexive closure. The escape set for player 0 (resp. 1) from vertex $v in U$ is the set $E_L^0 (v) = v E_sigma^* sect D_G (U)$ (resp. $E_L^1 (v) = v E_tau^* sect D_G (U)$).
+]
+// TODO: the L here refers to the "instance" (G|_U, sigma, tau) that has
+// not been introduced
+
+Intuitively the escape set represents the vertexes in the $U$-exterior that are reachable from a vertex $v$ controlled by player $i$ assuming the opposite player follows its optimal strategy.
+
+#definition("definitive winning set")[
+  Let $G = (V_0, V_1, E, p)$ be a parity graph and $U subset.eq V$. Let $sigma$ be an optimal strategy for player 0 on $G|_U$ and $tau$ one for player 1, let $phi$ be a valuation for this pair of strategies and let $E_L^0$ and $E_L^1$ be the escape sets for the two players. The definitive winning sets $W_0$ and $W_1$ are defined as:
+  $
+    W_0 &= { v in U | E_L^0 (v) = varempty and (phi(v))_1 in V_+ } \
+    W_1 &= { v in U | E_L^1 (v) = varempty and (phi(v))_1 in V_- }
+  $
+]
+
+That is, a vertex is definitely winning for a player if it's winning in the current $U$-induced subgame and the opposing player has no way to force a play to reach the $U$-exterior, thus every play starting from that vertex stays in the current subgame and conclusions made there stay valid for the whole game. 
+
 - TODO: Local algorithm: expansion
 - TODO: Local algorithm: complexities (?)

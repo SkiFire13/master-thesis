@@ -35,3 +35,5 @@
   ..cols.pos().map(align.with(horizon)).intersperse(h(1fr)),
   h(1fr),
 )
+
+#let dom = math.op("dom")
