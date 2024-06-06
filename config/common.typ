@@ -1,3 +1,13 @@
+#let baseline-list(body) = {
+  show list.item: it => context [
+    #let marker = list.marker.at(0)
+    #let height = measure[#it.body].height
+    #box(height: height)[#marker #it.body]\
+  ]
+  body
+}
+
+
 #let environment(name) = {
   let env_counter = counter(name)
   (subject, body) => block(inset: (y: 5pt))[
