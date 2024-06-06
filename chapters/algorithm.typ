@@ -42,11 +42,15 @@ Formally we want to show that every vertex in $G$ has the same winner in $G'$. T
   - (infinite play $v_1 v_2 ...$) the same play is possible in $G'$;
   - (finite play $v_1 v_2 ... v_n$) take $i$ such that $v_n in V_i$, then the play $v_1 v_2 ... v_n w_(1-i) l_i w_(1-i) ...$ is equivalent to the given play. The set of infinitely repeating vertexes is ${ w_(1-i), l_i }$, both of which have the same parity in favour of the player $1-i$;
 - ($G'$ to $G$) we can distinguish two kind of plays:
-  - (infinite play $... v_n w_(1-i) l_i w_(1-i) ...$ with $v_n$ in $V_i$) this play is winning for player $1-i$, and so is the finite play $... v_n$;
-  - (infinite play $... v_n v_(n+1) v_(n+2) ...$) the same play is possible in $G$.
+  - (infinite play $v_1 ... v_n w_(1-i) l_i w_(1-i) ...$ with $v_n$ in $V_i$) this play is winning for player $1-i$, and so is the finite play $... v_n$;
+  - (infinite play $v_1 ... v_n v_(n+1) v_(n+2) ...$) the same play is possible in $G$.
 
 === Lazy successors
 
+The local strategy improvement algorithm assumes that given a subset $U$ of the vertexes all edges with both endpoints in $U$ are immediately known, that is $E sect (U times U)$ is immediately known. Unfortunately this is not true in the symbolic formulation, as the list of successors of a vertex is computed lazily, and that might include vertexes in $U$. In other words, with the symbolic formulation we're considering not only a subset of the vertexes, but also a subset of the edges.
+
+// TODO: Show how the local algorithm changes for this (escape set -> edges?)
+// TODO: Prove this is ok
 - TODO: Ok Not immediately visiting all edges (complexity?)
 
 .
