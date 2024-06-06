@@ -33,6 +33,11 @@ Intuitively we are extending the graph by providing a successor to every vertex 
 Formally we want to show that every vertex in $G$ has the same winner in $G'$. To do this we'll show a stronger property, that every play startingin $G$ has an equivalent play won by the same player in $G'$ and vice-versa, every play in $G'$ starting from vertexes in $V$ has an equivalent in $G$.
 
 // TODO: This is just sketched, need to write more formally and nicely
+// IDEA: play is $v_1 v_2 ... v_k overline(v_(k+1) ... v_n)$ where
+//       $v_(k+1) .. v_n$ repeats infinitely many times.
+//       The tail can be empty, in which case the play is finite.
+//       The conversion between G and G' simply transforms any empty
+//       tails in either $overline(w1 l0)$ or $overline(w0 l1)$.
 - ($G$ to $G'$) we can distinguish two kind of plays:
   - (infinite play $v_1 v_2 ...$) the same play is possible in $G'$;
   - (finite play $v_1 v_2 ... v_n$) take $i$ such that $v_n in V_i$, then the play $v_1 v_2 ... v_n w_(1-i) l_i w_(1-i) ...$ is equivalent to the given play. The set of infinitely repeating vertexes is ${ w_(1-i), l_i }$, both of which have the same parity in favour of the player $1-i$;
