@@ -213,9 +213,7 @@ The codomain of $p$ is traditionally taken to be $bb(N)$, but it can be shown to
 
 #notation("successors and predecessors")[
   Let $G = (V, E)$ be a graph.
-  
   Given $u, v in V$ we write $u E v$ if the graph contains the edge from $u$ to $v$.
-
   We write $u E$ as a shorthand for the set ${ v in V | u E v }$ and $E v$ as a shorthand for the set ${ u in V | u E v }$
 ]
 
