@@ -1,0 +1,20 @@
+name: Build PDF
+on:
+  push:
+    branches: [ main ]
+jobs:
+  build-pdf:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/typst/typst:latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+      - name: Build PDF
+        run: typst compile thesis.typ
+      - name: Upload PDF
+        uses: actions/upload-artifact@v4
+        with:
+          name: thesis.pdf
+          path: thesis.pdf
+          retention-days: 21
