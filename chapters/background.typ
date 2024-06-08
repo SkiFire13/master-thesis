@@ -273,7 +273,7 @@ TODO: Parity games are known to have winning strategy that doesn't depend on pas
 // TODO: Play consistent with (partial) strategy?
 
 #definition("winning strategy")[
-  Let $G = (V_0, V_1, E, p)$ be a parity graph. A strategy $sigma_i$ for player $i$ is called winning on vertex $v$ if for any strategy $sigma_(1-i)$ for the opposing player, the play starting from vertex $v$ in the instance $(G, sigma_0, sigma_1)$ is winning for player $i$.
+  Let $G = (V_0, V_1, E, p)$ be a parity game. A strategy $sigma_i$ for player $i$ is called winning on vertex $v$ if for any strategy $sigma_(1-i)$ for the opposing player, the play starting from vertex $v$ in the instance $(G, sigma_0, sigma_1)$ is winning for player $i$.
 ]
 
 A winning strategy is memoryless, that is it does not need to know which moves were performed earlier in the play. This is reflected in the fact that the strategy is a function of the current vertex only.
@@ -422,7 +422,7 @@ The intuition behind the reward ordering is that is represents how "good" a vert
 Valuations and play profiles help understand how "good" the strategies are for the two players. This is then described by an ordering on them:
 
 #definition("play profile ordering")[
-  Let $G = (V_0, V_1, E, p)$ be a parity graph with a relevance ordering $<$, and $(u, P, e)$ and $(v, Q, f)$ be two play profiles. Then we have:
+  Let $G = (V_0, V_1, E, p)$ be a parity game with a relevance ordering $<$, and $(u, P, e)$ and $(v, Q, f)$ be two play profiles. Then we have:
   $
     (u, P, e) lt.curly (v, Q, f) <=> cases(
       & u lt.curly v \
@@ -439,7 +439,7 @@ Intuitively, play profiles extend the notion of which player is winning (represe
 // it from the fact a valuation is induced by a pair of strategies?
 
 #definition("optimal strategies")[
-  Let $G = (V_0, V_1, E, p)$ be a parity graph with a relevance ordering $<$, and $sigma$ and $tau$ be two strategies for respectively player 0 and 1.
+  Let $G = (V_0, V_1, E, p)$ be a parity game with a relevance ordering $<$, and $sigma$ and $tau$ be two strategies for respectively player 0 and 1.
   We say that $sigma$ is optimal against $tau$ if $forall u in V_0. forall v in u E. phi(v) lt.curly.eq phi(sigma(u))$ and we say that $tau$ is optimal against $sigma$ if $forall u in V_1. forall v in u E. phi(tau(u)) lt.curly.eq phi(v)$.
 ]
 
@@ -460,22 +460,22 @@ The strategy improvement algorithm has the downside of requiring to visit the wh
 The local strategy iteration algorithm fills this gap, by providing a way to perform strategy iteration on an expanding subgame until it has enough informations to decide the winner. To do this we will need to define what a subgame and a partially expanded game is, how to expand it and what is the condition that decides the winner of a vertex.
 
 #definition([$U$-induced subgames])[
-  Let $G = (V_0, V_1, E, p)$ be a parity graph and $U subset.eq V$. The $U$-induced subgame of $G$, written $G|_U$, is the parity game $(U sect V_0, U sect V_1, E sect (U times U), p|_U)$, where $p|_U$ is the function $p$ with domain restricted to $U$.
+  Let $G = (V_0, V_1, E, p)$ be a parity game and $U subset.eq V$. The $U$-induced subgame of $G$, written $G|_U$, is the parity game $(U sect V_0, U sect V_1, E sect (U times U), p|_U)$, where $p|_U$ is the function $p$ with domain restricted to $U$.
 ]
 
 #definition("partially expanded game")[
-  Let $G = (V_0, V_1, E, p)$ be a parity graph and $U subset.eq V$. The $U$-induced subgame $G|_U$ is called a partially expanded game if all its vertexes have at least one successor.
+  Let $G = (V_0, V_1, E, p)$ be a parity game and $U subset.eq V$. The $U$-induced subgame $G|_U$ is called a partially expanded game if all its vertexes have at least one successor.
 ]
 
 #definition($U$ + "-exterior")[
-  Let $G = (V_0, V_1, E, p)$ be a parity graph and $U subset.eq V$. The $U$-exterior of $G|_U$, also written $D_G (U)$, is the set of successors of vertexes in $G|_U$ that are not themselves in $G|_U$. That is:
+  Let $G = (V_0, V_1, E, p)$ be a parity game and $U subset.eq V$. The $U$-exterior of $G|_U$, also written $D_G (U)$, is the set of successors of vertexes in $G|_U$ that are not themselves in $G|_U$. That is:
   $
     D_G (U) = union.big_(v in U) v E sect (V without U)
   $
 ]
 
 #definition("escape set")[
-  Let $G = (V_0, V_1, E, p)$ be a parity graph and $U subset.eq V$. Let $sigma$ be an optimal strategy for player 0 on $G|_U$ and $tau$ one for player 1.
+  Let $G = (V_0, V_1, E, p)$ be a parity game and $U subset.eq V$. Let $sigma$ be an optimal strategy for player 0 on $G|_U$ and $tau$ one for player 1.
   Let $E_sigma = { (u, v) in E | u in dom(sigma) => sigma(u) = v }$ (resp. $E_tau$) be the set of edges restricted to the strategy for player 0 (resp. 1), and let $E_sigma^*$ (resp. $E_tau^*$) be its transitive-reflexive closure. The escape set for player 0 (resp. 1) from vertex $v in U$ is the set $E_L^0 (v) = v E_sigma^* sect D_G (U)$ (resp. $E_L^1 (v) = v E_tau^* sect D_G (U)$).
 ]
 // TODO: the L here refers to the "instance" (G|_U, sigma, tau) that has
@@ -484,7 +484,7 @@ The local strategy iteration algorithm fills this gap, by providing a way to per
 Intuitively the escape set represents the vertexes in the $U$-exterior that are reachable from a vertex $v$ controlled by player $i$ assuming the opposite player follows its optimal strategy.
 
 #definition("definitive winning set")[
-  Let $G = (V_0, V_1, E, p)$ be a parity graph and $U subset.eq V$. Let $sigma$ be an optimal strategy for player 0 on $G|_U$ and $tau$ one for player 1, let $phi$ be a valuation for this pair of strategies and let $E_L^0$ and $E_L^1$ be the escape sets for the two players. The definitive winning sets $W_0$ and $W_1$ are defined as:
+  Let $G = (V_0, V_1, E, p)$ be a parity game and $U subset.eq V$. Let $sigma$ be an optimal strategy for player 0 on $G|_U$ and $tau$ one for player 1, let $phi$ be a valuation for this pair of strategies and let $E_L^0$ and $E_L^1$ be the escape sets for the two players. The definitive winning sets $W_0$ and $W_1$ are defined as:
   $
     W_0 &= { v in U | E_L^0 (v) = varempty and (phi(v))_1 in V_+ } \
     W_1 &= { v in U | E_L^1 (v) = varempty and (phi(v))_1 in V_- }
