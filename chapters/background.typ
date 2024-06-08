@@ -85,20 +85,20 @@ From now on we will mostly work with finite, and thus complete, lattices.
 
 == Tuples
 
-In order to define systems of fixpoint equations we will need to refer to multiple equations/variables/values together, and to do that we will use tuples.
+In order to define systems of fixpoint equations we will need to refer to multiple equations/variables/values together, and to do that we will use $n$-tuples.
 
-#definition("set of tuples")[
+#definition([set of $n$-tuples])[
   Let $A$ be a set. The set of $n$-tuples of $A$ is $A^n$.
 ]
 
-It will be helpful to distinguish tuples from other kind of values and coincisely express common operations on them. We will also often refer to the set of indexes of their element. To do this we will define some convenient notations for them:
+It will be helpful to distinguish $n$-tuples from other kind of values and coincisely express common operations on them. We will also often refer to the set of indexes of their element. To do this we will define some convenient notations for them:
 
-#notation("tuple")[
+#notation([$n$-tuple])[
   Let $A^n$ be a set of $n$-tuples. We will refer to its elements using boldface lowercase letters, like $tup(a)$. Given $tup(a) in A^n$ we will refer to its $i$-th element with the non-boldface $a_i$.
 ]
 
 #notation("concatenation")[
-  Let $tup(a_1), ..., tup(a_k)$ be either tuples or single elements of $A$. The notation $(tup(a_1), ..., tup(a_k))$ represents a tuple made by concatenating the elements in the tuples $tup(a_1), ..., tup(a_k)$. Single elements are considered as $1$-tuples for this purpose.
+  Let $tup(a_1), ..., tup(a_k)$ be either $n$-tuples or single elements of $A$. The notation $(tup(a_1), ..., tup(a_k))$ represents a $n$-tuple made by concatenating the elements in the tuples $tup(a_1), ..., tup(a_k)$. Single elements are considered as $1$-tuples for this purpose.
 ]
 
 Notice that using concatenation the empty tuple can be represented as $()$.
@@ -383,22 +383,21 @@ TODO: Informal introduction to logic
 == Local strategy iteration
 
 // TODO: Cite paper introducing it.
-In this section we will assume all parity games to only have infinite plays, in other words for all parity graphs to have no vertex without successors.
 
 === Strategy iteration
 
-Strategy iteration is an algorithm that computes the winning sets and the optimal strategies for the two players of a parity game. It is based on the notion of _play profiles_, which describe how "good" a play induced by a strategy is.
+Strategy iteration is an algorithm that computes the winning sets and the optimal strategies for the two players of a bipartite and total parity game. It is based on the notion of _play profiles_, which describe how "good" a play induced by a strategy is.
 
 #definition("positive and negative vertexes")[
-  Let $G = (V_0, V_1, E, p)$ be a parity graph. We define $V_+ = { v in V | p(v) "even" }$ and $V_- = { v in V | p(v) "odd" }$.
+  Let $G = (V_0, V_1, E, p)$ be a parity game. We define $V_+ = { v in V | p(v) "even" }$ and $V_- = { v in V | p(v) "odd" }$.
 ]
 
 #definition("relevance ordering")[
-  Let $G = (V_0, V_1, E, p)$ be a parity graph. A relevance ordering $<$ is a total order that extends the partial order induced by the $p$ function. In particular $<$ is such that $forall u, v. p(u) < p(v) => u < v$.
+  Let $G = (V_0, V_1, E, p)$ be a parity game. A relevance ordering $<$ is a total order that extends the partial order induced by the $p$ function. In particular $<$ is such that $forall u, v. p(u) < p(v) => u < v$.
 ]
 
 #definition("reward ordering")[
-  Let $G = (V_0, V_1, E, p)$ be a parity graph with a relevance ordering $<$, and let $v, u in V$. We write $u lt.curly v$ when $u$'s reward is less than $v$'s, namely when $u < v$ and $v in V_+$ or $v < u$ and $u in V_-$.
+  Let $G = (V_0, V_1, E, p)$ be a parity game with a relevance ordering $<$, and let $v, u in V$. We write $u lt.curly v$ when $u$'s reward is less than $v$'s, namely when $u < v$ and $v in V_+$ or $v < u$ and $u in V_-$.
   $
     u lt.curly v <=> (u < v and v in V_+) or (v < u and u in V_-)
   $
@@ -407,26 +406,19 @@ Strategy iteration is an algorithm that computes the winning sets and the optima
 The intuition behind the reward ordering is that is represents how "good" a vertex is for each player.
 
 #definition("reward ordering on sets")[
-  Let $G = (V_0, V_1, E, p)$ be a parity graph with a relevance ordering $<$ and let $P, Q subset.eq 2^V$ be two different sets of vertexes.
-
-  Let $v = max_< P Delta Q$. We write $P lt.curly Q$ when $P$'s reward is less than $Q$'s, namely when $v in P$ and $v in V_-$, or when $v in Q$ and $v in V_+$.
+  Let $G = (V_0, V_1, E, p)$ be a parity game with a relevance ordering $<$ and let $P, Q subset.eq 2^V$ be two different sets of vertexes. Let $v = max_< P Delta Q$. We write $P lt.curly Q$ when $P$'s reward is less than $Q$'s, namely when $v in P$ and $v in V_-$, or when $v in Q$ and $v in V_+$.
   $
     P lt.curly Q <=> P != Q and "max"_< P Delta Q in (P sect V_-) union (Q sect V_+)
   $
 ]
 
-#definition("valuation and play profile")[
-  Let $G = (V_0, V_1, E, p)$ be a parity graph with a relevance ordering $<$.
-  A valuation $phi$ is a function that associates to each vertex a play profile. We are interested in valuations induced by a pair of strategies for the two players.
+#definition("play profile and valuation")[
+  Let $G = (V_0, V_1, E, p)$ be a parity game with a relevance ordering $<$ and $pi = v_0 v_1 ...$ a play on $G$. Let $w = max_< inf(pi)$ be the most relevant vertex that's visited infinitely often in the play and $alpha = { u in V | exists i in N. v_i = u and forall j < i. v_j != w }$ be the set of vertexes visited before the first occurence of $w$. Let $P = alpha sect { v in V | v > w }$ and $e = |alpha|$. The play profile of the play $pi$ is the tuple $(w, P, e)$.
 
-  Let $u in V$ and consider the play $pi$ starting from $u$ and induced by the two strategies.
-  Let $w$ be the most relevant vertex of $pi$ that is visited infinitely often and let $alpha$ be the set of vertexes visited in $pi$ before the first occurrence of $w$.
-  The play profile $phi(u)$ for $u$ is a tuple of:
-  - the vertex $w$;
-  - the subset of $alpha$ of vertexes more relevant than $w$: $alpha sect {v in V | v > w}$;
-  - the size of $alpha$: $|alpha|$.
+  Given a pair of strategies $sigma$ and $tau$, a valuation $phi$ is a function that associates to each vertex the play profile $(w, P, e)$ of the play induced by such strategies.
 ]
 
+// TODO: Put before
 Valuations and play profiles help understand how "good" the strategies are for the two players. This is then described by an ordering on them:
 
 #definition("play profile ordering")[
@@ -456,7 +448,7 @@ This allows us to idenfity when a strategy is optimal or can be improved. When t
 In practice the strategy improvement algorithm will alternate a _valuation_ phase, where given a strategy for player 0 an optimal strategy for player 1 is created and a valuation for both is computed, with a _improvement_ phase, where the strategy for player 0 is improved according to the optimality condition. The algorithm repeates the two phases until the optimality condition is true.
 
 // TODO: Further details redirect to the paper?
-
+// TODO: Change wording to say the paper implemented it with such complexity.
 Each iteration has worst-case complexity $O(|V| dot |E|)$, and in the worst case requires $Pi_(v in V_0) "out-deg"(v)$ many improvement steps.
 
 === Local algorithm
@@ -467,7 +459,7 @@ The strategy improvement algorithm has the downside of requiring to visit the wh
 
 The local strategy iteration algorithm fills this gap, by providing a way to perform strategy iteration on an expanding subgame until it has enough informations to decide the winner. To do this we will need to define what a subgame and a partially expanded game is, how to expand it and what is the condition that decides the winner of a vertex.
 
-#definition("induced subgames")[
+#definition([$U$-induced subgames])[
   Let $G = (V_0, V_1, E, p)$ be a parity graph and $U subset.eq V$. The $U$-induced subgame of $G$, written $G|_U$, is the parity game $(U sect V_0, U sect V_1, E sect (U times U), p|_U)$, where $p|_U$ is the function $p$ with domain restricted to $U$.
 ]
 
