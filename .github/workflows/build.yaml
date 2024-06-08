@@ -20,9 +20,7 @@ jobs:
           name: thesis.pdf
           path: thesis.pdf
           retention-days: 21
-      - name: Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: latest
-          make_latest: true
-          files: thesis.pdf
+      - name: Upload Release Asset
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release upload --clobber latest thesis.pdf
