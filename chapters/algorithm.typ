@@ -11,20 +11,22 @@ Our goal will be to adapt and improve the local strategy iteration algorithm to 
 
 The parity game formulation of a system of fixpoint equations admits positions where a player has no available moves, however the strategy improvement algorithm does not, and instead requires all vertexes to have at least one successor. We thus need to convert our parity game in an equivalent one that can be handled by the strategy improvement algorithm.
 
-Let $G = (V_0, V_1, E, p)$ be a parity graph where some vertexes have no successor. We can define the following equivalent parity graph $G' = (V'_0, V'_1, E', p')$ where all vertexes have at least one successor:
+#definition("induced total parity game")[
+  Let $G = (V_0, V_1, E, p)$ be a parity game. The induced total parity game of $G$ is the parity game $G' = (V'_0, V'_1, E', p')$ where:
+  
+  #baseline-list[
+    - $V'_0 = V_0 union { w0, l0 }$
 
-#baseline-list[
-  - $V'_0 = V_0 union { w0, l0 }$
+    - $V'_1 = V_1 union { w1, l1 }$
 
-  - $V'_1 = V_1 union { w1, l1 }$
+    - $E' = E union { (v, w_i) | i in {0,1} and v in V_(1-i) and v E = varempty } union { (w0, l1), (l1, w0), (w1, l0), (l0, w1) }$
 
-  - $E' = E union { (v, w_i) | i in {0,1} and v in V_(1-i) and v E = varempty } union { (w0, l1), (l1, w0), (w1, l0), (l0, w1) }$
-
-  - #box(baseline: 2em, math.equation(block: true, $p'(v) = cases(
-      p(v) & "if" v in V \
-      "any even" & "if" v in { w_0, l_1 } \
-      "any odd" & "if" v in { w_1, l_0 }
-    )$))
+    - #box(baseline: 2em, math.equation(block: true, $p'(v) = cases(
+        p(v) & "if" v in V \
+        0 & "if" v in { w_0, l_1 } \
+        1 & "if" v in { w_1, l_0 }
+      )$))
+  ]
 ]
 
 Intuitively we are extending the graph by providing a successor to every vertex without one. These successors are two fake nodes $w0$ and $w1$, who can only infinitely loop respectively with $l1$ and $l0$. The priorities are then chosen so that these loops are winning for the same player that would have won the finite play.
