@@ -293,9 +293,9 @@ A winning strategy is memoryless, that is it does not need to know which moves w
   
   - the vertexes for player 1 are $V_1 = (2^(B_L))^n = { (X_1, ..., X_n) | X_i in 2^(B_L) }$
 
-  - the edges from player 0 vertexes are $E(b, i) = { tup(X) | tup(X) in (2^(B_L))^n and b sub f_i (join tup(X)) }$
+  - the moves from player 0 vertexes are $E(b, i) = { tup(X) | tup(X) in (2^(B_L))^n and b sub f_i (join tup(X)) }$
 
-  - the edges from player 1 vertexes are $A(tup(X)) = { (b, i) | i in range(n) and b in X_i }$
+  - the moves from player 1 vertexes are $A(tup(X)) = { (b, i) | i in range(n) and b in X_i }$
 
   - the priority function is defined such that:
     
@@ -339,7 +339,13 @@ The given priority function is not fully specified, but it can be shown that the
 // Symbolic moves are representation of all possible moves
 // Symbolic moves are a selection
 
-In practice it is not feasible to consider all the possible edges for player 0. We can however observe that many of them are useless. For every $X$ and $Y$ such that $join X sub join Y$ we will have $b sub f_i(join X) sub f_i (sub Y)$. This in turn will give player 1 strictly more moves, which intuitively is never better for player 0. Thus all those moves can be excluded. In practice considering the minimal set of moves for player 0 is not feasible, but we can reasonably approximate it in a compact way using symbolic moves.
+In practice it is not convenient to consider all the possible moves for player 0. Consider for example two moves for player 0 that lead to the positions $tup(X)$ and $tup(Y)$ for player 1. If $A(tup(X)) subset A(tup(Y))$ then intuitively $tup(Y)$ is never convenient for player 0, as it will give player 1 strictly move moves to play and thus more chances to win.
+
+TODO: define selection
+
+TODO: restricting strategies to ones consistent with selection preserves winner
+
+TODO: Informal introduction to logic
 
 // TODO: ref to symbolic moves paper
 
@@ -351,14 +357,24 @@ In practice it is not feasible to consider all the possible edges for player 0. 
   $
 ]
 
+#definition("semantic of symbolic moves")[
+  Let $(L, sub)$ be a complete lattice, $B_L$ a basis of $L$, $n in bb(N)$, $i in range(n)$ and $phi$ a logic formula for symbolic moves. The semantics of the formula $phi$, that is the set of player 1 vertices is represents, are:
+  #let sem(of) = $bracket.l.double of bracket.r.double$
+  $
+    sem([b, i]) &= { tup(X) | b in tup(X)_i } \
+    sem(and.big_(k in K) phi_k) &= sect.big_(k in K) sem(phi_k) \
+    sem(or.big_(k in K) phi_k) &= union.big_(k in K) sem(phi_k)
+  $
+]
+
 #definition("generator for symbolic moves")[
   Let $(L, sub)$ be a complete lattice, $B_L$ a basis of $L$, $n in bb(N)$, $i in range(n)$ and $phi$ a logic formula for symbolic moves. We can define the following generator of reduced moves for player 0:
 
   $
     M([b, i]) &= { tup(X) } "with" X_i = { b } "and" forall j != i. X_j = emptyset \
-    // TODO: Is join correct here?
-    M\(and.big_(k in K) phi_k\) &= union.big { join tup(X) | tup(X) in product_(k in K) M(phi_k) } \
-    M\(or.big_(k in K) phi_k\) &= union.big { M(phi_k) | k in K }
+    // TODO: Is this simplified version correct?
+    M\(and.big_(k in K) phi_k\) &= { union.big X | X in product_(k in K) M(phi_k) } \
+    M\(or.big_(k in K) phi_k\) &= union.big_(k in K) M(phi_k)
   $
 ]
 
