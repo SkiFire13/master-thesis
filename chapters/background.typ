@@ -26,7 +26,7 @@ In this chapter we give an overview of the theoretical background used in the re
   - (Join): $forall s in S. join S sub s$ and $forall t in X. forall s in S. t sub s => t sub join S$
 ]
 
-Meet and join don't always exist, but when they do it can be proven that they are unique. We will however work with posets where they always exist for our purposes.
+Meet and join do not always exist, but when they do it can be proven that they are unique. We will however work with posets where they always exist for our purposes.
 
 #definition("lattice")[
   Let $(L, sub)$ be a poset. It is also a lattice if meet and join exist for every pair of elements, that is given $x, y in L$ both $meet {x, y}$ and $join {x, y}$ are defined.
@@ -82,7 +82,7 @@ From now on we will mostly work with finite, and thus complete, lattices.
 
 == Tuples
 
-In order to define systems of fixpoint equations we'll need to refer to multiple equations/variables/values together, and to do that we'll use tuples. We introduce here some notations to better distinguish tuples from other values.
+In order to define systems of fixpoint equations we will need to refer to multiple equations/variables/values together, and to do that we will use tuples. We introduce here some notations to better distinguish tuples from other values.
 
 #definition("set of tuples")[
   Let $A$ be a set. The set of $n$-tuples of $A$ is $A^n$.
@@ -140,7 +140,7 @@ Notice that using concatenation the empty tuple can be represented as $()$.
   A system of equations with no equations or variables is conveniently written as $emptyset$.
 ]
 
-In order to describe the meaning of such system of fixpoint equations we'll need a few more notions. We will mostly assume that given a system all the variables will be named $x_i$ for $i in range(n)$.
+In order to describe the meaning of such system of fixpoint equations we will need a few more notions. We will mostly assume that given a system all the variables will be named $x_i$ for $i in range(n)$.
 
 #definition("substitution")[
   Let $(L, sub)$ be a complete lattice and $E$ be a system of $n$ fixpoint equations over $L$ and variables $x_i$ for $i in range(n)$. Let $j in range(n)$ and $l in L$. The substitution $E[x_j := l]$ is a new system of equation where the $j$-th equation is removed and any use of the variable $x_j$ is replaced with the element $l$.
@@ -223,13 +223,13 @@ The codomain of $p$ is traditionally taken to be $bb(N)$, but it can be shown to
   The game continues either infinitely or until a player has no moves available. This gives rise to a potentially infinite sequence of vertices $v_0 v_1 v_2...$ called a *play*, where for each pair $(v_i, v_(i+1)) in E$.
 
   The winner is decided by the play:
-  - if the play is infinite then the highest priority according to $p$ of the infinitely occurring vertexes in the play is considered: is if's even player 0 wins, otherwise player 1 wins;
+  - if the play is infinite then the highest priority according to $p$ of the infinitely occurring vertexes in the play is considered: if it is even player 0 wins, otherwise player 1 wins;
   - if the play is finite then the last vertex $v_n$ is considered, if $v_n in V_0$ then player 0 wins, otherwise player 1 wins.
 ]
 
 Players are also sometimes called $lozenge$ and $square$ or $exists$ and $forall$ due to their meaning when using parity games for solving $mu$-calculus or fixpoints.
 
-Sometimes parity graphs are required to contain at least a successor for every node, leading to a parity game where every play is infinite. We'll see later how we can modify an existing parity game to satisfy this constraint without affecting the outcome.
+Sometimes parity graphs are required to contain at least a successor for every node, leading to a parity game where every play is infinite. We will see later how we can modify an existing parity game to satisfy this constraint without affecting the outcome.
 // TODO: Later need to show this.
 
 // TODO: Image example of parity game?
@@ -242,7 +242,7 @@ Sometimes parity graphs are required to contain at least a successor for every n
   Let $G = (V_0, V_1, E, p)$ be a parity graph. A winning strategy for player $i$ starting from $v$ is strategy such that the resulting play will be winning for player $i$ no matter which move player $1-i$ will choose.
 ]
 
-A winning strategy is memoryless, that is it doesn't need to know which moves were performed earlier in the play. This is reflected in the fact that the strategy is a function of the current vertex only.
+A winning strategy is memoryless, that is it does not need to know which moves were performed earlier in the play. This is reflected in the fact that the strategy is a function of the current vertex only.
 
 #lemma("determinacy of parity games")[
   Every parity game $G = (V_0, V_1, E, p)$ is deterministic. The set of vertexes $V$ can be partitioned in two *winning sets* $W_0$ and $W_1$ of the vertexes where player 0 (resp. player 1) has a winning strategy starting from vertexes in that set.
@@ -305,7 +305,7 @@ The given priority function is not fully specified, but it can be shown that the
 // Symbolic moves are representation of all possible moves
 // Symbolic moves are a selection
 
-In practice it's not feasible to consider all the possible edges for player 0. We can however observe that many of them are useless. For every $X$ and $Y$ such that $join X sub join Y$ we'll have $b sub f_i(join X) sub f_i (sub Y)$. This in turn will give player 1 strictly more moves, which intuitively is never better for player 0. Thus all those moves can be excluded. In practice considering the minimal set of moves for player 0 is not feasible, but we can reasonably approximate it in a compact way using symbolic moves.
+In practice it is not feasible to consider all the possible edges for player 0. We can however observe that many of them are useless. For every $X$ and $Y$ such that $join X sub join Y$ we will have $b sub f_i(join X) sub f_i (sub Y)$. This in turn will give player 1 strictly more moves, which intuitively is never better for player 0. Thus all those moves can be excluded. In practice considering the minimal set of moves for player 0 is not feasible, but we can reasonably approximate it in a compact way using symbolic moves.
 
 // TODO: ref to symbolic moves paper
 
@@ -415,7 +415,7 @@ The strategy improvement algorithm has the downside of requiring to visit the wh
 
 // TODO: Example where this matters?
 
-The local strategy iteration algorithm fills this gap, by providing a way to perform strategy iteration on an expanding subgame until it has enough informations to decide the winner. To do this we'll need to define what a subgame and a partially expanded game is, how to expand it and what is the condition that decides the winner of a vertex.
+The local strategy iteration algorithm fills this gap, by providing a way to perform strategy iteration on an expanding subgame until it has enough informations to decide the winner. To do this we will need to define what a subgame and a partially expanded game is, how to expand it and what is the condition that decides the winner of a vertex.
 
 #definition("induced subgames")[
   Let $G = (V_0, V_1, E, p)$ be a parity graph and $U subset.eq V$. The $U$-induced subgame of $G$, written $G|_U$, is the parity game $(U sect V_0, U sect V_1, E sect (U times U), p|_U)$, where $p|_U$ is the function $p$ with domain restricted to $U$.
@@ -449,7 +449,7 @@ Intuitively the escape set represents the vertexes in the $U$-exterior that are 
   $
 ]
 
-That is, a vertex is definitely winning for a player if it's winning in the current $U$-induced subgame and the opposing player has no way to force a play to reach the $U$-exterior, thus every play starting from that vertex stays in the current subgame and conclusions made there stay valid for the whole game.
+That is, a vertex is definitely winning for a player if it is winning in the current $U$-induced subgame and the opposing player has no way to force a play to reach the $U$-exterior, thus every play starting from that vertex stays in the current subgame and conclusions made there stay valid for the whole game.
 
 - TODO: Local algorithm: expansion
 - TODO: Local algorithm: complexities (?)

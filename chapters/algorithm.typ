@@ -30,7 +30,7 @@ Let $G = (V_0, V_1, E, p)$ be a parity graph where some vertexes have no success
 Intuitively we are extending the graph by providing a successor to every vertex without one. These successors are two fake nodes $w0$ and $w1$, who can only infinitely loop respectively with $l1$ and $l0$. The priorities are then chosen so that these loops are winning for the same player that would have won the finite play.
 
 // TODO: definition for play, winner of a play, (tail, etc etc?)
-Formally we want to show that every vertex in $G$ has the same winner in $G'$. To do this we'll show a stronger property, that every play startingin $G$ has an equivalent play won by the same player in $G'$ and vice-versa, every play in $G'$ starting from vertexes in $V$ has an equivalent in $G$.
+Formally we want to show that every vertex in $G$ has the same winner in $G'$. To do this we will show a stronger property, that every play startingin $G$ has an equivalent play won by the same player in $G'$ and vice-versa, every play in $G'$ starting from vertexes in $V$ has an equivalent in $G$.
 
 // TODO: This is just sketched, need to write more formally and nicely
 // IDEA: play is $v_1 v_2 ... v_k overline(v_(k+1) ... v_n)$ where
@@ -47,7 +47,7 @@ Formally we want to show that every vertex in $G$ has the same winner in $G'$. T
 
 === Lazy successors
 
-The local strategy improvement algorithm assumes that given a subset $U$ of the vertexes all edges with both endpoints in $U$ are immediately known, that is $E sect (U times U)$ is immediately known. Unfortunately this is not true in the symbolic formulation, as the list of successors of a vertex is computed lazily, and that might include vertexes in $U$. In other words, with the symbolic formulation we're considering not only a subset of the vertexes, but also a subset of the edges.
+The local strategy improvement algorithm assumes that given a subset $U$ of the vertexes all edges with both endpoints in $U$ are immediately known, that is $E sect (U times U)$ is immediately known. Unfortunately this is not true in the symbolic formulation, as the list of successors of a vertex is computed lazily, and that might include vertexes in $U$. In other words, with the symbolic formulation we are considering not only a subset of the vertexes, but also a subset of the edges.
 
 // TODO: Show how the local algorithm changes for this (escape set -> edges?)
 // TODO: Prove this is ok
@@ -64,7 +64,7 @@ The local strategy improvement algorithm assumes that given a subset $U$ of the 
 //   - expansion for p0 is useful if it improves play profiles
 //   - play profiles depends only on transitive successors
 //   - existing strategy cannot go out of existing graph
-//   - play profiles of existing graph don't depend on expansion
+//   - play profiles of existing graph do not depend on expansion
 //   - so play profiles of expansion can freely depend on existing graph
 //     - that is, no cycles between existing graph and expansion
 //   - two cases for how expansion ends:
