@@ -53,7 +53,7 @@ The local strategy improvement algorithm assumes that given a subset $U$ of the 
 // TODO: Prove this is ok
 - TODO: Ok Not immediately visiting all edges (complexity?)
 
-.
+\
 
 - TODO: Ok removing edges to unfavorable definitely-winning vertexes
 - TODO: How to remove edges lazily in formulas (set atom to T/F)
