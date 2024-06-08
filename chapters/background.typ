@@ -91,6 +91,8 @@ In order to define systems of fixpoint equations we will need to refer to multip
   Let $A$ be a set. The set of $n$-tuples of $A$ is $A^n$.
 ]
 
+TODO: Put notations together
+
 #notation("tuple")[
   Let $A^n$ be a set of $n$-tuples. We will refer to its elements using boldface lowercase letters, like $tup(a)$.
 ]
@@ -204,7 +206,8 @@ Notice that the way the solution of a system of fixpoint equations is defined de
 - TODO: other (take from notes)
 
 == Parity games
-// TODO: Equivalence with parity game
+
+TODO: Informal description of parity games
 
 #definition("parity graph")[
   Let $V$ be a finite set of vertixes partitioneds into $V_0$ and $V_1$, that is $V = V_0 disjunion V_1$, and $p: V -> bb(N)$ be a function. A parity graph is a graph $G = (V_0, V_1, E, p)$, where $E subset.eq V times V$ is a set of edges. $p$ is also called the *priority function* or coloring of the graph.
