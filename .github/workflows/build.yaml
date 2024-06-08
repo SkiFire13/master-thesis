@@ -2,6 +2,8 @@ name: Build PDF
 on:
   push:
     branches: [ master ]
+permissions:
+  contents: write
 jobs:
   build-pdf:
     runs-on: ubuntu-latest
