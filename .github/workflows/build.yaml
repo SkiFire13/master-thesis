@@ -1,7 +1,7 @@
 name: Build PDF
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
 jobs:
   build-pdf:
     runs-on: ubuntu-latest
