@@ -85,24 +85,16 @@ From now on we will mostly work with finite, and thus complete, lattices.
 
 == Tuples
 
-In order to define systems of fixpoint equations we will need to refer to multiple equations/variables/values together, and to do that we will use tuples. We introduce here some notations to better distinguish tuples from other values.
+In order to define systems of fixpoint equations we will need to refer to multiple equations/variables/values together, and to do that we will use tuples.
 
 #definition("set of tuples")[
   Let $A$ be a set. The set of $n$-tuples of $A$ is $A^n$.
 ]
 
-TODO: Put notations together
+It will be helpful to distinguish tuples from other kind of values and coincisely express common operations on them. We will also often refer to the set of indexes of their element. To do this we will define some convenient notations for them:
 
 #notation("tuple")[
-  Let $A^n$ be a set of $n$-tuples. We will refer to its elements using boldface lowercase letters, like $tup(a)$.
-]
-
-#notation("tuple indexing")[
-  Let $tup(a) in A^n$ be an $n$-tuple. We will refer to its $i$-th element with the non-boldface $a_i$. 
-]
-
-#notation("range")[
-  We will refer to the set ${ 1, ..., n }$ with the shorthand $range(n)$.
+  Let $A^n$ be a set of $n$-tuples. We will refer to its elements using boldface lowercase letters, like $tup(a)$. Given $tup(a) in A^n$ we will refer to its $i$-th element with the non-boldface $a_i$.
 ]
 
 #notation("concatenation")[
@@ -110,6 +102,10 @@ TODO: Put notations together
 ]
 
 Notice that using concatenation the empty tuple can be represented as $()$.
+
+#notation("range")[
+  We will refer to the set ${ 1, ..., n }$ with the shorthand $range(n)$.
+]
 
 // TODO: tuple range?
 
