@@ -208,14 +208,15 @@ Notice that the way the solution of a system of fixpoint equations is defined de
 == Parity games
 
 TODO: Informal description of parity games
+// TODO: Image example of parity game?
 
-#definition("parity graph")[
-  Let $V$ be a finite set of vertixes partitioneds into $V_0$ and $V_1$, that is $V = V_0 disjunion V_1$, and $p: V -> bb(N)$ be a function. A parity graph is a graph $G = (V_0, V_1, E, p)$, where $E subset.eq V times V$ is a set of edges. $p$ is also called the *priority function* or coloring of the graph.
-]
+// TODO: integrate in the informal description
+Players are also sometimes called $lozenge$ and $square$ or $exists$ and $forall$ due to their meaning when using parity games for solving $mu$-calculus or fixpoints.
 
-Sometimes a parity graph is also defined as a biparite graph by requiring $E subset.eq V_0 times V_1 union V_1 times V_0$. This will be the case in this thesis and can help practical implementations, but is not required in general.
+// TODO: integrate in the informal description
+$p$ is usually also called the *priority function* or coloring of the graph. Its codomain is traditionally taken to be $bb(N)$, but it can be shown to be equivalent to any totally ordered set $P$ partitioned into $P_0$ and $P_1$, respectively corresponding to the set of even and odd priorities.
 
-The codomain of $p$ is traditionally taken to be $bb(N)$, but it can be shown to be equivalent to any totally ordered set $P$ partitioned into $P_0$ and $P_1$, respectively corresponding to the set of even and odd priorities.
+Since we will often use the set of predecessors and successors of a vertex we will define a convenient notation for them. We will also need a formal concept for infinitely recurring elements in a sequence in order to describe the winner of a parity game.
 
 #notation("successors and predecessors")[
   Let $G = (V, E)$ be a graph.
@@ -223,35 +224,66 @@ The codomain of $p$ is traditionally taken to be $bb(N)$, but it can be shown to
   We write $u E$ as a shorthand for the set ${ v in V | u E v }$ and $E v$ as a shorthand for the set ${ u in V | u E v }$
 ]
 
-#definition("parity game")[
-  Let $G = (V_0, V_1, E, p)$ be a parity graph. A parity game is a game on this graph played by two players, called 0 and 1. The game starts from an initial vertex $v_0$ moves along the edges of the graph, such that if the current vertex is in $V_0$ (resp. $V_1$) then the next move is chosen by player 0 (resp. player 1).
-  
-  The game continues either infinitely or until a player has no moves available. This gives rise to a potentially infinite sequence of vertices $v_0 v_1 v_2...$ called a *play*, where for each pair $(v_i, v_(i+1)) in E$.
-
-  The winner is decided by the play:
-  - if the play is infinite then the highest priority according to $p$ of the infinitely occurring vertexes in the play is considered: if it is even player 0 wins, otherwise player 1 wins;
-  - if the play is finite then the last vertex $v_n$ is considered, if $v_n in V_0$ then player 0 wins, otherwise player 1 wins.
+#definition("infinitely recurring elements")[
+  Let $pi = v_0 v_1 v_2 ...$ an infinite sequence of elements. We define $inf(pi)$ as the set of infinitely recurring elements of $pi$, that is $inf(pi) = { v | forall n. exists i >= n. v_i = v }$.
 ]
 
-Players are also sometimes called $lozenge$ and $square$ or $exists$ and $forall$ due to their meaning when using parity games for solving $mu$-calculus or fixpoints.
+#definition("parity graph")[
+  Let $V$ be a finite set of vertices, $E subset.eq V times V$ a set of edges, and $p: V -> bb(N)$ a so called priority function. A parity graph is a graph $G = (V, E, p)$.
+]
 
-Sometimes parity graphs are required to contain at least a successor for every node, leading to a parity game where every play is infinite. We will see later how we can modify an existing parity game to satisfy this constraint without affecting the outcome.
-// TODO: Later need to show this.
+// TODO: Concept of "moves" is still too informal.
+#definition("parity game, play")[
+  Let $(V, E, p)$ be a parity graph and let $V$ be partitioned into two sets $V_0$ and $V_1$. A parity game $G = (V_0, V_1, E, p)$ is a game played between two players 0 and 1 on G, where player $i$ controls the "moves" made from vertices in $V_i$.
 
-// TODO: Image example of parity game?
+  Starting from a vertex $v_0 in V$ we can build a potentially infinite sequence $pi = v_0 v_1 ...$ called a *play*, following the moves performed by the two players. We require that $forall i. v_i E v_(i+1)$, and in case this sequence is finite, that is $pi = v_0 v_1 ... v_n$, we also require $v_n E = emptyset$.
+
+  Given a play we define its *winner*:
+  - if it is finite, that is $pi = v_0 v_1 ... v_n$ with $v_n in V_i$ then the winner is player $1-i$;
+  - if it is infinite then consider $max inf(p(v_0) p(v_1) ...)$: if it is even the winner is player 0, otherwise it is player 1.
+]
+
+We will however focus on parity games that are more restriced than this, in particular we will focus on _bipartite parity games_ and _total parity games_.
+Bipartite parity games are parity games whose underlying graph is bipartite, which forces players to perfectly alternate moves.
+Total parity games instead require every vertex to have at least one successor, thus forcing every play to be infinite.
+
+We will mostly assume bipartite parity games, while we will show that we can convert any parity game in a compatible total parity game.
+
+#definition("bipartite parity game")[
+  Let $G = (V_0, V_1, E, p)$ be a parity game. It is also a bipartite parity game if the graph $(V_0, V_1, E)$ is bipartite, that is $forall v in V_i. v E sect V_i = emptyset$.
+]
+
+#definition("total parity game")[
+  Let $G = (V_0, V_1, E, p)$ be a parity game. It is also a total parity game if every vertex has at least one successor, that if $forall v in V_0 union V_1. v E != emptyset$.
+]
+
+=== Strategies
+
+In this section we will assume bipartite and total graphs.
+
+TODO: Parity games are known to have winning strategy that doesn't depend on past visited vertices.
 
 #definition("strategy")[
-  Let $G = (V_0, V_1, E, p)$ be a parity graph. A strategy for player $i$ is a function $sigma: V_i -> V_(1-i)$ such that $forall v in V_i. (v, sigma(v)) in E$.
+  Let $G = (V_0, V_1, E, p)$ be a parity game. A strategy for player $i$ is a function $sigma: V_i -> V_(1-i)$ such that $forall v in V_i. (v, sigma(v)) in E$.
 ]
 
+// TODO: Better name?
+#definition("strategy induced instance")[
+  Let $G = (V_0, V_1, E, p)$ be a parity game, $sigma: V_0 -> V_1$ be a strategy for player 0 and $tau : V_1 -> V_0$ be a strategy for player 1. An instance of the game $G$ induced by the strategies $sigma$ and $tau$ is a tuple $(G, sigma, tau)$.
+
+  Given a starting vertex $v in V_0 union V_1$ an instance also uniquely defines a play where $v_(i+1) = sigma(v_i)$ if $v_i in V_0$ and $v_(i+1) = tau(v_i)$ if $v_i in V_1$.
+]
+
+// TODO: Play consistent with (partial) strategy?
+
 #definition("winning strategy")[
-  Let $G = (V_0, V_1, E, p)$ be a parity graph. A winning strategy for player $i$ starting from $v$ is strategy such that the resulting play will be winning for player $i$ no matter which move player $1-i$ will choose.
+  Let $G = (V_0, V_1, E, p)$ be a parity graph. A strategy $sigma_i$ for player $i$ is called winning on vertex $v$ if for any strategy $sigma_(1-i)$ for the opposing player, the play starting from vertex $v$ in the instance $(G, sigma_0, sigma_1)$ is winning for player $i$.
 ]
 
 A winning strategy is memoryless, that is it does not need to know which moves were performed earlier in the play. This is reflected in the fact that the strategy is a function of the current vertex only.
 
 #lemma("determinacy of parity games")[
-  Every parity game $G = (V_0, V_1, E, p)$ is deterministic. The set of vertexes $V$ can be partitioned in two *winning sets* $W_0$ and $W_1$ of the vertexes where player 0 (resp. player 1) has a winning strategy starting from vertexes in that set.
+  Given a parity game $G = (V_0, V_1, E, p)$ the winner for each starting vertex is pre-determined. The set of vertexes $V$ can thus be partitioned in two *winning sets* $W_0$ and $W_1$ of the vertexes where player 0 (resp. player 1) has a winning strategy starting from vertexes in that set.
 ]
 
 == Symbolic formulation and selections

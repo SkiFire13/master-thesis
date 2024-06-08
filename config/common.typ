@@ -11,6 +11,7 @@
 #let environment(name) = {
   let env_counter = counter(name)
   (subject, body) => block(inset: (y: 5pt))[
+    #set block(spacing: 1em)
     *#name #env_counter.step() #env_counter.display()*
     (#subject).
     _#(body)_
