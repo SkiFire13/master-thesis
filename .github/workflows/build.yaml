@@ -33,4 +33,4 @@ jobs:
       - name: Upload Release Asset
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release upload --clobber latest thesis.pdf
+        run: gh release create latest thesis.pdf
