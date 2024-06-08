@@ -7,29 +7,19 @@ permissions:
 jobs:
   build-pdf:
     runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/typst/typst:latest
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v4
       - name: Build PDF
-        run: typst compile thesis.typ
+        uses: docker://ghcr.io/typst/typst:latest
+        with:
+          args: typst compile thesis.typ
       - name: Upload PDF artifact
         uses: actions/upload-artifact@v4
         with:
           name: thesis.pdf
           path: thesis.pdf
           retention-days: 21
-  upload-pdf:
-    runs-on: ubuntu-latest
-    needs: build-pdf
-    steps:
-      - name: Checkout the repository
-        uses: actions/checkout@v4
-      - name: Download PDF artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: thesis.pdf
       - name: Upload Release Asset
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
