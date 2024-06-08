@@ -3,9 +3,12 @@
 = Background
 
 In this chapter we give an overview of the theoretical background used in the rest of this thesis.
-// TODO: Anticipate arguments?
 
-== Lattices
+We will first define orders, lattices and monotone functions, which will be the fundamentals for properly defining systems of fixpoint equations, which is what we are actually interested in. We will then give a brief introduction on parity games and how they can be used to characterize the solutions of a system of fixpoint equations, followed by the theory behind two algorithms used to solve them.
+
+== Partial orders, lattices and monotone functions
+
+TODO: Why we need lattices and orders?
 
 #definition("partial order")[
   Let $X$ a set. A partial order $sub$ is a binary relation on $X$ such that for all $x, y, z in X$ it satisfies the following properties:
