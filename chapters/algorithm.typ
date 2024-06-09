@@ -9,7 +9,9 @@ Our goal will be to adapt and improve the local strategy iteration algorithm to 
 
 === Handling finite plays
 
-The parity game formulation of a system of fixpoint equations admits positions where a player has no available moves, however the strategy improvement algorithm does not, and instead requires all vertexes to have at least one successor. We thus need to convert our parity game in an equivalent one that can be handled by the strategy improvement algorithm.
+The parity game formulation of a system of fixpoint equations admits positions where a player has no available moves, meaning it is not a total parity game. However the strategy improvement algorithm requires a total parity game, so we need to convert a generic parity game into a "compatible" total parity game that can be handled by it, for some definition of "compatible.
+
+The way we do this transformation is by providing new vertices as successors for those vertices that don't have one. These successors are two fake vertices $w0$ and $w1$, which can only loop respectively with $l1$ and $l0$, another two new vertices. The priorities are then chosen so that any play ending in such loops will be winning for the same player that would have won the otherwise finite play.
 
 #definition("induced total parity game")[
   Let $G = (V_0, V_1, E, p)$ be a parity game. The induced total parity game of $G$ is the parity game $G' = (V'_0, V'_1, E', p')$ where:
@@ -29,23 +31,28 @@ The parity game formulation of a system of fixpoint equations admits positions w
   ]
 ]
 
-Intuitively we are extending the graph by providing a successor to every vertex without one. These successors are two fake nodes $w0$ and $w1$, who can only infinitely loop respectively with $l1$ and $l0$. The priorities are then chosen so that these loops are winning for the same player that would have won the finite play.
+We now want to prove that this new parity game is "compatible" with the original one. In particular for our purposes we will require the new graph to preserve the winners for the vertices in the old graph.
 
-// TODO: definition for play, winner of a play, (tail, etc etc?)
-Formally we want to show that every vertex in $G$ has the same winner in $G'$. To do this we will show a stronger property, that every play startingin $G$ has an equivalent play won by the same player in $G'$ and vice-versa, every play in $G'$ starting from vertexes in $V$ has an equivalent in $G$.
+#definition("compatible parity games")[
+  Let $G = (V_0, V_1, E, p)$ and $G' = (V'_0, V'_1, E', p')$ be two parity games. Let $W_0$ and $W_1$ be the winning sets for $G$ and $W'_0$ and $W'_1$ the winning sets for $G'$. We say that $G'$ is compatible with $G$ if $W_0 subset.eq W'_0$ and $W_1 subset.eq W'_1$.
+]
 
-// TODO: This is just sketched, need to write more formally and nicely
-// IDEA: play is $v_1 v_2 ... v_k overline(v_(k+1) ... v_n)$ where
-//       $v_(k+1) .. v_n$ repeats infinitely many times.
-//       The tail can be empty, in which case the play is finite.
-//       The conversion between G and G' simply transforms any empty
-//       tails in either $overline(w1 l0)$ or $overline(w0 l1)$.
-- ($G$ to $G'$) we can distinguish two kind of plays:
-  - (infinite play $v_1 v_2 ...$) the same play is possible in $G'$;
-  - (finite play $v_1 v_2 ... v_n$) take $i$ such that $v_n in V_i$, then the play $v_1 v_2 ... v_n w_(1-i) l_i w_(1-i) ...$ is equivalent to the given play. The set of infinitely repeating vertexes is ${ w_(1-i), l_i }$, both of which have the same parity in favour of the player $1-i$;
-- ($G'$ to $G$) we can distinguish two kind of plays:
-  - (infinite play $v_1 ... v_n w_(1-i) l_i w_(1-i) ...$ with $v_n$ in $V_i$) this play is winning for player $1-i$, and so is the finite play $... v_n$;
-  - (infinite play $v_1 ... v_n v_(n+1) v_(n+2) ...$) the same play is possible in $G$.
+#theorem("compatibility of induced total parity games")[
+  Let $G = (V_0, V_1, E, p)$ be a parity game and $G' = (V'_0, V'_1, E', p')$ be the induced total parity game from $G$. We want to prove that $G'$ is compatible with $G$. We will do this by showing that for any play in either parity game there is an equivalent play in the other game won by the same player.
+
+  // TODO: This is just sketched, need to write more formally and nicely
+  // IDEA: play is $v_1 v_2 ... v_k overline(v_(k+1) ... v_n)$ where
+  //       $v_(k+1) .. v_n$ repeats infinitely many times.
+  //       The tail can be empty, in which case the play is finite.
+  //       The conversion between G and G' simply transforms any empty
+  //       tails in either $overline(w1 l0)$ or $overline(w0 l1)$.
+  - ($G$ to $G'$) we can distinguish two kind of plays:
+    - (infinite play $v_1 v_2 ...$) the same play is possible in $G'$;
+    - (finite play $v_1 v_2 ... v_n$) take $i$ such that $v_n in V_i$, then the play $v_1 v_2 ... v_n w_(1-i) l_i w_(1-i) ...$ is equivalent to the given play. The set of infinitely repeating vertexes is ${ w_(1-i), l_i }$, both of which have the same parity in favour of the player $1-i$;
+  - ($G'$ to $G$) we can distinguish two kind of plays:
+    - (infinite play $v_1 ... v_n w_(1-i) l_i w_(1-i) ...$ with $v_n$ in $V_i$) this play is winning for player $1-i$, and so is the finite play $... v_n$;
+    - (infinite play $v_1 ... v_n v_(n+1) v_(n+2) ...$) the same play is possible in $G$.
+]
 
 === Lazy successors
 
