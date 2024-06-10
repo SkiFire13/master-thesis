@@ -36,7 +36,7 @@
 #let XX = math.bold("X")
 
 #let syseq(x) = math.lr(sym.brace.l + block(math.equation(x, block: true, numbering: none)))
-#let feq(kind) = math.class("relation", math.attach("=", br: kind))
+#let feq = math.scripts("=")
 #let sol = math.op("sol")
 
 #let varempty = text(font: "", sym.emptyset)

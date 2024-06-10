@@ -118,10 +118,10 @@ Notice that using concatenation the empty tuple can be represented as $()$.
 
   $
     syseq(
-      x_1 &feq(eta_1) &f_1 &(x_1, ..., x_n) \
-      x_2 &feq(eta_2) &f_2 &(x_1, ..., x_n) \
+      x_1 &feq_eta_1 &f_1 &(x_1, ..., x_n) \
+      x_2 &feq_eta_2 &f_2 &(x_1, ..., x_n) \
           &#h(0.3em)dots.v \
-      x_n &feq(eta_n) &f_n &(x_1, ..., x_n) \
+      x_n &feq_eta_n &f_n &(x_1, ..., x_n) \
     )
   $
 
@@ -129,7 +129,7 @@ Notice that using concatenation the empty tuple can be represented as $()$.
 ]
 
 #notation("system of fixpoint equations as tuple")[
-  The above system of fixpoint equations can be written as $tup(x) feq(tup(eta)) tup(f)(tup(x))$, where:
+  The above system of fixpoint equations can be written as $tup(x) feq_tup(eta) tup(f)(tup(x))$, where:
   - $tup(x) = (x_1, ..., x_n)$;
   - $tup(f) = (f_1, ..., f_n)$ but also seen as $tup(f): L^n -> L^n$ with $tup(f)(x_1, ..., x_n) = (f_1(x_1), ..., f_n (x_n))$;
   - $tup(eta) = (eta_1, ..., eta_n)$.
@@ -162,8 +162,8 @@ In order to describe the meaning of such system of fixpoint equations we will ne
   Consider the following system of fixpoint equations $E$ on some powerset $2^X$:
   $
     syseq(
-      x_1 &feq(mu) x_1 union x_2 \
-      x_2 &feq(nu) x_1 sect x_2 \ 
+      x_1 &feq_mu x_1 union x_2 \
+      x_2 &feq_nu x_1 sect x_2 \ 
     )
   $
   Solving this system of equations will require the following steps:
@@ -180,8 +180,8 @@ Notice that the way the solution of a system of fixpoint equations is defined de
   Consider $E'$ the same system of fixpoint equations as before, but with the equations swapped:
   $
     syseq(
-      x_1 &feq(nu) x_1 sect x_2 \
-      x_2 &feq(mu) x_1 union x_2 \
+      x_1 &feq_nu x_1 sect x_2 \
+      x_2 &feq_mu x_1 union x_2 \
     )
   $
   Solving this system of equations will require the following steps:
@@ -290,7 +290,7 @@ By the well-known determinancy of parity games we know that each vertex is winni
 == Symbolic formulation and selections
 
 #definition("powerset game")[
-  Let $(L, sub)$ be a complete lattice and $B_L$ a basis of $L$. Let $E = tup(x) feq(tup(eta)) tup(f) (tup(x))$ be a system of $n$ fixpoint equations.
+  Let $(L, sub)$ be a complete lattice and $B_L$ a basis of $L$. Let $E = tup(x) feq_tup(eta) tup(f) (tup(x))$ be a system of $n$ fixpoint equations.
 
   The powerset game is a parity game associated with $E$ defined as:
 
