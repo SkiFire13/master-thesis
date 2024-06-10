@@ -65,7 +65,7 @@ We now want to prove that this new parity game is "compatible" with the original
 
 === Lazy successors
 
-The local strategy improvement algorithm assumes that given a subset $U$ of the vertexes all edges with both endpoints in $U$ are immediately known, that is $E sect (U times U)$ is immediately known. Unfortunately this is not true in the symbolic formulation, as the list of successors of a vertex is computed lazily, and that might include vertexes in $U$. In other words, with the symbolic formulation we are considering not only a subset of the vertexes, but also a subset of the edges.
+The local strategy improvement algorithm assumes that given a subset $U$ of the vertices all edges with both endpoints in $U$ are immediately known, that is $E sect (U times U)$ is immediately known. Unfortunately this is not true in the symbolic formulation, as the list of successors of a vertex is computed lazily, and that might include vertices in $U$. In other words, with the symbolic formulation we are considering not only a subset of the vertices, but also a subset of the edges.
 
 // TODO: Show how the local algorithm changes for this (escape set -> edges?)
 // TODO: Prove this is ok
@@ -73,10 +73,10 @@ The local strategy improvement algorithm assumes that given a subset $U$ of the 
 
 \
 
-- TODO: Ok removing edges to unfavorable definitely-winning vertexes
+- TODO: Ok removing edges to unfavorable definitely-winning vertices
 - TODO: How to remove edges lazily in formulas (set atom to T/F)
 - TODO: (Maybe) Compute play profiles of expanded nodes
-- TODO: (Maybe) Only consider unknown/improving vertexes
+- TODO: (Maybe) Only consider unknown/improving vertices
 
 // - observations:
 //   - expansion for p0 is useful if it improves play profiles

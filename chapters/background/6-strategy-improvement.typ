@@ -11,7 +11,7 @@ Strategy iteration is an algorithm that computes the winning sets and the optima
 // TODO: Something better?
 We will now give some general notions that will simplify the following definitions.
 
-#definition("positive and negative vertexes")[
+#definition("positive and negative vertices")[
   Let $G = (V_0, V_1, E, p)$ be a parity game. We define $V_+ = { v in V | p(v) "even" }$ and $V_- = { v in V | p(v) "odd" }$.
 ]
 
@@ -27,7 +27,7 @@ We will now give some general notions that will simplify the following definitio
 ]
 
 #definition("reward ordering on sets")[
-  Let $G = (V_0, V_1, E, p)$ be a parity game with a relevance ordering $<$ and let $P, Q subset.eq 2^V$ be two different sets of vertexes. Let $v = max_< P Delta Q$. We write $P lt.curly Q$ when $P$'s reward is less than $Q$'s, namely when $v in P$ and $v in V_-$, or when $v in Q$ and $v in V_+$.
+  Let $G = (V_0, V_1, E, p)$ be a parity game with a relevance ordering $<$ and let $P, Q subset.eq 2^V$ be two different sets of vertices. Let $v = max_< P Delta Q$. We write $P lt.curly Q$ when $P$'s reward is less than $Q$'s, namely when $v in P$ and $v in V_-$, or when $v in Q$ and $v in V_+$.
   $
     P lt.curly Q <=> P != Q and "max"_< P Delta Q in (P sect V_-) union (Q sect V_+)
   $
@@ -42,7 +42,7 @@ At the core of the algorithm there is the valuation phase computing the play pro
 Intuitively the last two values are linked to the chances that changing strategy would change either the most relevant vertex of the cycle or the cycle itself, thus more relevant vertices before or a longer prefix are more beneficial for the losing player.
 
 #definition("play profile and valuation")[
-  Let $G = (V_0, V_1, E, p)$ be a parity game with a relevance ordering $<$ and $pi = v_0 v_1 ...$ a play on $G$. Let $w = max_< inf(pi)$ be the most relevant vertex that's visited infinitely often in the play and $alpha = { u in V | exists i in N. v_i = u and forall j < i. v_j != w }$ be the set of vertexes visited before the first occurence of $w$. Let $P = alpha sect { v in V | v > w }$ and $e = |alpha|$. The play profile of the play $pi$ is the tuple $(w, P, e)$.
+  Let $G = (V_0, V_1, E, p)$ be a parity game with a relevance ordering $<$ and $pi = v_0 v_1 ...$ a play on $G$. Let $w = max_< inf(pi)$ be the most relevant vertex that's visited infinitely often in the play and $alpha = { u in V | exists i in N. v_i = u and forall j < i. v_j != w }$ be the set of vertices visited before the first occurence of $w$. Let $P = alpha sect { v in V | v > w }$ and $e = |alpha|$. The play profile of the play $pi$ is the tuple $(w, P, e)$.
 
   Given an instance $(G, sigma, tau)$ a valuation $phi$ is a function that associates to each vertex the play profile $(w, P, e)$ of the play induced by the instance.
 ]
@@ -90,13 +90,13 @@ The local strategy iteration algorithm fills this gap by performing strategy ite
 ]
 
 #definition("partially expanded game")[
-  Let $G = (V_0, V_1, E, p)$ be a parity game and $G' = (U_0, U_1, E', p|_U)$ a subgame of $G$. $G'$ is called a partially expanded game if all its vertexes have at least one successor, that is $forall u in U_0 union U_1. u E' != emptyset$.
+  Let $G = (V_0, V_1, E, p)$ be a parity game and $G' = (U_0, U_1, E', p|_U)$ a subgame of $G$. $G'$ is called a partially expanded game if all its vertices have at least one successor, that is $forall u in U_0 union U_1. u E' != emptyset$.
 ]
 
 Given a partially expanded game, two optimal strategies and its winning sets, the local algorithm has to decide whether vertices winning for a player in this subgame are also winning in the full game. Recall that a strategy is winning if any strategy of the opponent always induces a losing play for them. However those plays being losing in the subgame don't necessarily mean that all plays in the full game will be losing too, as they might visit vertices not included in the subgame. Intuitively, the losing player might have a way to force a play to reach one of the vertices just outside the subgame, called the _$U$-exterior_ of the subgame, and thus lead to a play that's not possible in the subgame. The set of vertices that can do this is called the _escape set_ of the subgame, and for such vertices no conclusions can be made, otherwise the winner in the subgame is also the winner in the full game.
 
 #definition($U$ + "-exterior")[
-  Let $G = (V_0, V_1, E, p)$ be a parity game and $U subset.eq V$. The $U$-exterior of $G|_U$, also written $D_G (U)$, is the set of successors of vertexes in $G|_U$ that are not themselves in $G|_U$. That is:
+  Let $G = (V_0, V_1, E, p)$ be a parity game and $U subset.eq V$. The $U$-exterior of $G|_U$, also written $D_G (U)$, is the set of successors of vertices in $G|_U$ that are not themselves in $G|_U$. That is:
   $
     D_G (U) = union.big_(v in U) v E sect (V without U)
   $

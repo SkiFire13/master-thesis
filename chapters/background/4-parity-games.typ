@@ -66,7 +66,7 @@ The strategy iteration algorithm heavely depends on the concept of _strategies_,
   Given a starting vertex $v_0 in V_0 union V_1$ an instance also uniquely defines a play where if $v_i E != emptyset$ then $v_(i+1) = sigma(v_0 v_1 ... v_i)$ if $v_i in V_0$ and $v_(i+1) = tau(v_0 v_1 ... v_i)$ if $v_i in V_1$, otherwise the play is finite and stops at $v_i$.
   
   // TODO: Do we given a shorthand syntax to such plays?
-  It can be proven that if such play is infinite then it will eventually reach a cycle and repeatedly visit those vertexes in the same order, that is the play will be $v_0 ... v_k v_(k+1) ... v_n v_(k+1) ... v_n ...$.
+  It can be proven that if such play is infinite then it will eventually reach a cycle and repeatedly visit those vertices in the same order, that is the play will be $v_0 ... v_k v_(k+1) ... v_n v_(k+1) ... v_n ...$.
 ]
 
 #definition("winning strategy")[
@@ -78,7 +78,7 @@ TODO: Cite papers on determinancy (see Jurdzinski)
 By the well-known determinancy of parity games we know that each vertex is winning for exactly one of the two players. Moreover it is known that the winning player also has a memoryless winning strategy, that is a strategy that depends only on the current vertex and not on the previous ones. The strategy iteration algorithm will focus on these strategies, as they are much simplier to represent and search for.
 
 #lemma("determinacy of parity games")[
-  Given a parity game $G = (V_0, V_1, E, p)$ the winner on each vertex is pre-determined. The set of vertexes $V$ can thus be partitioned in two *winning sets* $W_0$ and $W_1$ of the vertexes where player 0 (resp. player 1) has a winning strategy starting from vertexes in that set.
+  Given a parity game $G = (V_0, V_1, E, p)$ the winner on each vertex is pre-determined. The set of vertices $V$ can thus be partitioned in two *winning sets* $W_0$ and $W_1$ of the vertices where player 0 (resp. player 1) has a winning strategy starting from vertices in that set.
 ]
 
 #definition("memoryless strategy")[

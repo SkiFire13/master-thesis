@@ -7,13 +7,13 @@
 
   The powerset game is a parity game associated with $E$ defined as:
 
-  - the vertexes for player 0 are $V_0 = B_L times range(n) = { (b, i) | b in B_L and i in range(n) }$
+  - the vertices for player 0 are $V_0 = B_L times range(n) = { (b, i) | b in B_L and i in range(n) }$
   
-  - the vertexes for player 1 are $V_1 = (2^(B_L))^n = { (X_1, ..., X_n) | X_i in 2^(B_L) }$
+  - the vertices for player 1 are $V_1 = (2^(B_L))^n = { (X_1, ..., X_n) | X_i in 2^(B_L) }$
 
-  - the moves from player 0 vertexes are $E(b, i) = { tup(X) | tup(X) in (2^(B_L))^n and b sub f_i (join tup(X)) }$
+  - the moves from player 0 vertices are $E(b, i) = { tup(X) | tup(X) in (2^(B_L))^n and b sub f_i (join tup(X)) }$
 
-  - the moves from player 1 vertexes are $A(tup(X)) = { (b, i) | i in range(n) and b in X_i }$
+  - the moves from player 1 vertices are $A(tup(X)) = { (b, i) | i in range(n) and b in X_i }$
 
   - the priority function is defined such that:
     
