@@ -22,7 +22,7 @@
 #let lemma = environment("Lemma")
 #let example = environment("Example")
 #let notation = environment("Notation")
-#let theorem = environment("Notation")
+#let theorem = environment("Theorem")
 
 #let sub = math.class("relation", sym.subset.eq.sq)
 #let meet = math.class("unary", sym.sect.sq)

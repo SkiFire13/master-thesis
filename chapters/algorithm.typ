@@ -37,21 +37,30 @@ We now want to prove that this new parity game is "compatible" with the original
   Let $G = (V_0, V_1, E, p)$ and $G' = (V'_0, V'_1, E', p')$ be two parity games. Let $W_0$ and $W_1$ be the winning sets for $G$ and $W'_0$ and $W'_1$ the winning sets for $G'$. We say that $G'$ is compatible with $G$ if $W_0 subset.eq W'_0$ and $W_1 subset.eq W'_1$.
 ]
 
-#theorem("compatibility of induced total parity games")[
-  Let $G = (V_0, V_1, E, p)$ be a parity game and $G' = (V'_0, V'_1, E', p')$ be the induced total parity game from $G$. We want to prove that $G'$ is compatible with $G$. We will do this by showing that for any play in either parity game there is an equivalent play in the other game won by the same player.
+#definition("strategy on induced total parity game")[
+  Let $G = (V_0, V_1, E, p)$ be a parity game and $G' = (V'_0, V'_1, E', p')$ be the induced total parity game from $G$. Let $sigma$ a strategy on $G$ for player $i$. $sigma$ induces the following $sigma'$ strategy on $G'$:
+  $
+    sigma'(v) = cases(
+      sigma(v) & "if" v in V_i and v E != emptyset \
+      W_(1-i) & "if" v in V_i and v E = emptyset \
+      W_(1-i) & "if" v = L_i \
+      L_(1-i) & "if" v = W_i
+    )
+  $
+  // TODO: Should this be a lemma?
+  Note that there exist a bijection between strategies on $G$ and $G'$.
+]
 
-  // TODO: This is just sketched, need to write more formally and nicely
-  // IDEA: play is $v_1 v_2 ... v_k overline(v_(k+1) ... v_n)$ where
-  //       $v_(k+1) .. v_n$ repeats infinitely many times.
-  //       The tail can be empty, in which case the play is finite.
-  //       The conversion between G and G' simply transforms any empty
-  //       tails in either $overline(w1 l0)$ or $overline(w0 l1)$.
-  - ($G$ to $G'$) we can distinguish two kind of plays:
-    - (infinite play $v_1 v_2 ...$) the same play is possible in $G'$;
-    - (finite play $v_1 v_2 ... v_n$) take $i$ such that $v_n in V_i$, then the play $v_1 v_2 ... v_n w_(1-i) l_i w_(1-i) ...$ is equivalent to the given play. The set of infinitely repeating vertexes is ${ w_(1-i), l_i }$, both of which have the same parity in favour of the player $1-i$;
-  - ($G'$ to $G$) we can distinguish two kind of plays:
-    - (infinite play $v_1 ... v_n w_(1-i) l_i w_(1-i) ...$ with $v_n$ in $V_i$) this play is winning for player $1-i$, and so is the finite play $... v_n$;
-    - (infinite play $v_1 ... v_n v_(n+1) v_(n+2) ...$) the same play is possible in $G$.
+#theorem("plays on induced strategies")[
+  Let $G = (V_0, V_1, E, p)$ be a parity game and $G' = (V'_0, V'_1, E', p')$ be the induced total parity game from $G$. Let $sigma_0$ and $sigma_1$ be two strategies on $G$ and $sigma'_0$ and $sigma'_1$ the induced strategies on $G'$. Let $v in V_0 union V_1$ and consider the plays starting from $v$ on the instances $(G, sigma_0, sigma_1)$ and $(G', sigma'_0, sigma'_1)$. The two plays are won by the same player.
+
+  TODO: Proof
+]
+
+#theorem("compatibility of induced total parity games")[
+  Let $G = (V_0, V_1, E, p)$ be a parity game and $G' = (V'_0, V'_1, E', p')$ be the induced total parity game from $G$. We want to prove that $G'$ is compatible with $G$, that is $forall i. W_i subset.eq W'_i$.
+
+  Let $v in W_i$, then there exist a winning strategy $sigma_i$ for player $i$. We claim that the induced strategy $sigma'_i$ for player $i$ on $G'$ is also winning. In fact consider any strategy $sigma'_(1-i)$ for player $1-i$ on $G'$, then it is induced by a strategy $sigma_(1-i)$ on $G$. We know that the play starting from $v$ on the instance $(G', sigma'_0, sigma'_1)$ is won by the same player as the play starting from $v$ on the instance $(G, sigma_0, sigma_1)$. Moreover since $sigma_i$ is a winning strategy for player $i$ we know that these plays are won by player $i$, thus $v in W'_i$ and so $W_i subset.eq W'_i$.
 ]
 
 === Lazy successors
