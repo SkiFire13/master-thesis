@@ -60,18 +60,30 @@ We now want to prove that this new parity game is "compatible" with the original
 #theorem("compatibility of induced total parity games")[
   Let $G = (V_0, V_1, E, p)$ be a parity game and $G' = (V'_0, V'_1, E', p')$ be the induced total parity game from $G$. We want to prove that $G'$ is compatible with $G$, that is $forall i. W_i subset.eq W'_i$.
 
+  // TODO: Better "Proof" label
+  Proof.\
   Let $v in W_i$, then there exist a winning strategy $sigma_i$ for player $i$. We claim that the induced strategy $sigma'_i$ for player $i$ on $G'$ is also winning. In fact consider any strategy $sigma'_(1-i)$ for player $1-i$ on $G'$, then it is induced by a strategy $sigma_(1-i)$ on $G$. We know that the play starting from $v$ on the instance $(G', sigma'_0, sigma'_1)$ is won by the same player as the play starting from $v$ on the instance $(G, sigma_0, sigma_1)$. Moreover since $sigma_i$ is a winning strategy for player $i$ we know that these plays are won by player $i$, thus $v in W'_i$ and so $W_i subset.eq W'_i$.
 ]
 
 === Lazy successors
 
-The local strategy improvement algorithm assumes that given a subset $U$ of the vertices all edges with both endpoints in $U$ are immediately known, that is $E sect (U times U)$ is immediately known. Unfortunately this is not true in the symbolic formulation, as the list of successors of a vertex is computed lazily, and that might include vertices in $U$. In other words, with the symbolic formulation we are considering not only a subset of the vertices, but also a subset of the edges.
+The local strategy improvement algorithm gives a way to consider only a subset of the vertices, but still assumes all edges between such vertices to be known. Unfortunately this is not true in the symbolic formulation, as the list of successors of vertices in $V_0$ is computed lazily, and this might include vertices already in the subgame. We can however update the local algorithm to handle this case by extending the idea of escape set. Instead of identifying those vertices that can reach the $U$-exterior we will instead identify those vertices that can reach an "unexplored" edge, that is an edge present in the full game but not in the subgame. We will call the vertices directly connected to such edges _incomplete vertices_. Note that the resulting set will be a superset of the $U$-exterior, since edges that lead outside $U$ cannot be part of the subgame.
 
-// TODO: Show how the local algorithm changes for this (escape set -> edges?)
-// TODO: Prove this is ok
-- TODO: Ok Not immediately visiting all edges (complexity?)
+#definition("incomplete vertex")[
+  Let $G = (V_0, V_1, E, p)$ be a parity game and $G' = (G, U, E')$ a subgame of $G$. The set of incomplete vertices is $I_G(E') = { v | v E != v E' }$.
+]
 
-\
+#definition("escape set (updated)")[
+  Let $G = (V_0, V_1, E, p)$ be a parity game and $G' = (G, U, E')$ a subgame of $G$. Let $L = (G|_U, sigma, tau)$ be an instance of the subgame. Let $E_sigma^*$ (resp. $E_tau^*$) be the transitive-reflexive closure of $E_sigma$ (resp. $E_tau$). The updated escape set for player 0 (resp. 1) from vertex $v in U$ is the set $E_L^0 (v) = v E_sigma^* sect I_G (E')$ (resp. $E_L^1 (v) = v E_tau^* sect I_G (E')$).
+]
+
+#theorem("definitive winning set soundness")[
+  Let $G = (V_0, V_1, E, p)$ be a parity game and $G' = (G, U, E')$ a subgame of $G$. Let $G = (V_0, V_1, E, p)$ be a parity game and $U subset.eq V$. Let $L = (G|_U, sigma, tau)$ be an optimal instance of the subgame. Then $W'_0 subset.eq W_0$ and $W'_1 subset.eq W_1$.
+
+  // TODO: Better "Proof" label
+  Proof.\
+  Let $v in W'_i$, then there exist a strategy $sigma_i$ on $G'$ the for player $i$ such that for any strategy $sigma_(1-i)$ for player $1-i$ on $G'$ the resulting play is winning for player $i$. Moreover after fixing the strategy $sigma_i$ the player $1-i$ has no way make the play to reach a vertex connected to an edge that's not included in the subgame, by definition of $W'_i$. Thus given any strategy for player $1-i$ in the full game, the resulting play will still be limited to the subgame, and will be won by player $i$. Hence $v in W_i$ and thus $W'_i subset.eq W_i$.
+]
 
 - TODO: Ok removing edges to unfavorable definitely-winning vertices
 - TODO: How to remove edges lazily in formulas (set atom to T/F)

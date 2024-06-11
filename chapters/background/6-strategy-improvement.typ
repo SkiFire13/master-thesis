@@ -68,7 +68,7 @@ Each iteration has worst-case complexity $O(|V| dot |E|)$, and in the worst case
 // TODO: does this need to explain progress relation too or can we assume
 // it from the fact a valuation is induced by a pair of strategies?
 
-#theorem("optimal strategies")[
+#lemma("optimal strategies")[
   Let $G = (V_0, V_1, E, p)$ be a parity game with a relevance ordering $<$, $sigma$ and $tau$ be two strategies for respectively player 0 and 1 and $phi$ a valuation function for $(G, sigma, tau)$.
   $sigma$ is optimal against $tau$ if $forall u in V_0. forall v in u E. phi(v) lt.curly.eq phi(sigma(u))$ and $tau$ is optimal against $sigma$ if $forall u in V_1. forall v in u E. phi(tau(u)) lt.curly.eq phi(v)$.
 ]
@@ -82,36 +82,46 @@ The strategy improvement algorithm has the downside of requiring to visit the wh
 The local strategy iteration algorithm fills this gap by performing strategy iteration on a _subgame_, a parity game performed on a subgraph of the main game, and providing a way to determine whether this is enough to infer the winner in the full game. It may happen that the winner is not immediately decidable, in which case the subgame would have to be _expanded_. To do this we will need to define what a subgame is, how to expand it and what is the condition that decides the winner on a vertex.
 
 #definition("subgame")[
-  Let $G = (V_0, V_1, E, p)$ be a parity game, $U subset.eq V$ and $E' subset.eq E sect (U times U)$, then $G' = (V_0 sect U, V_1 sect U, E', p|_U)$, where $p|_U$ is the function $p$ with domain restricted to $U$, is a subgame of $G$.
+  Let $G = (V_0, V_1, E, p)$ be a parity game, $U subset.eq V$ and $E' subset.eq E sect (U times U)$, then $G' = (V_0 sect U, V_1 sect U, E', p|_U)$, where $p|_U$ is the function $p$ with domain restricted to $U$, is a subgame of $G$. We will write $G' = (G, U, E')$ for brevity.
 ]
 
 #definition([$U$-induced subgames])[
-  Let $G = (V_0, V_1, E, p)$ be a parity game and $U subset.eq V$. The $U$-induced subgame of $G$, written $G|_U$, is the subgame $(U sect V_0, U sect V_1, E sect (U times U), p|_U)$.
+  Let $G = (V_0, V_1, E, p)$ be a parity game and $U subset.eq V$. The $U$-induced subgame of $G$, written $G|_U$, is the subgame $(G, U, E sect (U times U))$.
 ]
 
 #definition("partially expanded game")[
-  Let $G = (V_0, V_1, E, p)$ be a parity game and $G' = (U_0, U_1, E', p|_U)$ a subgame of $G$. $G'$ is called a partially expanded game if all its vertices have at least one successor, that is $forall u in U_0 union U_1. u E' != emptyset$.
+  Let $G = (V_0, V_1, E, p)$ be a parity game and $G' = (G, U, E')$ a subgame of $G$. $G'$ is called a partially expanded game if all its vertices have at least one successor, that is $forall u in U_0 union U_1. u E' != emptyset$.
 ]
 
 Given a partially expanded game, two optimal strategies and its winning sets, the local algorithm has to decide whether vertices winning for a player in this subgame are also winning in the full game. Recall that a strategy is winning if any strategy of the opponent always induces a losing play for them. However those plays being losing in the subgame don't necessarily mean that all plays in the full game will be losing too, as they might visit vertices not included in the subgame. Intuitively, the losing player might have a way to force a play to reach one of the vertices just outside the subgame, called the _$U$-exterior_ of the subgame, and thus lead to a play that's not possible in the subgame. The set of vertices that can do this is called the _escape set_ of the subgame, and for such vertices no conclusions can be made, otherwise the winner in the subgame is also the winner in the full game.
 
 #definition($U$ + "-exterior")[
-  Let $G = (V_0, V_1, E, p)$ be a parity game and $U subset.eq V$. The $U$-exterior of $G|_U$, also written $D_G (U)$, is the set of successors of vertices in $G|_U$ that are not themselves in $G|_U$. That is:
+  Let $G = (V_0, V_1, E, p)$ be a parity game and $G|_U$ a subgame of $G$. The $U$-exterior of $G|_U$, also written $D_G (U)$, is the set of successors of vertices in $G|_U$ that are not themselves in $G|_U$. That is:
   $
     D_G (U) = union.big_(v in U) v E sect (V without U)
   $
 ]
 
-#definition("escape set")[
-  Let $G = (V_0, V_1, E, p)$ be a parity game and $U subset.eq V$. Let $L = (G|_U, sigma, tau)$ be an instance of the subgame. Let $E_sigma = { (u, v) in E | u in dom(sigma) => sigma(u) = v }$ (resp. $E_tau$) be the set of edges restricted to the strategy for player 0 (resp. 1), and let $E_sigma^*$ (resp. $E_tau^*$) be its transitive-reflexive closure. The escape set for player 0 (resp. 1) from vertex $v in U$ is the set $E_L^0 (v) = v E_sigma^* sect D_G (U)$ (resp. $E_L^1 (v) = v E_tau^* sect D_G (U)$).
+#definition("strategy restricted edges")[
+  Let $G = (V_0, V_1, E, p)$ be a parity game and $sigma$ any strategy in $G$. The set of edges restricted to the strategy $sigma$ is $E_sigma = { (u, v) | u in dom(sigma) => sigma(u) = v }$.
 ]
 
+#definition("escape set")[
+  Let $G = (V_0, V_1, E, p)$ be a parity game and $G|_U$ a subgame of $G$. Let $L = (G|_U, sigma, tau)$ be an instance of the subgame. Let $E_sigma^*$ (resp. $E_tau^*$) be the transitive-reflexive closure of $E_sigma$ (resp. $E_tau$). The escape set for player 0 (resp. 1) from vertex $v in U$ is the set $E_L^0 (v) = v E_sigma^* sect D_G (U)$ (resp. $E_L^1 (v) = v E_tau^* sect D_G (U)$).
+]
+
+// TODO: optimal instance?
 #definition("definitive winning set")[
-  Let $G = (V_0, V_1, E, p)$ be a parity game and $U subset.eq V$. Let $L = (G|_U, sigma, tau)$ be an instance of the subgame and let $phi$ be a valuation for this instance. The definitive winning sets $W_0$ and $W_1$ are defined as:
+  Let $G = (V_0, V_1, E, p)$ be a parity game and $G|_U$ a subgame of $G$. Let $L = (G|_U, sigma, tau)$ be an optimal instance of the subgame and let $phi$ be the valuation for this instance. The definitive winning sets $W'_0$ and $W'_1$ are defined as:
   $
     W_0 &= { v in U | E_L^0 (v) = varempty and (phi(v))_1 in V_+ } \
     W_1 &= { v in U | E_L^1 (v) = varempty and (phi(v))_1 in V_- }
   $
+]
+
+// TODO: W_0 / W_1 depend from the strategy?
+#lemma("definitive winning set soundness")[
+  Let $G = (V_0, V_1, E, p)$ be a parity game and $G|_U$ a subgame of $G$. Then $W'_0 subset.eq W_0$ and $W'_1 subset.eq W_1$.
 ]
 
 - TODO: Local algorithm: expansion
