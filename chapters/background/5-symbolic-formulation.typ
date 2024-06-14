@@ -1,5 +1,6 @@
 #import "../../config/common.typ": *
 
+// TODO: Better name? (Characterization?)
 == Symbolic formulation and selections
 
 #definition("powerset game")[

@@ -2,9 +2,7 @@
 
 = Background
 
-In this chapter we give an overview of the theoretical background used in the rest of this thesis.
-
-We will first define orders, lattices and monotone functions, which will be the fundamentals for properly defining systems of fixpoint equations, which is what we are actually interested in. We will then give a brief introduction on parity games and how they can be used to characterize the solutions of a system of fixpoint equations, followed by the theory behind two algorithms used to solve them.
+In this chapter we give an overview of the theoretical background used in the rest of this thesis. We will first define what is a system of fixpoint equations and what is its solution, along with any concept needed for this. We will then give a brief introduction to parity games and how to efficiently characterize the solution of a system of fixpoint equations using a parity game. Finally we will introduce two algorithms used to solve parity games which we will be using later on.
 
 #include "./background/1-lattices-tuples.typ"
 #include "./background/2-fixpoint-system.typ"

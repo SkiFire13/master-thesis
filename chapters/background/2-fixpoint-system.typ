@@ -2,6 +2,8 @@
 
 == Systems of fixpoint equations
 
+We will now define what is a system of fixpoint equations and what is its solution. Intuitiviely this will be very similar to a normal system of equations, except where each equation is changed to be a fixpoint equation. Since there can be more than one fixpoint we will also need to specify which kind of fixpoint the equation specifies, which we will do by using respectively the symbols $lfp$ and $gfp$ in subscript after the equal sign.
+
 #definition("system of fixpoint equation")[
   Let $(L, sub)$ be a complete lattice. A system of fixpoint equations $E$ is a system of the following shape:
 
@@ -30,11 +32,13 @@
   A system of equations with no equations or variables is conveniently written as $emptyset$.
 ]
 
-In order to describe the meaning of such system of fixpoint equations we will need a few more notions. We will mostly assume that given a system all the variables will be named $x_i$ for $i in range(n)$.
-
 #definition("substitution")[
   Let $(L, sub)$ be a complete lattice and $E$ be a system of $n$ fixpoint equations over $L$ and variables $x_i$ for $i in range(n)$. Let $j in range(n)$ and $l in L$. The substitution $E[x_j := l]$ is a new system of equation where the $j$-th equation is removed and any use of the variable $x_j$ is replaced with the element $l$.
 ]
+
+We can now define the solution for a system of fixpoint equations recursively, starting from the last variable, which is replaced in the rest of the system by a free variable. That is solved and its solution, which is a function of the free variable, is used in a fixpoint equation to determine the solution for the last variable.
+
+// TODO: Intuitively this could be seen as considering the lattice L^n of $n$-tuples ordered according to the pointwise extension of $sub$, and the monotone function $tup(f)$ over them. The fixpoints of this function will then form a lattice, but we are interested only in one of them. Starting from the $n$-th equation and going backward, we will iteratively restrict this lattice to only those elements where $x_i$ is the least or the greatest of all fixpoints, depending on whether the $i$-th equation is a least of greatest fixpoint. This step will fix that element of the solution, and repeating it for every equation will yield the final unique solution.
 
 #definition("solution")[
   Let $(L, sub)$ be a complete lattice and $E$ be a system of $n$ fixpoint equations over $L$ and variables $x_i$ for $i in range(n)$. The solution of $E$ is $s = sol(E)$, with $s in L^n$ inductively defined as:

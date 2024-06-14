@@ -2,14 +2,9 @@
 
 == Parity games
 
-TODO: Informal description of parity games
+Parity games are games with two players, 0 and 1, performed on directed graphs. A token is placed in a position, represented by nodes, and the two players move it along the edges of the graph. The set of nodes is partitioned in two sets and the player that chooses the move is determined by the subset in which the node for the current position is in. To each node is also associated a _priority_, represented by a natural number. The sequence of positions visited in a game is called _play_ and could be finite or infinite, depending on whether a position with no moves is reached or not. In case of a finite play the player who cannot move loses, otherwise if the play is infinite the priorities of the positions that are visited infinitely many times are considered: if the biggest one is even then player 0 wins, otherwise player 1 is the winner. Players are also sometimes called $exists$ and $forall$ or $lozenge$ and $square$ due to their meaning when using parity games for solving $mu$-calculus or fixpoints.
+
 // TODO: Image example of parity game?
-
-// TODO: integrate in the informal description
-Players are also sometimes called $lozenge$ and $square$ or $exists$ and $forall$ due to their meaning when using parity games for solving $mu$-calculus or fixpoints.
-
-// TODO: integrate in the informal description
-$p$ is usually also called the *priority function* or coloring of the graph. Its codomain is traditionally taken to be $bb(N)$, but it can be shown to be equivalent to any totally ordered set $P$ partitioned into $P_0$ and $P_1$, respectively corresponding to the set of even and odd priorities.
 
 Since we will often use the set of predecessors and successors of a vertex we will define a convenient notation for them. We will also need a formal concept for infinitely recurring elements in a sequence in order to describe the winner of a parity game.
 
@@ -27,22 +22,25 @@ Since we will often use the set of predecessors and successors of a vertex we wi
   Let $V$ be a finite set of vertices, $E subset.eq V times V$ a set of edges, and $p: V -> bb(N)$ a so called priority function. A parity graph is a graph $G = (V, E, p)$.
 ]
 
-// TODO: Concept of "moves" is still too informal.
 #definition("parity game, play")[
-  Let $(V, E, p)$ be a parity graph and let $V$ be partitioned into two sets $V_0$ and $V_1$. A parity game $G = (V_0, V_1, E, p)$ is a game played between two players 0 and 1 on G, where player $i$ controls the "moves" made from vertices in $V_i$.
-
-  Starting from a vertex $v_0 in V$ we can build a potentially infinite sequence $pi = v_0 v_1 ...$ called a *play*, following the moves performed by the two players. We require that $forall i. v_i E v_(i+1)$, and in case this sequence is finite, that is $pi = v_0 v_1 ... v_n$, we also require $v_n E = emptyset$.
-
-  Given a play we define its *winner*:
-  - if it is finite, that is $pi = v_0 v_1 ... v_n$ with $v_n in V_i$ then the winner is player $1-i$;
-  - if it is infinite then consider $max inf(p(v_0) p(v_1) ...)$: if it is even the winner is player 0, otherwise it is player 1.
+  Let $(V, E, p)$ be a parity graph and let $V$ be partitioned into two sets $V_0$ and $V_1$. The tuple $G = (V_0, V_1, E, p)$ is a parity game.
 ]
 
-We will however focus on parity games that are more restriced than this, in particular we will focus on _bipartite parity games_ and _total parity games_.
-Bipartite parity games are parity games whose underlying graph is bipartite, which forces players to perfectly alternate moves.
+#definition("play")[
+  Let $G = (V_0, V_1, E, p)$ be a parity game. Starting from a vertex $v_0 in V_0 union V_1$ we can build a potentially infinite sequence $pi = v_0 v_1 ...$ such that $forall i. v_i E v_(i+1)$. If the play is finite, that is $pi = v_0 v_1 ... v_n$, then $v_n E = emptyset$ is also required. Such sequence is called a play.
+]
+
+#definition("winner of a play")[
+  Let $G = (V_0, V_1, E, p)$ be a parity game and let $pi = v_0 v_1 ...$ be a play. The winner of $pi$ is:
+  - if $pi$ is finite, that is $pi = v_0 v_1 ... v_n$ with $v_n in V_i$ then the winner is player $1-i$;
+  - if $pi$ is infinite then consider $max inf(p(v_0) p(v_1) ...)$: if it is even the winner is player 0, otherwise it is player 1.
+]
+
+We will focus on parity games that are more restriced than this, in particular on _bipartite parity games_ and _total parity games_.
+Bipartite parity games are games whose graph is bipartite, forcing players to perfectly alternate moves.
 Total parity games instead require every vertex to have at least one successor, thus forcing every play to be infinite.
 
-We will mostly assume bipartite parity games, while we will show that we can convert any parity game in a compatible total parity game.
+We will mostly assume bipartite parity games, while we will show that we can convert any parity game to a compatible total parity game.
 
 #definition("bipartite parity game")[
   Let $G = (V_0, V_1, E, p)$ be a parity game. It is also a bipartite parity game if the graph $(V_0, V_1, E)$ is bipartite, that is $forall v in V_i. v E sect V_i = emptyset$.
@@ -53,6 +51,8 @@ We will mostly assume bipartite parity games, while we will show that we can con
 ]
 
 === Strategies
+
+TODO: Don't introduce strategy iteration this early.
 
 The strategy iteration algorithm heavely depends on the concept of _strategies_, which intuitively represent the way a player can choose its moves in a parity game. We will then see plays as being generated by such strategies, and use this to define what it means to be the winner of a parity game on given vertex.
 
