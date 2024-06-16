@@ -2,7 +2,7 @@
 
 == Parity games
 
-Parity games are games with two players, 0 and 1, performed on directed graphs. A token is placed in a position, represented by nodes, and the two players move it along the edges of the graph. The set of nodes is partitioned in two sets and the player that chooses the move is determined by the subset in which the node for the current position is in. To each node is also associated a _priority_, represented by a natural number. The sequence of positions visited in a game is called _play_ and could be finite or infinite, depending on whether a position with no moves is reached or not. In case of a finite play the player who cannot move loses, otherwise if the play is infinite the priorities of the positions that are visited infinitely many times are considered: if the biggest one is even then player 0 wins, otherwise player 1 is the winner. Players are also sometimes called $exists$ and $forall$ or $lozenge$ and $square$ due to their meaning when using parity games for solving $mu$-calculus or fixpoints.
+Parity games @pg_ermeson @pg_zielonka are games with two players, 0 and 1, performed on directed graphs. A token is placed in a position, represented by nodes, and the two players move it along the edges of the graph. The set of nodes is partitioned in two sets and the player that chooses the move is determined by the subset in which the node for the current position is in. To each node is also associated a _priority_, represented by a natural number. The sequence of positions visited in a game is called _play_ and could be finite or infinite, depending on whether a position with no moves is reached or not. In case of a finite play the player who cannot move loses, otherwise if the play is infinite the priorities of the positions that are visited infinitely many times are considered: if the biggest one is even then player 0 wins, otherwise player 1 is the winner. Players are also sometimes called $exists$ and $forall$ or $lozenge$ and $square$ due to their meaning when using parity games for solving $mu$-calculus or fixpoints.
 
 // TODO: Image example of parity game?
 
@@ -36,7 +36,7 @@ Since we will often use the set of predecessors and successors of a vertex we wi
   - if $pi$ is infinite then consider $max inf(p(v_0) p(v_1) ...)$: if it is even the winner is player 0, otherwise it is player 1.
 ]
 
-We will focus on parity games that are more restriced than this, in particular on _bipartite parity games_ and _total parity games_.
+We will focus on parity games that are more restriced than this, which for convenience we will call _bipartite parity games_ and _total parity games_.
 Bipartite parity games are games whose graph is bipartite, forcing players to perfectly alternate moves.
 Total parity games instead require every vertex to have at least one successor, thus forcing every play to be infinite.
 
@@ -75,7 +75,7 @@ The strategy iteration algorithm heavely depends on the concept of _strategies_,
 
 TODO: Cite papers on determinancy (see Jurdzinski)
 
-By the well-known determinancy of parity games we know that each vertex is winning for exactly one of the two players. Moreover it is known that the winning player also has a memoryless winning strategy, that is a strategy that depends only on the current vertex and not on the previous ones. The strategy iteration algorithm will focus on these strategies, as they are much simplier to represent and search for.
+By the well-known determinancy of parity games @pg_ermeson @pg_zielonka we know that each vertex is winning for exactly one of the two players. Moreover it is known that the winning player also has a memoryless winning strategy, that is a strategy that depends only on the current vertex and not on the previous ones. The strategy iteration algorithm will focus on these strategies, as they are much simplier to represent and search for.
 
 #lemma("determinacy of parity games")[
   Given a parity game $G = (V_0, V_1, E, p)$ the winner on each vertex is pre-determined. The set of vertices $V$ can thus be partitioned in two *winning sets* $W_0$ and $W_1$ of the vertices where player 0 (resp. player 1) has a winning strategy starting from vertices in that set.

@@ -2,6 +2,7 @@
 
 == Systems of fixpoint equations
 
+// TODO: Cite @baldan_upto ?
 We will now define what is a system of fixpoint equations and what is its solution. Intuitiviely this will be very similar to a normal system of equations, except where each equation is changed to be a fixpoint equation. Since there can be more than one fixpoint we will also need to specify which kind of fixpoint the equation specifies, which we will do by using respectively the symbols $lfp$ and $gfp$ in subscript after the equal sign.
 
 #definition("system of fixpoint equation")[

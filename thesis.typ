@@ -26,3 +26,6 @@
 #include "chapters/introduction.typ"
 #include "chapters/background.typ"
 #include "chapters/algorithm.typ"
+
+// TODO: Move to template/a more organized place
+#bibliography("sources.bib")

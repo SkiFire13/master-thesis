@@ -2,7 +2,7 @@
 
 == Partial orders, lattices and monotone functions
 
-We will first define what is a lattice and the related concept. This will be fundamental for defining systems of fixpoint equations, as their domain and codomain will be lattices. Moreover we are interested in least and greatest fixpoint, which intristically require a concept of order.
+We will first define what is a lattice and the related concept. This will be fundamental for defining systems of fixpoint equations, as their domain and codomain will be lattices. Moreover we are interested in least and greatest fixpoints, which intristically require a concept of order.
 
 #definition("partial order")[
   Let $X$ a set. A partial order $sub$ is a binary relation on $X$ which satisfies the following properties for all $x, y, z in X$:
@@ -68,8 +68,7 @@ When we will later characterize the solutions of a system of fixpoint equations 
 
 // TODO: upward-closure?
 
-// TODO: Cite Knaster-Tarski theorem
-Given any function it is not guaranteed that a fixpoint exists. However if we restrict ourself to _monotone_ functions, then by the Knaster-Tarski theorem there exists at least one fixpoint. Moreover the set of all fixpoints is also a complete lattice, which guarantees the existance and uniqueness the least and greatest fixpoints.
+Given any function it is not guaranteed that a fixpoint exists. However if we restrict ourself to _monotone_ functions, then by the Knaster-Tarski theorem @tarski there exists at least one fixpoint, moreover the set of all fixpoints is also a complete lattice, which guarantees the existance and uniqueness the least and greatest fixpoints.
 
 #definition("monotone function")[
   Let $(X, sub)$ be a poset and $f: X -> X$ a function. $f$ is monotone if $forall x, y in X. x sub y => f(x) sub f(y)$
@@ -84,13 +83,12 @@ Given any function it is not guaranteed that a fixpoint exists. However if we re
   Let $(X, sub)$ be a complete lattice and $f: X -> X$ a monotone function. The set of fixpoint of $f$ forms a complete lattice with respect to $sub$.
 ]
 
+Kleene iteration @kleene also gives us a constructive way to obtain a least or greatest fixpoint by repeatedly iterating a function starting from the least or greatest element of the lattice. However it should be noted that it may not be efficient enough or even possible to compute a fixpoint is such a way, be it because it requires too many iterations (potentially an infinite amount in case of non-finite lattices) or because representing the actual solution takes too much space, and we're interested only in some specific characteristics of it.
+
 // TODO: Ok simplified version?
 #lemma("Kleene iteration")[
   Let $(X, sub)$ be a complete lattice and $f: X -> X$ a monotone function. Consider the ascending chain $bot sub f(bot) sub f(f(bot)) sub dots.h.c sub f^n(bot) sub dots.h.c$, it converges to $lfp f$. In other words, $lfp f = join { f^n (bot) | n in bb(N) }$. Similarly $gfp f = meet { f^n (top) | n in bb(N) }$.
 ]
-
-// TODO: Need to cite something here?
-Kleene iteration conveniently gives us a constructive way to define a least or greatest fixpoint. However it may not be efficient enough to compute a fixpoint is such a way, be it because it requires too many iterations (potentially an infinite amount in case of non-finite lattices) or because representing the actual solution takes too much space, and we're interested only in some characteristics of it.
 
 == Tuples
 
