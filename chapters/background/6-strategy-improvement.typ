@@ -90,7 +90,7 @@ The local strategy iteration algorithm fills this gap by performing strategy ite
 ]
 
 #definition("partially expanded game")[
-  Let $G = (V_0, V_1, E, p)$ be a parity game and $G' = (G, U, E')$ a subgame of $G$. $G'$ is called a partially expanded game if all its vertices have at least one successor, that is $forall u in U_0 union U_1. u E' != emptyset$.
+  Let $G = (V_0, V_1, E, p)$ be a parity game and $G' = (G, U, E')$ a subgame of $G$. $G'$ is called a partially expanded game if it still is a total parity game.
 ]
 
 Given a partially expanded game, two optimal strategies and its winning sets, the local algorithm has to decide whether vertices winning for a player in this subgame are also winning in the full game. Recall that a strategy is winning if any strategy of the opponent always induces a losing play for them. However those plays being losing in the subgame don't necessarily mean that all plays in the full game will be losing too, as they might visit vertices not included in the subgame. Intuitively, the losing player might have a way to force a play to reach one of the vertices just outside the subgame, called the _$U$-exterior_ of the subgame, and thus lead to a play that's not possible in the subgame. The set of vertices that can do this is called the _escape set_ of the subgame, and for such vertices no conclusions can be made, otherwise the winner in the subgame is also the winner in the full game.
@@ -114,8 +114,8 @@ Given a partially expanded game, two optimal strategies and its winning sets, th
 #definition("definitive winning set")[
   Let $G = (V_0, V_1, E, p)$ be a parity game and $G|_U$ a subgame of $G$. Let $L = (G|_U, sigma, tau)$ be an optimal instance of the subgame and let $phi$ be the valuation for this instance. The definitive winning sets $W'_0$ and $W'_1$ are defined as:
   $
-    W_0 &= { v in U | E_L^0 (v) = varempty and (phi(v))_1 in V_+ } \
-    W_1 &= { v in U | E_L^1 (v) = varempty and (phi(v))_1 in V_- }
+    W'_0 &= { v in U | E_L^0 (v) = varempty and (phi(v))_1 in V_+ } \
+    W'_1 &= { v in U | E_L^1 (v) = varempty and (phi(v))_1 in V_- }
   $
 ]
 
