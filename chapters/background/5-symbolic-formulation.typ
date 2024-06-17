@@ -1,7 +1,8 @@
 #import "../../config/common.typ": *
 
-// TODO: Better name? (Characterization?)
-== Symbolic formulation and selections
+== Game characterization
+
+=== Game definition
 
 // TODO: Cite Venema. 2008 ?
 Systems of fixpoint equations can be characterized using a parity game @baldan_games, also called a powerset game. This characterization in particular allows to determine whether some element of a basis is under the solution for one of the variables of the system. This makes sense because in practice the actual solution of the system may include lot of informations we are not interested about, for example for the $mu$-calculus it would include all the states that satisfy the given formula, while we are only interested in knowing whether one particular state is included, or for bisimilarity it would include all pairs of processes that are bisimilar, but again we are only interested in a single pair.
@@ -42,7 +43,6 @@ The given priority function is not fully specified, but it can be shown that the
 
 // TODO: Example ?
 
-
 // TODO for selections:
 //  - selection
 //  - upward closure
@@ -64,17 +64,35 @@ The given priority function is not fully specified, but it can be shown that the
 // Symbolic moves are representation of all possible moves
 // Symbolic moves are a selection
 
-In practice it is not convenient to consider all the possible moves for player 0. Consider for example two moves for player 0 that lead to the positions $tup(X)$ and $tup(Y)$ for player 1. If $A(tup(X)) subset A(tup(Y))$ then intuitively $tup(Y)$ is never convenient for player 0, as it will give player 1 strictly move moves to play and thus more chances to win.
 
-TODO: define selection
+=== Selections
 
-TODO: restricting strategies to ones consistent with selection preserves winner
+In practice it is not convenient to consider all the possible moves for player 0. Consider for example two moves for player 0 that lead to the positions $tup(X)$ and $tup(Y)$ for player 1. If $A(tup(X)) subset A(tup(Y))$ then intuitively $tup(Y)$ is not convenient for player 0, as it will give player 1 more moves to play and thus more chances to win. We will now see a formalization of this idea.
 
-TODO: Informal introduction to logic
+// TODO: Cite where this was first defined
+To start we will need to define a new order, called _Hoare preorder_:
 
-// TODO: ref to symbolic moves paper
+#definition("Hoare preorder")[
+  Let $(P, sub)$ be a poset. The Hoare preorder, written $hsub$, is a preorder on the set $2^P$ such that, $forall X, Y subset.eq P. X hsub Y <=> forall x in X. exists y in Y. x sub y$.
+]
 
-#definition("logic for symbolic moves")[
+We also consider the pointwise extension $phsub$ of the Hoare preorder on the set $(2^(B_L))^n$, that is $forall X, Y in (2^(B_L))^n, tup(X) phsub tup(Y) <=> forall i in range(n). X_i hsub Y_i$, and the upward-closure with respect to it, that is given $T subset.eq (2^(B_L))^n$ then $up_H T = { tup(X) | exists tup(Y) in T and tup(Y) phsub tup(X) }$.
+
+The idea will then be for player 0 to avoid playing a move $tup(Y)$ if there exist another move $tup(X)$ sub that $tup(X) phsub tup(Y)$. More formally we consider _selections_ of moves, that is subsets of moves that are equivalent to the full set for the purpose of the game.
+
+#definition("selection")[
+  Let $(L, sub)$ be a lattice. A selection is a function $sigma : (B_L times range(n)) -> 2^((2^(B_L))^m)$ such that $forall b in B_L, i in range(n). up_H sigma(b, i) = E(b, i)$.
+]
+
+// TODO: Cite where this was proven
+It can be proven that a selection always exists and is $E(b, i)$. Moreover it can be proven that the winner of a game restricted to a selection is the same as the winner of the full game.
+
+// TODO: Better name to logic?
+=== Logic for upward-closed sets
+
+Ideally we would be interested in the least selection; this can be shown to always exist in finite lattices, but not in infinite ones. However even then the least selection may be exponential in size to represent; for this reason a logic for upward-closed sets is used to represent the $E(b, i)$ set in a compact way, while still allowing to generate somewhat small selections.
+
+#definition("logic for upward-closed sets")[
   Let $(L, sub)$ be a complete lattice and $B_L$ a basis of $L$. Given $n in bb(N)$ we can define the following logic, where $b in B_L$ and $i in range(n)$:
 
   $
@@ -82,9 +100,8 @@ TODO: Informal introduction to logic
   $
 ]
 
-#definition("semantic of symbolic moves")[
-  Let $(L, sub)$ be a complete lattice, $B_L$ a basis of $L$, $n in bb(N)$, $i in range(n)$ and $phi$ a logic formula for symbolic moves. The semantics of the formula $phi$, that is the set of player 1 vertices is represents, are:
-  #let sem(of) = $bracket.l.double of bracket.r.double$
+#definition("logic formulas semantics")[
+  Let $(L, sub)$ be a complete lattice, $B_L$ a basis of $L$, $n in bb(N)$, $i in range(n)$ and $phi$ a logic formula. The semantics of $phi$, that is the set of player 1 vertices is represents, is a upward-closed set $sem(phi) subset.eq (2^(B_L))^n$ with respect to $phsub$, define as:
   $
     sem([b, i]) &= { tup(X) | b in tup(X)_i } \
     sem(and.big_(k in K) phi_k) &= sect.big_(k in K) sem(phi_k) \
@@ -92,8 +109,9 @@ TODO: Informal introduction to logic
   $
 ]
 
+// TODO: Composition of moves, system of equations, etc etc?
 #definition("generator for symbolic moves")[
-  Let $(L, sub)$ be a complete lattice, $B_L$ a basis of $L$, $n in bb(N)$, $i in range(n)$ and $phi$ a logic formula for symbolic moves. We can define the following generator of reduced moves for player 0:
+  Let $(L, sub)$ be a complete lattice, $B_L$ a basis of $L$, $n in bb(N)$, $i in range(n)$ and $phi$ a logic formula. The moves generated by $phi$, written $M(phi)$ are:
 
   $
     M([b, i]) &= { tup(X) } "with" X_i = { b } "and" forall j != i. X_j = emptyset \

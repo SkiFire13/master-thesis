@@ -66,7 +66,13 @@ When we will later characterize the solutions of a system of fixpoint equations 
   Given a set $X$, a basis of the poset $(2^X, subset.eq)$ is the set of singletons $B_(2^X) = { {x} | x in X }$.
 ]
 
-// TODO: upward-closure?
+#definition("upward-closure")[
+  Let $(L, sub)$ be a lattice and $l in L$. The upward-closure of $l$ is $up l = { l' in L | l sub l' }$.
+]
+
+#definition("upward-closed set")[
+  Let $(X, sub)$ be a poset and $U subset.eq X$. $U$ is an upward-closed set if $forall x, y in X$, if $x in U$ and $x sub y$ then $y in U$.
+]
 
 Given any function it is not guaranteed that a fixpoint exists. However if we restrict ourself to _monotone_ functions, then by the Knaster-Tarski theorem @tarski there exists at least one fixpoint, moreover the set of all fixpoints is also a complete lattice, which guarantees the existance and uniqueness the least and greatest fixpoints.
 
@@ -112,6 +118,8 @@ We will also often use ranges over natural numbers, typically in order to index 
   We will refer to the set ${ 1, ..., n }$ with the shorthand $range(n)$.
 ]
 
-// TODO: tuple range?
+#definition("pointwise order")[
+  Let $(X, sub)$ be a poset. We can then define the pointwise order $sub$ on $X^n$ such that $tup(x) psub tup(x') <=> forall i in range(n). x_i sub x'_i$.
 
-// TODO: define pointwise order (if needed)
+  It can be proven that $(X^n, psub)$ is also a poset. Moreover if $(X, sub)$ is a (complete) lattice then $(X^n, psub)$ is also a (complete) lattice.
+]

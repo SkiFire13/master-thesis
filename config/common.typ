@@ -28,6 +28,11 @@
 #let meet = math.class("unary", sym.sect.sq)
 #let join = math.class("unary", sym.union.sq)
 
+#let up = math.class("unary", sym.arrow.t)
+#let psub = math.class("binary", $scripts(sub)^and$)
+#let hsub = math.class("binary", $scripts(sub)_H$)
+#let phsub = math.class("binary", $scripts(sub)_H^and$)
+
 #let lfp = math.class("unary", sym.mu)
 #let gfp = math.class("unary", sym.nu)
 
@@ -47,6 +52,8 @@
   ..cols.pos().map(align.with(horizon)).intersperse(h(1fr)),
   h(1fr),
 )
+
+#let sem(of) = $bracket.l.double of bracket.r.double$
 
 #let dom = math.op("dom")
 
