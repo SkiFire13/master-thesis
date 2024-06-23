@@ -113,6 +113,7 @@ In the local strategy iteration it may happen that we learn about the winner on 
 ]
 
 - TODO: How to remove edges lazily in formulas (set atom to T/F)
+- TODO: Exponential increase in expanded nodes
 - TODO: (Maybe) Compute play profiles of expanded nodes
 - TODO: (Maybe) Only consider unknown/improving vertices
 
