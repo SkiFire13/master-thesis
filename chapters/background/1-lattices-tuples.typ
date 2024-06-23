@@ -35,12 +35,11 @@ Meet and join do not always exist, but when they do it can be proven that they a
   Let $(L, sub)$ be a lattice. It is also a complete lattice if meet and join exist for every subset, that is given $S subset.eq L$ both $meet S$ and $join S$ are defined.
 ]
 
+From now on we will work complete lattices. For most examples we will however use finite lattices, which can be proved to also be complete lattices.
+
 #lemma("finite complete lattices")[
   Let $(L, sub)$ be a finite lattice, that is a lattice where $L$ is a finite set. Then it is also a complete lattice.
 ]
-
-// TODO: Do we _always_ work with finite lattices or do we use infinite ones too?
-From now on we will work with finite, and thus complete, lattices.
 
 // TODO: Image example of complete lattice?
 
