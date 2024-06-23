@@ -63,7 +63,7 @@ Finally, a way to decide whether a strategy can be improved or is optimal is pro
 
 // TODO: Further details redirect to the paper?
 // TODO: Change wording to say the paper implemented it with such complexity.
-Each iteration has worst-case complexity $O(|V| dot |E|)$, and in the worst case requires $Pi_(v in V_0) "out-deg"(v)$ many improvement steps.
+It can be proven @jurdzinski_improvement that each iteration has worst-case complexity $O(|V| dot |E|)$, and in the worst case requires $Pi_(v in V_0) "out-deg"(v)$ many improvement steps.
 
 // TODO: does this need to explain progress relation too or can we assume
 // it from the fact a valuation is induced by a pair of strategies?
@@ -124,5 +124,6 @@ Given a partially expanded game, two optimal strategies and its winning sets, th
   Let $G = (V_0, V_1, E, p)$ be a parity game and $G|_U$ a subgame of $G$. Then $W'_0 subset.eq W_0$ and $W'_1 subset.eq W_1$.
 ]
 
+- TODO: Local algorithm: steps
 - TODO: Local algorithm: expansion
 - TODO: Local algorithm: complexities (?)
