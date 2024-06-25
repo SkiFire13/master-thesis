@@ -88,6 +88,8 @@
       it
     }
 
+    set par(justify: true)
+
     body
   }
 }
