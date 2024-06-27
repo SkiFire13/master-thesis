@@ -9,10 +9,17 @@
 
 
 #let environment(name) = {
-  let env_counter = counter(name)
   (subject, body) => block(inset: (y: 5pt))[
+    #let env_counter = counter(name)
+    #context {
+      let env_counter_val = env_counter.get().at(0)
+      let head_counter_val = counter(heading).get().at(0)
+      if env_counter_val != head_counter_val {
+        env_counter.update((head_counter_val, 0))
+      }
+    }
     #set block(spacing: 1em)
-    *#name #env_counter.step() #env_counter.display()*
+    *#name #env_counter.step(level: 2) #env_counter.display()*
     (#subject).
     _#(body)_
   ]
