@@ -3,10 +3,10 @@
 == Systems of fixpoint equations
 
 // TODO: Cite @baldan_upto ?
-We will now define what is a system of fixpoint equations and what is its solution. Intuitiviely this will be very similar to a normal system of equations, except where each equation is changed to be a fixpoint equation. Since there can be more than one fixpoint we will also need to specify which kind of fixpoint the equation specifies, which we will do by using respectively the symbols $lfp$ and $gfp$ in subscript after the equal sign.
+We will now define what is a system of fixpoint equations and what is its solution. Intuitively this will be very similar to a normal system of equations, except for the fact that each equation is changed to be a fixpoint equation. Since there can be more than one fixpoint we will also need to specify which kind of fixpoint the equation specifies, which we will do by using respectively the symbols $lfp$ and $gfp$ in subscript after the equal sign to denote the fact that we refer to the least or greatest fixpoint, respectively.
 
 #definition("system of fixpoint equation")[
-  Let $(L, sub)$ be a complete lattice. A system of fixpoint equations $E$ is a system of the following shape:
+  Let $(L, sub)$ be a complete lattice. A system of fixpoint equations $E$ over $L$ is a system of the following shape:
 
   $
     syseq(
@@ -17,7 +17,7 @@ We will now define what is a system of fixpoint equations and what is its soluti
     )
   $
 
-  For all $i in range(n)$, $x_i in L$ and $f_i : L^n -> L$ is a monotone function. $eta_i$ is either $mu$ or $nu$, representing either a least or a greatest fixpoint equation.
+  where $forall i in range(n)$, $x_i in L$ and $f_i : L^n -> L$ is a monotone function. Each subscript $eta_i$ must be either $mu$ or $nu$, representing respectively a least or a greatest fixpoint equation.
 ]
 
 #notation("system of fixpoint equations as tuple")[
@@ -34,7 +34,7 @@ We will now define what is a system of fixpoint equations and what is its soluti
 ]
 
 #definition("substitution")[
-  Let $(L, sub)$ be a complete lattice and $E$ be a system of $n$ fixpoint equations over $L$ and variables $x_i$ for $i in range(n)$. Let $j in range(n)$ and $l in L$. The substitution $E[x_j := l]$ is a new system of equation where the $j$-th equation is removed and any use of the variable $x_j$ is replaced with the element $l$.
+  Let $(L, sub)$ be a complete lattice and $E$ be a system of $n$ fixpoint equations over $L$ and variables $x_i$ for $i in range(n)$. Let $j in range(n)$ and $l in L$. The substitution $E[x_j := l]$ is a new system of equation where the $j$-th equation is removed and any occurrence of the variable $x_j$ in the other equations is replaced with the element $l$.
 ]
 
 We can now define the solution for a system of fixpoint equations recursively, starting from the last variable, which is replaced in the rest of the system by a free variable. That is solved and its solution, which is a function of the free variable, is used in a fixpoint equation to determine the solution for the last variable.
@@ -61,7 +61,10 @@ We can now define the solution for a system of fixpoint equations recursively, s
       x_2 &feq_nu x_1 sect x_2 \ 
     )
   $
-  Solving this system of equations will require the following steps:
+
+  To solve this system of fixpoint equations we apply the definiton of its solution, getting $sol(E) = (sol(E[x_2 := s_2]), s_2)$ with $s_2 = nu(lambda x. sol(E[x_2 := x]) sect x)$. In order to find $s_2$ we will need to $E[x_2 := x]$, that is the system of the single fixpoint equation $x_1 feq_mu x_1 union x$ and parameterized over $x$. To do this we apply the definition again, getting $sol(E[x_2 := x]) = (sol(emptyset), s_1)$ with $s_1 = mu(lambda x'. x' union x)$. At this point we have hit the base case with $sol(emptyset)$, which is just $()$, while we can find $s_1$ by solving the given fixpoint equation, getting $s_1 = x$ because $x$ is the smallest value that is equal to itself when joined with $x$. We thus get $sol(E[x_2 := x]) = (x)$, and we are back to find $s_2$, whose definition can now be simplified to $nu(lambda x. x sect x)$. Thus fixpoint equation can now be solved, getting $s_2 = X$ because $X$ is the greatest element of $2^X$ and also sasfies the given equation. Finally, we can get $sol(E[x_2 := s_2]) = s_2 = X$ by substituting $s_2$ in place of $x$ in $sol(E[x_2 := x])$, and with this we get $sol(E) = (X, X)$.
+
+  To recap, the steps performed were:
   - $sol(E) = (sol(E[x_2 := s_2]), s_2)$ with $s_2 = nu(lambda x. sol(E[x_2 := x]) sect x)$
   - $sol(E[x_2 := x]) = (sol(emptyset), s_1)$ with $s_1 = mu(lambda x'. x' union x)$
   - solving $s_1$ gives $s_1 = x$
@@ -79,7 +82,8 @@ Notice that the way the solution of a system of fixpoint equations is defined de
       x_2 &feq_mu x_1 union x_2 \
     )
   $
-  Solving this system of equations will require the following steps:
+  
+  This time the steps needed will be the following:
   - $sol(E') = (sol(E'[x_2 := s_2]), s_2)$ with $s_2 = mu(lambda x. sol(E'[x_2 := x]) union x)$
   - $sol(E'[x_2 := x]) = (sol(emptyset), s_1)$ with $s_1 = nu(lambda x'. x' sect x)$
   - solving $s_1$ gives $s_1 = x$

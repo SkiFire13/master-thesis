@@ -8,19 +8,18 @@
 
 Strategy iteration @jurdzinski_improvement is an algorithm that computes the winning sets and the optimal strategies for the two players of a bipartite and total parity game. The algorithm starts with a strategy for player 0 and repeates _valuation_ phases, during which is computes a _play profile_ for each vertex, and _improvement_ phases, during which it uses such play profiles to improve the strategy. This continues until the strategy can no longer be improved and is guaranteed to be optimal.
 
-// TODO: Something better?
-We will now give some general notions that will simplify the following definitions.
-
-#definition("positive and negative vertices")[
-  Let $G = (V_0, V_1, E, p)$ be a parity game. We define $V_+ = { v in V | p(v) "even" }$ and $V_- = { v in V | p(v) "odd" }$.
-]
+We will start introducing some concepts that will help characterize how favourable a vertex is for a given player. We will start by giving the definition of a _relevance ordering_, which is a total order over the vertices where bigger vertices correspond to bigger priorities. This will be important in determining which vertices are more impactful on the winner of a play. We then define the sets of _positive and negative vertices_, which are a different way to partition the set of vertices. In particular the set of positive vertices contains vertices whose priority is even, and thus more favourable to player 0, while the negative vertices will be those with odd priority. We also introduce a _reward ordering_, which instead expresses how favourable to player 0 a vertex is. In particular a positive vertex has a bigger reward than a negative one. Positive vertices are also more rewarding if they have a bigger priority, while negative vertices are less rewarding in that case. Finally, the reward ordering is extended to sets of vertices, where the reward of the most relevant vertex decides which set is more rewarding.
 
 #definition("relevance ordering")[
   Let $G = (V_0, V_1, E, p)$ be a parity game. A relevance ordering $<$ is a total order that extends the partial order induced by the $p$ function. In particular $<$ is such that $forall u, v. p(u) < p(v) => u < v$.
 ]
 
+#definition("positive and negative vertices")[
+  Let $G = (V_0, V_1, E, p)$ be a parity game. We define $V_+ = { v in V | p(v) "is even" }$ and $V_- = { v in V | p(v) "is odd" }$.
+]
+
 #definition("reward ordering")[
-  Let $G = (V_0, V_1, E, p)$ be a parity game with a relevance ordering $<$, and let $v, u in V$. We write $u lt.curly v$ when $u$'s reward is less than $v$'s, namely when $u < v$ and $v in V_+$ or $v < u$ and $u in V_-$.
+  Let $G = (V_0, V_1, E, p)$ be a parity game with a relevance ordering $<$, and let $v, u in V$. We write $u lt.curly v$ when $u < v$ and $v in V_+$ or $v < u$ and $u in V_-$.
   $
     u lt.curly v <=> (u < v and v in V_+) or (v < u and u in V_-)
   $
@@ -33,16 +32,18 @@ We will now give some general notions that will simplify the following definitio
   $
 ]
 
-At the core of the algorithm there is the valuation phase computing the play profiles, which help understand how "good" a play is for each player. In particular an ordering between play profiles is defined, with bigger values being more favourable to player 0 and lower ones being more favourable to player 1. In particular play profiles are based on three key values:
+At the core of the algorithm there is the valuation phase computing the _play profiles_, which help understand how favourable a play is for each player. Moreover an ordering between play profiles is defined, with bigger values being more favourable to player 0 and lower ones being more favourable to player 1. In particular play profiles are based on three key values:
 
-- the most relevant vertex of the cycle (recall that the game is total and thus every play is infinite), which directly correlates to the winner of the play;
-- the vertices visited before the most relevant one that are more relevant than it;
-- the number of vertices visited before the most relevant.
+- the most relevant vertex that is visited infinitely often, which we will refer to as $w$, which directly correlates to the winner of the play;
+- the vertices visited before $w$ that are more relevant than it;
+- the number of vertices visited before $w$.
 
-Intuitively the last two values are linked to the chances that changing strategy would change either the most relevant vertex of the cycle or the cycle itself, thus more relevant vertices before or a longer prefix are more beneficial for the losing player.
+Recall that the game is total, thus every play is infinite, and plays induced by an instance that are infinite always end in a cycle. Thus in this case $w$ coincides with the most relevant vertex of the cycle that is reached in a play.
+
+Intuitively in this context the last two values are linked to the chances that changing strategy would change either the value of $w$ or the cycle itself, thus more relevant vertices before $w$ or a longer prefix are more beneficial for the losing player.
 
 #definition("play profile and valuation")[
-  Let $G = (V_0, V_1, E, p)$ be a parity game with a relevance ordering $<$ and $pi = v_0 v_1 ...$ a play on $G$. Let $w = max_< inf(pi)$ be the most relevant vertex that's visited infinitely often in the play and $alpha = { u in V | exists i in N. v_i = u and forall j < i. v_j != w }$ be the set of vertices visited before the first occurence of $w$. Let $P = alpha sect { v in V | v > w }$ and $e = |alpha|$. The play profile of the play $pi$ is the tuple $(w, P, e)$.
+  Let $G = (V_0, V_1, E, p)$ be a parity game with a relevance ordering $<$ and $pi = v_0 v_1 ...$ a play on $G$. Let $w = max_< inf(pi)$ be the most relevant vertex that is visited infinitely often in the play and $alpha = { u in V | exists i in N. v_i = u and forall j < i. v_j != w }$ be the set of vertices visited before the first occurence of $w$. Let $P = alpha sect { v in V | v > w }$ and $e = |alpha|$. The play profile of the play $pi$ is the tuple $(w, P, e)$.
 
   Given an instance $(G, sigma, tau)$ a valuation $phi$ is a function that associates to each vertex the play profile $(w, P, e)$ of the play induced by the instance.
 ]
@@ -70,30 +71,27 @@ It can be proven @jurdzinski_improvement that each iteration has worst-case comp
 
 #lemma("optimal strategies")[
   Let $G = (V_0, V_1, E, p)$ be a parity game with a relevance ordering $<$, $sigma$ and $tau$ be two strategies for respectively player 0 and 1 and $phi$ a valuation function for $(G, sigma, tau)$.
-  $sigma$ is optimal against $tau$ if $forall u in V_0. forall v in u E. phi(v) lt.curly.eq phi(sigma(u))$ and $tau$ is optimal against $sigma$ if $forall u in V_1. forall v in u E. phi(tau(u)) lt.curly.eq phi(v)$.
+  $sigma$ is optimal against $tau$ if $forall u in V_0. forall v in u E. phi(v) lt.curly.eq phi(sigma(u))$. Dually, $tau$ is optimal against $sigma$ if $forall u in V_1. forall v in u E. phi(tau(u)) lt.curly.eq phi(v)$.
 ]
 
 === Local algorithm
 
-The strategy improvement algorithm has the downside of requiring to visit the whole graph. In some cases this may be a problem, as the graph could be very large but only a small portion may need to be visited to solve the game.
+The strategy improvement algorithm has the downside of requiring to visit the whole graph. In some cases this might be an inconvenience, as the graph could be very large but only a small portion may need to be visited to determine the winner of a specific vertex. For an extreme example, consider a disconnected graph, in which case the winner of a vertex only depends on its connected component and not the whole graph.
 
 // TODO: Example where this matters?
 
 The local strategy iteration algorithm @friedmann_local fills this gap by performing strategy iteration on a _subgame_, a parity game performed on a subgraph of the main game, and providing a way to determine whether this is enough to infer the winner in the full game. It may happen that the winner is not immediately decidable, in which case the subgame would have to be _expanded_. To do this we will need to define what a subgame is, how to expand it and what is the condition that decides the winner on a vertex.
 
-#definition("subgame")[
-  Let $G = (V_0, V_1, E, p)$ be a parity game, $U subset.eq V$ and $E' subset.eq E sect (U times U)$, then $G' = (V_0 sect U, V_1 sect U, E', p|_U)$, where $p|_U$ is the function $p$ with domain restricted to $U$, is a subgame of $G$. We will write $G' = (G, U, E')$ for brevity.
-]
 
 #definition([$U$-induced subgames])[
-  Let $G = (V_0, V_1, E, p)$ be a parity game and $U subset.eq V$. The $U$-induced subgame of $G$, written $G|_U$, is the subgame $(G, U, E sect (U times U))$.
+  Let $G = (V_0, V_1, E, p)$ be a parity game and $U subset.eq V$. The $U$-induced subgame of $G$, written $G|_U$, is a parity game $G' = (V_0 sect U, V_1 sect U, E sect (U times U), p|_U)$, where $p|_U$ is the function $p$ with domain restricted to $U$.
 ]
 
 #definition("partially expanded game")[
-  Let $G = (V_0, V_1, E, p)$ be a parity game and $G' = (G, U, E')$ a subgame of $G$. $G'$ is called a partially expanded game if it still is a total parity game.
+  Let $G = (V_0, V_1, E, p)$ be a parity game and $G' = G|_U$ subgame of $G$. If $G'$ is still a total parity game it is called a partially expanded game.
 ]
 
-Given a partially expanded game, two optimal strategies and its winning sets, the local algorithm has to decide whether vertices winning for a player in this subgame are also winning in the full game. Recall that a strategy is winning if any strategy of the opponent always induces a losing play for them. However those plays being losing in the subgame don't necessarily mean that all plays in the full game will be losing too, as they might visit vertices not included in the subgame. Intuitively, the losing player might have a way to force a play to reach one of the vertices just outside the subgame, called the _$U$-exterior_ of the subgame, and thus lead to a play that's not possible in the subgame. The set of vertices that can do this is called the _escape set_ of the subgame, and for such vertices no conclusions can be made, otherwise the winner in the subgame is also the winner in the full game.
+Given a partially expanded game, two optimal strategies and its winning sets, the local algorithm has to decide whether vertices winning for a player in this subgame are also winning in the full game. Recall that a strategy is winning for a player $i$ if any strategy for the opponent results in an induced play that is winning for $i$. However those plays being losing in the subgame do not necessarily mean that all plays in the full game will be losing too, as they might visit vertices not included in the subgame. Intuitively, the losing player might have a way to force a play to reach one of the vertices outside the subgame, called the _$U$-exterior_ of the subgame, and thus lead to a play that is not possible in the subgame. The set of vertices that can do this is called the _escape set_ of the subgame, and for such vertices no conclusions can be made. For the other vertices instead the winner in the subgame is also the winner in the full game.
 
 #definition($U$ + "-exterior")[
   Let $G = (V_0, V_1, E, p)$ be a parity game and $G|_U$ a subgame of $G$. The $U$-exterior of $G|_U$, also written $D_G (U)$, is the set of successors of vertices in $G|_U$ that are not themselves in $G|_U$. That is:
@@ -102,6 +100,7 @@ Given a partially expanded game, two optimal strategies and its winning sets, th
   $
 ]
 
+// TODO(Prof): u in dom(sigma) perchè sigma è definito su V_i
 #definition("strategy restricted edges")[
   Let $G = (V_0, V_1, E, p)$ be a parity game and $sigma$ any strategy in $G$. The set of edges restricted to the strategy $sigma$ is $E_sigma = { (u, v) | u in dom(sigma) => sigma(u) = v }$.
 ]

@@ -4,7 +4,7 @@ Introduction here...
 
 // Systems of fixpoint equations everywhere in model checking and formal verification
 // μ-calculus, bisimilarity, abstract interpretation
-// monotone functions, complete lattices (Knaster-Tarski existance, but Kleene infinite)
+// monotone functions, complete lattices (Knaster-Tarski existence, but Kleene infinite)
 // characterization via parity games
 // cite works
 // powerset game (?)

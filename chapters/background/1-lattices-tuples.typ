@@ -2,17 +2,15 @@
 
 == Partial orders, lattices and monotone functions
 
-We will first define what is a lattice and the related concept. This will be fundamental for defining systems of fixpoint equations, as their domain and codomain will be lattices. Moreover we are interested in least and greatest fixpoints, which intristically require a concept of order.
+We start by defining what is a lattice and introducing some related concepts. This will be fundamental for defining systems of fixpoint equations, as their domain and codomain will be lattices. Moreover we are interested in least and greatest fixpoints, which intristically require a concept of order.
 
-#definition("partial order")[
+#definition("partial order, poset")[
   Let $X$ a set. A partial order $sub$ is a binary relation on $X$ which satisfies the following properties for all $x, y, z in X$:
   - (Antisymmetry): if $x sub y$ and $y sub x$ then $x = y$;
   - (Reflexivity): $x sub x$;
   - (Transitivity): if $x sub y$ and $y sub z$ then $x sub z$.
-]
 
-#definition("poset")[
-  Let $X$ be a set and $sub$ a partial order over $X$. A poset is a pair $(X, sub)$.
+  A partially ordered set (poset, for short) is a pair $(X, sub)$.
 ]
 
 // TODO: Preorder?
@@ -25,15 +23,12 @@ We will first define what is a lattice and the related concept. This will be fun
 
 Meet and join do not always exist, but when they do it can be proven that they are unique. For our purposes we will however be interested in posets where meet and join always exists, also called lattices.
 
-#definition("lattice")[
-  Let $(L, sub)$ be a poset. It is also a lattice if meet and join exist for every pair of elements, that is given $x, y in L$ both $meet {x, y}$ and $join {x, y}$ are defined.
-]
-
-// TODO: Bottom and Top
-
 #definition("complete lattice")[
-  Let $(L, sub)$ be a lattice. It is also a complete lattice if meet and join exist for every subset, that is given $S subset.eq L$ both $meet S$ and $join S$ are defined.
+  Let $(L, sub)$ be a poset. It is also a lattice if meet and join exist for every pair of elements, that is given $x, y in L$ both $meet {x, y}$ and $join {x, y}$ are defined.
+  It is a complete lattice if meet and join exist for every subset, that is given $S subset.eq L$ both $meet S$ and $join S$ are defined.
 ]
+
+// TODO: Bottom and Top?
 
 From now on we will work complete lattices. For most examples we will however use finite lattices, which can be proved to also be complete lattices.
 
@@ -53,7 +48,7 @@ From now on we will work complete lattices. For most examples we will however us
 
 // TODO: Image example of powerset lattice
 
-When we will later characterize the solutions of a system of fixpoint equations it will be convenient to consider a basis of the lattice involved. Intuitively a basis allows to express any element of a lattice as a join of all the basis elements that are under the given element.
+When we will later characterize the solutions of a system of fixpoint equations it will be convenient to consider a basis of the lattice involved. Intuitively a basis is a subset of elements which allows to express any other element of as a join.
 
 #definition("basis")[
   Let $(L, sub)$ be a lattice. A basis is a subset $B_L subset.eq L$ such that all elements of $L$ can be defined by joining subsets of the basis, that is $forall l in L. l = join { b in B_L | b sub l }$.
@@ -73,7 +68,7 @@ When we will later characterize the solutions of a system of fixpoint equations 
   Let $(X, sub)$ be a poset and $U subset.eq X$. $U$ is an upward-closed set if $forall x, y in X$, if $x in U$ and $x sub y$ then $y in U$.
 ]
 
-Given any function it is not guaranteed that a fixpoint exists. However if we restrict ourself to _monotone_ functions, then by the Knaster-Tarski theorem @tarski there exists at least one fixpoint, moreover the set of all fixpoints is also a complete lattice, which guarantees the existance and uniqueness the least and greatest fixpoints.
+Given a function $f : L -> L$ where $(L, sub)$ is a complete lattice, it is not guaranteed that a fixpoint exists. However if we restrict ourself to _monotone_ functions, then by the Knaster-Tarski theorem @tarski there exists at least one fixpoint. Moreover the set of all fixpoints is also a complete lattice, which guarantees the existence and uniqueness the least and greatest fixpoints.
 
 #definition("monotone function")[
   Let $(X, sub)$ be a poset and $f: X -> X$ a function. $f$ is monotone if $forall x, y in X. x sub y => f(x) sub f(y)$
@@ -84,14 +79,14 @@ Given any function it is not guaranteed that a fixpoint exists. However if we re
   The least fixpoint of $f$, written $lfp f$, is the smallest of such elements, while the greatest fixpoint of $f$, written $gfp f$, is the biggest.
 ]
 
-#lemma("Knaster-Tarski")[
+#theorem[Knaster-Tarski @tarski][
   Let $(X, sub)$ be a complete lattice and $f: X -> X$ a monotone function. The set of fixpoint of $f$ forms a complete lattice with respect to $sub$.
 ]
 
-Kleene iteration @kleene also gives us a constructive way to obtain a least or greatest fixpoint by repeatedly iterating a function starting from the least or greatest element of the lattice. However it should be noted that it may not be efficient enough or even possible to compute a fixpoint is such a way, be it because it requires too many iterations (potentially an infinite amount in case of non-finite lattices) or because representing the actual solution takes too much space, and we're interested only in some specific characteristics of it.
+Kleene iteration @kleene also gives us a constructive way to obtain a least or greatest fixpoint by repeatedly iterating a function starting from the least or greatest element of the lattice. However it should be noted that it may not be efficient enough or even possible to compute a fixpoint is such a way, be it because it requires too many iterations (potentially an infinite amount in case of non-finite lattices) or because representing the actual solution takes too much space, and we are interested only in some specific characteristics of it.
 
 // TODO: Ok simplified version?
-#lemma("Kleene iteration")[
+#theorem[Kleene iteration @kleene][
   Let $(X, sub)$ be a complete lattice and $f: X -> X$ a monotone function. Consider the ascending chain $bot sub f(bot) sub f(f(bot)) sub dots.h.c sub f^n(bot) sub dots.h.c$, it converges to $lfp f$. In other words, $lfp f = join { f^n (bot) | n in bb(N) }$. Similarly $gfp f = meet { f^n (top) | n in bb(N) }$.
 ]
 
@@ -120,5 +115,5 @@ We will also often use ranges over natural numbers, typically in order to index 
 #definition("pointwise order")[
   Let $(X, sub)$ be a poset. We can then define the pointwise order $sub$ on $X^n$ such that $tup(x) psub tup(x') <=> forall i in range(n). x_i sub x'_i$.
 
-  It can be proven that $(X^n, psub)$ is also a poset. Moreover if $(X, sub)$ is a (complete) lattice then $(X^n, psub)$ is also a (complete) lattice.
+  It can be proven that $(X^n, psub)$ is also a poset. Moreover if $(X, sub)$ is a (complete) lattice then $(X^n, psub)$ is also a (complete) lattice, where $join tup(X) = (join X_1, join X_2, ..., join X_n)$ and similarly for $meet tup(X)$.
 ]

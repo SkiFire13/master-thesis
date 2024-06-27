@@ -34,39 +34,14 @@ Systems of fixpoint equations can be characterized using a parity game @baldan_g
 The given priority function is not fully specified, but it can be shown that there exist a mapping to $bb(N)$ that satisfies the given order and partition into even/odd. An intuitive way would be to just list the priorities in order and give to map each of them to the next available even or odd natural number.
 
 // TODO: Cite Venema. 2008 ?
-// TODO: theorem?
-#lemma("correctness and completeness of the powerset game")[
+#theorem("correctness and completeness of the powerset game")[
   Let $E$ be a system of $n$ fixpoint equations over a complete lattice $L$ with solution $s$. For all $b in B_L$ and $i in range(n)$, we have $b sub s_i$ if and only if the player 0 has a winning strategy on the powerset game associated to $E$ starting from the vertex $(b, i)$.
 ]
 
-// TODO: ref to paper proving this.
-
-// TODO: Example ?
-
-// TODO for selections:
-//  - selection
-//  - upward closure
-//  - hoare preorder
-//  - least selection
-//  - logic for upward closed sets
-//  - symbolic moves
-//  - composition of moves (mention?)
-
-// Alternative:
-//  - skip selection
-//  - observation that some moves are useless
-//  - minimal set of moves not always possible
-//  - symbolic moves
-
-// Selection
-// Selections are equivalent (no proof)
-// Symbolic moves
-// Symbolic moves are representation of all possible moves
-// Symbolic moves are a selection
-
-
 === Selections
 
+// TODO: Better examples
+// TODO: Citations
 In practice it is not convenient to consider all the possible moves for player 0. Consider for example two moves for player 0 that lead to the positions $tup(X)$ and $tup(Y)$ for player 1. If $A(tup(X)) subset A(tup(Y))$ then intuitively $tup(Y)$ is not convenient for player 0, as it will give player 1 more moves to play and thus more chances to win. We will now see a formalization of this idea.
 
 // TODO: Cite where this was first defined
@@ -85,12 +60,12 @@ The idea will then be for player 0 to avoid playing a move $tup(Y)$ if there exi
 ]
 
 // TODO: Cite where this was proven
-It can be proven that a selection always exists and is $E(b, i)$. Moreover it can be proven that the winner of a game restricted to a selection is the same as the winner of the full game.
+It can be proven that a selection always exists and is $E(b, i)$. Moreover it can be proven that the winner of a game where player 0's moves are replaced with a selection is the same as the winner in the original game. This allows us to soundly use a selection as an alternative set of moves for player 0, which is possibly smaller than the original one.
 
-// TODO: Better name to logic?
 === Logic for upward-closed sets
 
-Ideally we would be interested in the least selection; this can be shown to always exist in finite lattices, but not in infinite ones. However even then the least selection may be exponential in size to represent; for this reason a logic for upward-closed sets is used to represent the $E(b, i)$ set in a compact way, while still allowing to generate somewhat small selections.
+Ideally we would be interested in the least selection; this can be shown to always exist in finite lattices, but not in infinite ones. However the least selection can be exponential with respect to the basis size; for this reason a logic for upward-closed sets is used to represent the $E(b, i)$ set in a compact way. Additionally we will see that it allows us to generate sets of moves which are typically small. even if they are not the least ones.
+// TODO(Prof): "since not compositional"?
 
 #definition("logic for upward-closed sets")[
   Let $(L, sub)$ be a complete lattice and $B_L$ a basis of $L$. Given $n in bb(N)$ we can define the following logic, where $b in B_L$ and $i in range(n)$:
