@@ -30,7 +30,7 @@ Meet and join do not always exist, but when they do it can be proven that they a
 
 // TODO: Bottom and Top?
 
-From now on we will work complete lattices. For most examples we will however use finite lattices, which can be proved to also be complete lattices.
+From now on we will work with complete lattices. For most examples we will however use finite lattices, which can be proved to also be complete lattices.
 
 #lemma("finite complete lattices")[
   Let $(L, sub)$ be a finite lattice, that is a lattice where $L$ is a finite set. Then it is also a complete lattice.
