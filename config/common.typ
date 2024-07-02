@@ -1,7 +1,3 @@
-#import "@preview/ctheorems:1.1.2": *
-
-#let rules = thmrules
-
 #let baseline-list(body) = {
   show list.item: it => context [
     #let marker = list.marker.at(0)
@@ -11,14 +7,27 @@
   body
 }
 
-#let environment(name) = thmbox(
-  name,
-  name,
-  separator: [#h(0.1em).#h(0.2em)],
-  inset: 0pt,
-  base_level: 1,
-  bodyfmt: emph
-)
+#let _real_label = label
+
+#let environment(name) = {
+  let env_counter = counter(name)
+  let fig_counter = counter(figure.where(kind: name))
+  (subject, label: none, body) => block(inset: (y: 5pt))[
+    #context {
+      let env_counter_val = env_counter.get().at(0)
+      let head_counter_val = counter(heading).get().at(0)
+      if env_counter_val != head_counter_val {
+        env_counter.update((head_counter_val, 0))
+        fig_counter.update(0)
+      }
+    }
+    #set block(spacing: 1em)
+    *#name #env_counter.step(level: 2) #env_counter.display()*
+    #box[#figure(none, kind: name, supplement: name, numbering: (n) => [#counter(heading).display((..nums) => nums.pos().at(0)).#n])#label]
+    (#subject).
+    _#(body)_
+  ]
+}
 
 #let definition = environment("Definition")
 #let lemma = environment("Lemma")

@@ -1,4 +1,3 @@
-#import "config/common.typ": rules
 #import "config/printed.typ": pagebreak-to-right, pagebreak-to-left
 
 #import "preface/titlepage.typ": titlepage
@@ -43,8 +42,6 @@
   )
   set text(lang: lang)
   set text(font: "New Computer Modern", size: 11pt)
-
-  show: rules
 
   {
     set heading(numbering: none)
