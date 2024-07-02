@@ -11,7 +11,7 @@ Our goal will be to adapt and improve the local strategy iteration algorithm to 
 
 The parity game formulation of a system of fixpoint equations admits positions where a player has no available moves, meaning it is not a total parity game. However the strategy improvement algorithm requires a total parity game, so we need to convert a generic parity game into a "compatible" total parity game that can be handled by it, for some definition of "compatible.
 
-The way we do this transformation is by providing auxiliary vertices that will be used as successors for those vertices that do not have one, in particular we will add two vertices $w0$ and $w1$ representing vertices that are both controlled by and winning for respectively player 0 and 1. These will be used for vertices that have no successors, meaning they are losing for the player controlling them and thus need a successor that is controlled by and winning for the opposite player. $w0$ and $w1$ will in turn also need successors, and these will be respectively $l1$ and $l0$, representing vertices that are controlled by and losing for respectively player 1 and 0. The vertices $w0$ and $l1$ will thus form a forced cycle, as well as $w1$ and $l0$. This, along with priorities choosen favourable to the player that should win these cycles, will guarantee that the winner will actually be the expected one.
+The way we do this transformation is by providing auxiliary vertices that will be used as successors for those vertices that do not have one, in particular we will add two vertices $w0$ and $w1$ representing vertices that are both controlled by and winning for respectively player 0 and 1. These will be used for vertices that have no successors, meaning they are losing for the player controlling them and thus need a successor that is controlled by and winning for the opposite player. $w0$ and $w1$ will in turn also need successors, and these will be respectively $l1$ and $l0$, representing vertices that are controlled by and losing for respectively player 1 and 0. The vertices $w0$ and $l1$ will thus form a forced cycle, as well as $w1$ and $l0$. This, along with priorities choosen as favourable for the player that should win these cycles, will guarantee that the winner will actually be the expected one.
 
 #definition("induced total parity game")[
   Let $G = (V_0, V_1, E, p)$ be a parity game. The induced total parity game of $G$ is the parity game $G' = (V'_0, V'_1, E', p')$ where:
@@ -31,7 +31,7 @@ The way we do this transformation is by providing auxiliary vertices that will b
   ]
 ]
 
-We now want to prove that this new parity game is "compatible" with the original one, for some definition of "compatible". In particular for our purposes we are interested in the new graph preserving the winners for the vertices in the old graph.
+We now want to prove that this new parity game is "compatible" with the original one, for some definition of "compatible". In particular for our purposes we are interested in the new game preserving the winners for the vertices in the old game.
 
 #definition("compatible parity games")[
   Let $G = (V_0, V_1, E, p)$ and $G' = (V'_0, V'_1, E', p')$ be two parity games. Let $W_0$ and $W_1$ be the winning sets for $G$ and $W'_0$ and $W'_1$ the winning sets for $G'$. We say that $G'$ is compatible with $G$ if $W_0 subset.eq W'_0$ and $W_1 subset.eq W'_1$.
@@ -41,20 +41,32 @@ We now want to prove that this new parity game is "compatible" with the original
   Let $G = (V_0, V_1, E, p)$ be a parity game and $G' = (V'_0, V'_1, E', p')$ be the induced total parity game from $G$. Let $sigma$ a strategy on $G$ for player $i$. $sigma$ induces the following $sigma'$ strategy on $G'$:
   $
     sigma'(v) = cases(
-      sigma(v) & "if" v in V_i and v E != emptyset \
+      sigma (v) & "if" v in V_i and v E != emptyset \
       W_(1-i) & "if" v in V_i and v E = emptyset \
       W_(1-i) & "if" v = L_i \
       L_(1-i) & "if" v = W_i
     )
   $
-  // TODO: Should this be a lemma?
-  Note that there exist a bijection between strategies on $G$ and $G'$.
 ]
 
-#theorem("plays on induced strategies")[
-  Let $G = (V_0, V_1, E, p)$ be a parity game and $G' = (V'_0, V'_1, E', p')$ be the induced total parity game from $G$. Let $sigma_0$ and $sigma_1$ be two strategies on $G$ and $sigma'_0$ and $sigma'_1$ the induced strategies on $G'$. Let $v in V_0 union V_1$ and consider the plays starting from $v$ on the instances $(G, sigma_0, sigma_1)$ and $(G', sigma'_0, sigma'_1)$. The two plays have the same winner.
+It can be observed that strategies on a parity game and those on its induced total game create a bijection. In fact notice that the condition $v in V_i and v E != emptyset$ in the first case of $sigma'$ is equivalent to requiring $v in dom(sigma)$, meaning that restricting $sigma'$ to $dom(sigma)$ will result in $sigma$ itself.
 
-  TODO: Proof
+The bijection is not only limited to this. It can be showed that strategies that are correlated in this bijection will also induce plays with the same winner.
+
+#theorem("plays on induced strategies")[
+  Let $G = (V_0, V_1, E, p)$ be a parity game and $G' = (V'_0, V'_1, E', p')$ be the induced total parity game from $G$. Let $sigma_0$ and $sigma_1$ be two strategies on $G$ and $sigma'_0$ and $sigma'_1$ the unique corresponding strategies on $G'$. Let $v in V_0 union V_1$ and consider the plays starting from $v_0$ on the instances $I = (G, sigma_0, sigma_1)$ and $I' = (G', sigma'_0, sigma'_1)$. The two plays have the same winner.
+
+  // TODO: Better "Proof" label
+  Proof. \
+  We will prove that for all $i$ the play induced by $I$ is won by player $i$ if and only if the induced play by $I'$ is also won by player $i$:
+  - $=>)$: We distinguish two cases on the play induced by $I$:
+    - the play is infinite: $v_0 v_1 v_2 ... $, then every vertex is in $dom(sigma_i)$ for some $i$ and thus $sigma'_i$ are defined to be equal to $sigma_i$ and will induce the same play, which is won by player $i$;
+    - the play is finite: $v_0 v_1 ... v_n$, with $v_n in V_(1-i)$ because the play is won by player $i$. For the same reason as the previous point the two induced plays are the same until $v_n$, which is not in $dom(sigma_(1-i))$ but is in $dom(sigma'_(1-i))$. The play induced by $I'$ is $v_0 v_1 ... v_n w_i l_(1-i) w_i ...$ which is also won by player $i$ because only the vertices $w_i$ and $l_(1-i)$ repeat infinitely often, and they have both priority favourable to player $i$.
+  - $arrow.l.double \)$: We distinguish the following cases on the play induced by $I'$:
+    - the play never reaches the $w_0, w_1, l_0$ or $l_1$ vertices: $v_0 v_1 v_2 ...$, then only the first case of $sigma'_i$ is ever used and thus every vertex is in $dom(sigma_i)$. Thus $I$ induces the same play, which is won by player $i$;
+    - the play reaches $w_i$: $v_0 v_1 ... v_n w_i l_(1-i) w_i ...$, then $v_n$ is not in $dom(sigma_(1-i))$ and $I$ induces the finite play $v_0 v_1 ... v_n$ which is won by player $i$ because $v_n in V_(1-i)$ due to its successor being controlled by player $i$;
+    - the play reaches $w_(1-i)$: this is impossible because it would be winning for player $1-i$, which contradicts the hypothesis;
+    - the play reaches $l_i$ or $l_(1-i)$ before $w_i$ or $w_(1-i)$: this is impossible because the only edges leading to $l_i$ or $l_(1-i)$ start from $w_(1-i)$ and $w_i$.
 ]
 
 #theorem("compatibility of induced total parity games")[
@@ -65,8 +77,12 @@ We now want to prove that this new parity game is "compatible" with the original
   Let $v in W_i$, then there exist a winning strategy $sigma_i$ for player $i$. We claim that the induced strategy $sigma'_i$ for player $i$ on $G'$ is also winning. In fact consider any strategy $sigma'_(1-i)$ for player $1-i$ on $G'$, then it is induced by a strategy $sigma_(1-i)$ on $G$. We know that the play starting from $v$ on the instance $(G', sigma'_0, sigma'_1)$ is won by the same player as the play starting from $v$ on the instance $(G, sigma_0, sigma_1)$. Moreover since $sigma_i$ is a winning strategy for player $i$ we know that these plays are won by player $i$, thus $v in W'_i$ and so $W_i subset.eq W'_i$.
 ]
 
-#lemma("induced total parity game bipartite")[
-  TODO: Prove that a induced total parity game is still bipartite if the starting one is.
+#theorem("induced total parity game bipartite")[
+  Let $G = (V_0, V_1, E, p)$ be a bipartite parity game and $G' = (V'_0, V'_1, E', p')$ be the induced total parity game from $G$. Then $G'$ is also a bipartite parity game.
+
+  // TODO: Better "Proof" label
+  Proof.\
+  TODO
 ]
 
 === Lazy successors
@@ -80,7 +96,7 @@ The local strategy improvement algorithm gives a way to consider only a subset o
 
 // TODO: Call this escape set again.
 #definition("incomplete vertex")[
-  Let $G = (V_0, V_1, E, p)$ be a parity game and $G' = (G, U, E')$ a subgame of $G$. The set of incomplete vertices is $I_G(E') = { v | v E != v E' }$.
+  Let $G = (V_0, V_1, E, p)$ be a parity game and $G' = (G, U, E')$ a subgame of $G$. The set of incomplete vertices is $I_G (E') = { v | v E != v E' }$.
 ]
 
 #definition("escape set (updated)")[
