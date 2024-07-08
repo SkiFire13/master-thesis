@@ -110,7 +110,7 @@ In the local strategy iteration it may happen that we learn about the winner on 
 We now propose a transformation that produces a compatible graph and reduces the amount of edges of vertices in the definitely winning sets, thus decreasing the amount of work that the valuation step needs to perform. Informally, the idea will be to replace all outgoing edges from vertices in a definitely winning set with one pointing to one of the four auxiliary vertices $w0$, $l0$, $w1$ or $l1$ in such a way that its winner is preserved and the graph remains bipartite.
 
 #definition("simplified graph")[
-  Let $G = (V'_0, V'_1, E, p)$ be the induced total parity game from $(V_0, V_1, E, p)$, let $G' = (G, U, E')$ be a partially expanded game with ${w0, l0, w1, l1} in U$ and let $v in (V_0 union V_1) sect U$. Let $W'_0$ and $W'_1$ be the definitely winning sets of $G'$. Then the simplified graph of $G'$ is $G'' = (V'_0 sect U, V'_1 sect U, E'', p')$ where:
+  Let $G = (V'_0, V'_1, E, p)$ be the induced total parity game from $(V_0, V_1, E, p)$, let $G' = (G, U, E')$ be a partially expanded game with ${w0, l0, w1, l1} in U$ and let $W'_0$ and $W'_1$ be the definitely winning sets of $G'$. Let $v in (V_0 union V_1) sect (W'_0 union W'_1)$, then $G$ can be simplified to the graph $(V'_0, V'_1, E'', p')$ where:
   
   - if $v in V_0 sect W'_0$ then $E'' = E' without v E' union {(v, l1)}$;
   - if $v in V_0 sect W'_1$ then $E'' = E' without v E' union {(v, w1)}$;
@@ -118,18 +118,8 @@ We now propose a transformation that produces a compatible graph and reduces the
   - if $v in V_1 sect W'_0$ then $E'' = E' without v E' union {(v, w0)}$;
 ]
 
-// TODO: Are these needed or do we need proof?
-#lemma("simplified graph bipartite")[
-  TODO: Prove that the simplified graph is still bipartite
-]
-
-// TODO: Are these needed or do we need proof?
-#lemma("simplified graph total")[
-  TODO: Prove that the simplified graph is still bipartite
-]
-
 #theorem("simplified graph compatible")[
-  TODO: Prove that the simplified graph is compatible with the partially expanded game it comes from.
+  TODO: Prove that the simplified graph is compatible with the original induced total parity game.
 ]
 
 - TODO: How to remove edges lazily in formulas (set atom to T/F)

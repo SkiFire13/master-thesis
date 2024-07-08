@@ -6,7 +6,7 @@
 
 === Strategy iteration
 
-Strategy iteration @jurdzinski_improvement is an algorithm that computes the winning sets and the optimal strategies for the two players of a bipartite and total parity game. The algorithm starts with a strategy for player 0 and repeates _valuation_ phases, during which is computes a _play profile_ for each vertex, and _improvement_ phases, during which it uses such play profiles to improve the strategy. This continues until the strategy can no longer be improved and is guaranteed to be optimal.
+Strategy iteration @jurdzinski_improvement is one of the oldest algorithms that computes the winning sets and the optimal strategies for the two players of a bipartite and total parity game. The algorithm starts with a strategy for player 0 and repeates _valuation_ phases, during which it computes a _play profile_ for each vertex, and _improvement_ phases, during which it uses such play profiles to improve the strategy. This continues until the strategy can no longer be improved, at which point it is guaranteed to be optimal.
 
 We will start introducing some concepts that will help characterize how favourable a vertex is for a given player. We will start by giving the definition of a _relevance ordering_, which is a total order over the vertices where bigger vertices correspond to bigger priorities. This will be important in determining which vertices are more impactful on the winner of a play. We then define the sets of _positive and negative vertices_, which are a different way to partition the set of vertices. In particular the set of positive vertices contains vertices whose priority is even, and thus more favourable to player 0, while the negative vertices will be those with odd priority. We also introduce a _reward ordering_, which instead expresses how favourable to player 0 a vertex is. In particular a positive vertex has a bigger reward than a negative one. Positive vertices are also more rewarding if they have a bigger priority, while negative vertices are less rewarding in that case. Finally, the reward ordering is extended to sets of vertices, where the reward of the most relevant vertex decides which set is more rewarding.
 
@@ -73,6 +73,8 @@ It can be proven @jurdzinski_improvement that each iteration has worst-case comp
   Let $G = (V_0, V_1, E, p)$ be a parity game with a relevance ordering $<$, $sigma$ and $tau$ be two strategies for respectively player 0 and 1 and $phi$ a valuation function for $(G, sigma, tau)$.
   $sigma$ is optimal against $tau$ if $forall u in V_0. forall v in u E. phi(v) lt.curly.eq phi(sigma(u))$. Dually, $tau$ is optimal against $sigma$ if $forall u in V_1. forall v in u E. phi(tau(u)) lt.curly.eq phi(v)$.
 ]
+
+// TODO: Small example of strategy iteration?
 
 === Local algorithm
 
