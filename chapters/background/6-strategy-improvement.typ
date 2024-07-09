@@ -78,7 +78,7 @@ It can be proven @jurdzinski_improvement that each iteration has worst-case comp
 
 === Local algorithm
 
-The strategy improvement algorithm has the downside of requiring to visit the whole graph. In some cases this might be an inconvenience, as the graph could be very large but only a small portion may need to be visited to determine the winner of a specific vertex. For an extreme example, consider a disconnected graph, in which case the winner of a vertex only depends on its connected component and not the whole graph.
+The strategy improvement algorithm has the downside of requiring to visit the whole graph. In some cases this might be an inconvenience, as the graph could be very large but only a small portion may need to be visited to determine the winner of a specific vertex of interest. For an extreme example, consider a disconnected graph, in which case the winner of a vertex only depends on its connected component and not the whole graph.
 
 // TODO: Example where this matters?
 
@@ -93,7 +93,7 @@ The local strategy iteration algorithm @friedmann_local fills this gap by perfor
   Let $G = (V_0, V_1, E, p)$ be a parity game and $G' = G|_U$ subgame of $G$. If $G'$ is still a total parity game it is called a partially expanded game.
 ]
 
-Given a partially expanded game, two optimal strategies and its winning sets, the local algorithm has to decide whether vertices winning for a player in this subgame are also winning in the full game. Recall that a strategy is winning for a player $i$ if any strategy for the opponent results in an induced play that is winning for $i$. However those plays being losing in the subgame do not necessarily mean that all plays in the full game will be losing too, as they might visit vertices not included in the subgame. Intuitively, the losing player might have a way to force a play to reach one of the vertices outside the subgame, called the _$U$-exterior_ of the subgame, and thus lead to a play that is not possible in the subgame. The set of vertices that can do this is called the _escape set_ of the subgame, and for such vertices no conclusions can be made. For the other vertices instead the winner in the subgame is also the winner in the full game.
+Given a partially expanded game, two optimal strategies and its winning sets, the local algorithm has to decide whether vertices winning for a player in this subgame are also winning in the full game. Recall that a strategy is winning for a player $i$ if any strategy for the opponent results in an induced play that is winning for $i$. However those plays being losing in the subgame do not necessarily mean that all plays in the full game will be losing too, as they might visit vertices not included in the subgame. Intuitively, the losing player might have a way to force a play to reach one of the vertices outside the subgame, called the _$U$-exterior_ of the subgame, and thus lead to a play that is not possible in the subgame. The set of vertices that can do this is called the _escape set_ of the subgame, and for such vertices no conclusions can be made. For the other vertices instead the winner in the subgame is also the winner in the full game and they constitute the definitely winning sets.
 
 #definition($U$ + "-exterior")[
   Let $G = (V_0, V_1, E, p)$ be a parity game and $G|_U$ a subgame of $G$. The $U$-exterior of $G|_U$, also written $D_G (U)$, is the set of successors of vertices in $G|_U$ that are not themselves in $G|_U$. That is:
@@ -125,6 +125,5 @@ Given a partially expanded game, two optimal strategies and its winning sets, th
   Let $G = (V_0, V_1, E, p)$ be a parity game and $G|_U$ a subgame of $G$. Then $W'_0 subset.eq W_0$ and $W'_1 subset.eq W_1$.
 ]
 
-- TODO: Local algorithm: steps
-- TODO: Local algorithm: expansion
-- TODO: Local algorithm: complexities (?)
+Once a subgame is solved but no conclusion can be determined the subgame needs to be _expanded_, with the goal of reducing the escape sets and ultimately determing whether the vertex of interest is definitely winning or not. Two expansion schemes are provided in @friedmann_local, one called symmetric and the other asymetric. Both start by considering the player that wins the subgame from the vertex of interest and choosing one vertex in the escape set of the opponent, which cannot be empty. This vertex is then added to the subgame, and in order to keep it a total game one the expansion phase must also add at least one of its successors and so on, until the graph becomes total again. The two schemes differ in this last step, as the asymmetric scheme will add one successor for player 0's vertices and all successors for player 1's vertices, while the symmetric scheme will always add one successor. Intuitively the asymmetric scheme assumes that player 0 will win the full game, while the symmetric scheme makes no such assumption and instead tries to limit the potentially expensive expansion. It was also proven in @friedmann_local that the asymmetric scheme will require at most $O(|V|^(|V_0|))$ iterations, while the symmetric one will require at most $O(|V| dot |V|^(|V_0|))$.
+
