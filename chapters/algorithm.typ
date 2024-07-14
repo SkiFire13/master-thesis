@@ -141,8 +141,14 @@ We now propose a transformation that produces a compatible graph and reduces the
   TODO: Prove that the simplified graph is compatible with the original induced total parity game.
 ]
 
+=== Expansion scheme with exponential increase
+
 - TODO: Exponential increase in expanded nodes
-- TODO: Compute play profiles of expanded nodes
+
+=== Precomputing play profiles of expanded nodes
+
+- TODO: Compute play profiles of expanded nodes while expanding, avoiding the need of a valuation for each expansion.
+
 - TODO: (In conclusions) Only consider unknown/improving vertices
 
 // - observations:
