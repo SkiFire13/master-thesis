@@ -105,7 +105,20 @@ The local strategy improvement algorithm gives a way to consider only a subset o
 
 === Expansion scheme
 
-TODO: Introduce chosen expansion scheme + mention possible improvement.
+The concept of expansion schemes does not change much from the one for the local strategy iteration, with the exception that the expansion might find edges between two already existing vertices, which was not possible in @friedmann_local. 
+
+Since the local strategy iteration algorithm does not require a fixed expansion scheme, our adaptation will not require a specific one either. It should be noted however that some schemes take better advantage of the ability of symbolic moves to perform simplifications and potentially remove lot of edges in bulk. In particular expansion schemes that try to explore less edges or vertices benefit more from the symbolic simplifications since more edges may be removed before the expansion scheme decides to explore them. In contrast more eager expansion schemes may decide to visit those edges earlier and ending up performing useless work due to them.
+
+On the other hand however @friedmann_local shows that lazier expansion schemes, in particular the symmetric one, can result in more strategy iterations, which in the long run can end up being slower, especially for games where most of the parity graph needs to be explored in order to conclusively decide the winner on the initial vertex.
+
+In practice to test our adaptation we choose to use an expansion scheme based on the symmetric one, but adapted to be more eager in some situations.
+
+TODO: mention the improvement section where this is explained.
+
+=== Symbolic formulation semplification
+
+TODO: How to remove edges lazily in formulas (set atom to T/F)
+
 
 == Improvements
 
@@ -128,10 +141,9 @@ We now propose a transformation that produces a compatible graph and reduces the
   TODO: Prove that the simplified graph is compatible with the original induced total parity game.
 ]
 
-- TODO: How to remove edges lazily in formulas (set atom to T/F)
 - TODO: Exponential increase in expanded nodes
-- TODO: (Maybe) Compute play profiles of expanded nodes
-- TODO: (Maybe) Only consider unknown/improving vertices
+- TODO: Compute play profiles of expanded nodes
+- TODO: (In conclusions) Only consider unknown/improving vertices
 
 // - observations:
 //   - expansion for p0 is useful if it improves play profiles
