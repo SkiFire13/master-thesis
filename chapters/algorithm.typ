@@ -105,19 +105,18 @@ The local strategy improvement algorithm gives a way to consider only a subset o
 
 === Expansion scheme
 
-The concept of expansion schemes does not change much from the one for the local strategy iteration, with the exception that the expansion might find edges between two already existing vertices, which was not possible in @friedmann_local. 
+// TODO(prof): Cito testualmente Friedmann o inserisco riferimenti al paper?
+In the local strategy iteration the expansion scheme is tasked with expanding the subgame by adding new nodes to it, in our adaptation it will instead add new edges to it. This does not however change much the logic behind it, since the expansion schemes defined in @friedmann_local are all based on picking vertices in the $U$-exterior or unexplored successors, which can be trivially replaced with picking incomplete vertices and unexplored edges.
 
-Since the local strategy iteration algorithm does not require a fixed expansion scheme, our adaptation will not require a specific one either. It should be noted however that some schemes take better advantage of the ability of symbolic moves to perform simplifications and potentially remove lot of edges in bulk. In particular expansion schemes that try to explore less edges or vertices benefit more from the symbolic simplifications since more edges may be removed before the expansion scheme decides to explore them. In contrast more eager expansion schemes may decide to visit those edges earlier and ending up performing useless work due to them.
+However the resulting properties of the expansion scheme are not guaranteed to stay the same. For example the upper bound on the number of expansions grows from $O(|V|)$ to $O(|E|)$, since in the worse case each expansion adds one edge and they may all be necessary to determine the actual winner on the initial vertex. As shown in @friedmann_local, a big number of expansions might not be ideal because each will require at least one strategy iteration, which in the long run can end up being slower than directly running the global algorithm.
 
-On the other hand however @friedmann_local shows that lazier expansion schemes, in particular the symmetric one, can result in more strategy iterations, which in the long run can end up being slower, especially for games where most of the parity graph needs to be explored in order to conclusively decide the winner on the initial vertex.
+On the other hand a lazier expansion scheme can take better advantage of the ability to perform simplifications on symbolic moves, which allows to remove lot of edges in bulk. A more eager expansion scheme may instead visit all those edges, just to ultimately find out that they were all losing for the same reason. There is thus a tradeoff involved between expanding too much at once, which loses some of the benefits of using symbolic moves, and too little, which instead leads to too many strategy iterations.
 
-In practice to test our adaptation we choose to use an expansion scheme based on the symmetric one, but adapted to be more eager in some situations.
+In practice we will test our adaptation using a modified version of the symmetric expansion scheme from @friedmann_local. This scheme will pick an incomplete vertex and add one its unexplored edges to the subgame. If such edge leads to an unexplored vertex the expansion scheme will continue by picking an edge from such vertex and so on until an existing vertex is reached, re-establishing the total property of the graph.
 
-TODO: mention the improvement section where this is explained.
+// === Symbolic formulas simplification
 
-=== Symbolic formulation semplification
-
-TODO: How to remove edges lazily in formulas (set atom to T/F)
+// TODO: How to remove edges lazily in formulas (set atom to T/F)
 
 
 == Improvements
