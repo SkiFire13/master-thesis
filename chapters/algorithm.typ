@@ -140,13 +140,19 @@ We now propose a transformation that produces a compatible graph and reduces the
   TODO: Prove that the simplified graph is compatible with the original induced total parity game.
 ]
 
+=== Computing play profiles of the expansion
+
+Each game expansion is normally followed by a strategy iteration step, which computes the play profile of each vertex and then tries to improve the current strategy. We can notice however that the play profiles of all the vertices are known right before the expansion, and if we keep the current strategies fixed, both for player 0 and 1, then the newer vertices cannot influence the play profiles for the existing vertices, since the existing strategies will force any play to remain within the edges in the old subgame. Hence, we can compute the play profiles for the newer vertices in isolation, and only then determine if the existing strategies can be improved given the newer vertices.
+
+In order to compute the play profile of the expanded vertices we need to distinguish two cases. In the first case the expansion stops by reaching an existing vertex, in which case the play profiles will be an extension of the play profile of that vertex, according to the play that starts from each of the expanded vertices and visits the other expanded vertices until it reaches the existing vertex. In the second case the expansion stops by reaching another vertex of the expansion, creating a loop, in which case the loop and the most relevant vertex of the loop must be determined, and the play profiles will be determined by looking at the path from each expanded vertex to the most relevant vertex of the loop.
+
+By computing the play profiles after an expansion step it can be determined whether an improvement step can occur or not by comparing the play profiles of the strategy successor of the first expanded vertex with its successor in the expansion. If this does not lead to an improvement step then the expansion can continue, avoiding the cost of the strategy improvement step.
+
+// TODO: Example is cwi where most of the ~2000 vertices in the graph are visited in this way
+
 === Expansion scheme with exponential increase
 
 - TODO: Exponential increase in expanded nodes
-
-=== Precomputing play profiles of expanded nodes
-
-- TODO: Compute play profiles of expanded nodes while expanding, avoiding the need of a valuation for each expansion.
 
 - TODO: (In conclusions) Only consider unknown/improving vertices
 
