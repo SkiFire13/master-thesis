@@ -1,3 +1,73 @@
+@article{mucalculus,
+  title = {Results on the propositional μ-calculus},
+  journal = {Theoretical Computer Science},
+  volume = {27},
+  number = {3},
+  pages = {333-354},
+  year = {1983},
+  note = {Special Issue Ninth International Colloquium on Automata, Languages and Programming (ICALP) Aarhus, Summer 1982},
+  issn = {0304-3975},
+  doi = {https://doi.org/10.1016/0304-3975(82)90125-6},
+  url = {https://www.sciencedirect.com/science/article/pii/0304397582901256},
+  author = {Dexter Kozen},
+  abstract = {In this paper we define and study a propositional μ-calculus Lμ, which consists essentially of propositional modal logic with a least fixpoint operator. Lμ is syntactically simpler yet strictly more expressive than Propositional Dynamic Logic (PDL). For a restricted version we give an exponential-time decision procedure, small model property, and complete deductive system, theory subsuming the corresponding results for PDL.}
+}
+
+@book{bisimilarity,
+  author = {Sangiorgi, Davide},
+  title = {Introduction to Bisimulation and Coinduction},
+  year = {2011},
+  isbn = {1107003636},
+  publisher = {Cambridge University Press},
+  address = {USA},
+  abstract = {Induction is a pervasive tool in computer science and mathematics for defining objects and reasoning on them. Coinduction is the dual of induction and as such it brings in quite different tools. Today, it is widely used in computer science, but also in other fields, including artificial intelligence, cognitive science, mathematics, modal logics, philosophy and physics. The best known instance of coinduction is bisimulation, mainly employed to define and prove equalities among potentially infinite objects: processes, streams, non-well-founded sets, etc. This book presents bisimulation and coinduction: the fundamental concepts and techniques and the duality with induction. Each chapter contains exercises and selected solutions, enabling students to connect theory with practice. A special emphasis is placed on bisimulation as a behavioural equivalence for processes. Thus the book serves as an introduction to models for expressing processes (such as process calculi) and to the associated techniques of operational and algebraic analysis.}
+}
+
+@article{lukamucalculus,
+  author       = {Matteo Mio and Alex K. Simpson},
+  title        = {{\L}ukasiewicz {\(\mu\)}-calculus},
+  journal      = {CoRR},
+  volume       = {abs/1510.00797},
+  year         = {2015},
+  url          = {http://arxiv.org/abs/1510.00797},
+  eprinttype    = {arXiv},
+  eprint       = {1510.00797},
+  timestamp    = {Mon, 13 Aug 2018 16:48:35 +0200},
+  biburl       = {https://dblp.org/rec/journals/corr/MioS15.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
+}
+
+@inproceedings{abstractinterpretation,
+  author = {Cousot, Patrick and Cousot, Radhia},
+  title = {Abstract interpretation: a unified lattice model for static analysis of programs by construction or approximation of fixpoints},
+  year = {1977},
+  isbn = {9781450373500},
+  publisher = {Association for Computing Machinery},
+  address = {New York, NY, USA},
+  url = {https://doi.org/10.1145/512950.512973},
+  doi = {10.1145/512950.512973},
+  abstract = {A program denotes computations in some universe of objects. Abstract interpretation of programs consists in using that denotation to describe computations in another universe of abstract objects, so that the results of abstract execution give some information on the actual computations. An intuitive example (which we borrow from Sintzoff [72]) is the rule of signs. The text -1515 * 17 may be understood to denote computations on the abstract universe {(+), (-), (±)} where the semantics of arithmetic operators is defined by the rule of signs. The abstract execution -1515 * 17 → -(+) * (+) → (-) * (+) → (-), proves that -1515 * 17 is a negative number. Abstract interpretation is concerned by a particular underlying structure of the usual universe of computations (the sign, in our example). It gives a summary of some facets of the actual executions of a program. In general this summary is simple to obtain but inaccurate (e.g. -1515 + 17 → -(+) + (+) → (-) + (+) → (±)). Despite its fundamentally incomplete results abstract interpretation allows the programmer or the compiler to answer questions which do not need full knowledge of program executions or which tolerate an imprecise answer, (e.g. partial correctness proofs of programs ignoring the termination problems, type checking, program optimizations which are not carried in the absence of certainty about their feasibility, …).},
+  booktitle = {Proceedings of the 4th ACM SIGACT-SIGPLAN Symposium on Principles of Programming Languages},
+  pages = {238–252},
+  numpages = {15},
+  location = {Los Angeles, California},
+  series = {POPL '77}
+}
+
+@article{baldan_games,
+  author = {Paolo Baldan and Barbara K{\"{o}}nig and Tommaso Padoan and Christina Mika{-}Michalski},
+  title = {Fixpoint Games on Continuous Lattices},
+  journal = {CoRR},
+  volume = {abs/1810.11404},
+  year = {2018},
+  url = {http://arxiv.org/abs/1810.11404},
+  eprinttype = {arXiv},
+  eprint = {1810.11404},
+  timestamp = {Wed, 31 Oct 2018 14:24:29 +0100},
+  biburl = {https://dblp.org/rec/journals/corr/abs-1810-11404.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+
 @article{tarski,
   author = {Alfred Tarski},
   title = {{A lattice-theoretical fixpoint theorem and its applications.}},
@@ -62,20 +132,6 @@
   url = {https://www.sciencedirect.com/science/article/pii/S0304397598000097},
   author = {Wieslaw Zielonka},
   keywords = {Infinite games, Infinite trees, Rabin complementation lemma}
-}
-
-@article{baldan_games,
-  author = {Paolo Baldan and Barbara K{\"{o}}nig and Tommaso Padoan and Christina Mika{-}Michalski},
-  title = {Fixpoint Games on Continuous Lattices},
-  journal = {CoRR},
-  volume = {abs/1810.11404},
-  year = {2018},
-  url = {http://arxiv.org/abs/1810.11404},
-  eprinttype = {arXiv},
-  eprint = {1810.11404},
-  timestamp = {Wed, 31 Oct 2018 14:24:29 +0100},
-  biburl = {https://dblp.org/rec/journals/corr/abs-1810-11404.bib},
-  bibsource = {dblp computer science bibliography, https://dblp.org}
 }
 
 @InProceedings{jurdzinski_improvement,
