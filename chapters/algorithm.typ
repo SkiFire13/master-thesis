@@ -150,9 +150,15 @@ By computing the play profiles after an expansion step it can be determined whet
 
 // TODO: Example is cwi where most of the ~2000 vertices in the graph are visited in this way
 
-=== Expansion scheme with exponential increase
+// TODO: more formal description?
 
-- TODO: Exponential increase in expanded nodes
+=== Exponentially increasing expansion scheme
+
+While lazier expansion schemes are intuitively better when paired with symbolic moves simplification, and the incremental play profiles computation helps often removes the need to perform an expensive valuation step, it can still happen that games fall into the worst case of expanding only a handful of edges in each iteration without being able to perform significant simplifications. This can be avoided by expanding more eagerly, like in the asymmetric expansion scheme for the local strategy improvement algorithm, but ideally we would like to be lazier when possible. We thus tried setting a minimum amount of edge to add to the graph before considering to perform a valuation step, and increasing it exponentially for each subsequent expansion. This will initially have the benefits of a lazy expansion scheme, due to not forcing to add many edges to the graph, but ultimately will only require a logarithmic number of expansions in the worst case, and with it the number of costly valuation steps. 
+
+- TODO: proof on the maximum number of expansions?
+
+- TODO: does this actually change complexity, or only in practice for "reasonable" inputs?
 
 - TODO: (In conclusions) Only consider unknown/improving vertices
 
