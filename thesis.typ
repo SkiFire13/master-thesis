@@ -18,7 +18,7 @@
 
   academic-year: "2023-2024",
   
-  keywords: ("keyword1", "keyword2", "keyword3"),
+  keywords: ("fixpoint", "parity games", "strategy iteration"),
 
   lang: "en",
 )
