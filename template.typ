@@ -1,4 +1,4 @@
-#import "config/printed.typ": pagebreak-to-right, pagebreak-to-left
+#import "config/printed.typ": pagebreak-to-right, pagebreak-to-left, left-right-margins
 
 #import "preface/titlepage.typ": titlepage
 #import "preface/copyright.typ": copyright
