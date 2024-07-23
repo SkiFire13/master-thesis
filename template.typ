@@ -37,7 +37,7 @@
   )
 
   set page(
-    margin: (top: 1in + 22pt + 18pt + 12pt),
+    margin: (top: 1in + 22pt + 18pt + 12pt, x: 3.5cm, bottom: 3.5cm),
     header-ascent: 12pt + 18pt
   )
   set text(lang: lang)
