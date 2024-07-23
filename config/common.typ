@@ -57,13 +57,19 @@
 
 #let varempty = text(font: "", sym.emptyset)
 #let disjunion = math.accent(sym.union, ".")
-#let eq-columns(..cols) = stack(
+#let eq-columns(..cols) = box(stack(
   dir: ltr,
   h(1fr),
   ..cols.pos().map(align.with(horizon)).intersperse(h(1fr)),
   h(1fr),
-)
+))
 
+#let mathstr(s) = s.clusters().map(s => $#s$).join()
+#let Act = mathstr("Act")
+#let Prop = mathstr("Prop")
+#let Var = mathstr("Var")
+#let tt = mathstr("true")
+#let ff = mathstr("false")
 #let sem(of) = $bracket.l.double of bracket.r.double$
 
 #let dom = math.op("dom")
