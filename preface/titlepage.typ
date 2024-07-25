@@ -1,6 +1,13 @@
 #import "../config/translated.typ": *
 
-#let titlepage(affiliation, title, supervisor, candidate, academic-year) = page(footer: "", align(center)[
+#let footer(academic-year-prefix, academic-year) = align(center)[
+  #line(length: 90%)
+  #smallcaps[ #academic-year-prefix #academic-year ]
+]
+
+#let titlepage(affiliation, title, supervisor, candidate, academic-year) = page(footer: footer(academic-year-prefix, academic-year))[
+  #show: align.with(center)
+
   #text(size: 17pt, strong(affiliation.university))
 
   #text(size: 14pt, smallcaps(affiliation.department))
@@ -32,8 +39,4 @@
       #candidate.id
     ]
   ]
-
-  #v(40pt)
-  #line(length: 90%)
-  #smallcaps[ #academic-year-prefix #academic-year ]
-])
+]
