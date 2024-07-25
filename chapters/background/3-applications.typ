@@ -51,11 +51,36 @@ $
   sem(angle.l A angle.r phi)_rho &= { s in bb(S) | exists t in bb(S), a in sem(A). s ->^a t and t in sem(phi)_rho }
 $
 
-// TODO: How to translate to logic formulas?
+TODO: How to translate to logic formulas?
+
+TODO: Mention that $mu$-calculus already admits a translation to parity games.
 
 === Bisimilarity
 
-TODO
+Bisimilarity is a binary relation on states of a labelled transition system, where two states are in the relation if they have the same "behaviour", for some definition of behaviour. We will focus on the strong bisimilarity $bisim$, where the "behaviour" is identified with the possible transitions from a state. Bisimilarity is usually defined in terms of bisimulations, which are also binary relations on states. For the strong bisimilarity the associated bisimulations $R$ have the following requirement: 
+
+$
+  (s, t) in R 
+$
+$
+  <=>
+$
+$
+  forall a, s'. &s &&->^a s' &&=> exists t'. &&t &&->^a t' &&and (s', t') in R &and \
+  forall a, t'. &t &&->^a t' &&=> exists s'. &&s &&->^a s' &&and (s', t') in R 
+$
+
+Bisimilarity is then defined to be biggest bisimulation, that is the bisimulation that contains all other bisimulations. There is however an alternative formulation based on coinduction and greatest fixpoints:
+
+$
+  bisim #h(0.3em) = nu R. { (s, t) in R | &(forall a, s'. s ->^a s' => exists t'. t ->^a t' and (s', t') in R) \ and &(forall a, t'. t ->^a t' => exists s'. s ->^a s' and (s', t') in R) }
+$
+
+Most notably the set of relations is a lattice when paired with the set inclusion operator $subset$ and the given function in the fixpoint equation is monotone, so this satisfies our requirements for a system of (one) fixpoint equations we can solve.
+
+TODO: How to translate to logic formulas
+
+TODO: Mention the existance of a $O(M log N)$ algorithm for solving strong bisimilarity which will surely be better than solving the fixpoint equation.
 
 === Parity games
 

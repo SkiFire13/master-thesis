@@ -72,6 +72,8 @@
 #let ff = mathstr("false")
 #let sem(of) = $bracket.l.double of bracket.r.double$
 
+#let bisim = sym.tilde.equiv
+
 #let dom = math.op("dom")
 
 #let w0 = $w_0$
