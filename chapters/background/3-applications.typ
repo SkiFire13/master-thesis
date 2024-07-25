@@ -64,7 +64,7 @@ $
   )
 $
 
-TODO: How to translate to logic formulas?
+TODO: How to translate to logic formulas? (Or describe later?)
 
 TODO: Mention that $mu$-calculus already admits a translation to parity games.
 
@@ -99,7 +99,7 @@ $
 
 Most notably the set of relations is a lattice when paired with the set inclusion operator $subset$ and the given function in the fixpoint equation is monotone, so this satisfies our requirements for a system of (one) fixpoint equations we can solve.
 
-TODO: How to translate to logic formulas
+TODO: How to translate to logic formulas? (Or describe later?)
 
 TODO: Mention the existance of a $O(M log N)$ algorithm for solving strong bisimilarity which will surely be better than solving the fixpoint equation.
 
