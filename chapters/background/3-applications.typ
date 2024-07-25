@@ -31,7 +31,7 @@ The semantics of a formula are given by the set of states that satisfy the formu
   $
 )
 
-// TODO: Example with liveness/safety formulas?
+TODO: Example with liveness/safety formulas
 
 We will also consider a slightly more expressive variant of $mu$-calculus. We define a new set as follow, and with the following semantics:
 
@@ -70,7 +70,11 @@ $
   forall a, t'. &t &&->^a t' &&=> exists s'. &&s &&->^a s' &&and (s', t') in R 
 $
 
-Bisimilarity is then defined to be biggest bisimulation, that is the bisimulation that contains all other bisimulations. There is however an alternative formulation based on a greatest fixpoint:
+Bisimilarity is then defined to be biggest bisimulation, that is the bisimulation that contains all other bisimulations. 
+
+TODO: Example for bisimilarity
+
+For our purposes however there is an alternative formulation based on a greatest fixpoint:
 
 $
   bisim #h(0.3em) = nu R. { (s, t) in R |
