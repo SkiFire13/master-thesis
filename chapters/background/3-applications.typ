@@ -55,6 +55,8 @@ $
 
 For example the liveness property, or lack of deadlocks, representing the fact that from a state it is impossible to reach a state from which no transition is possible, can be expressed with the formula $nu x. boxx(tt) tt and diam(tt) x$. This can be read as requiring a state $s$ to be able to make at least one transition ($boxx(t) tt$) and that after any transition with any label from $s$ the same property should hold ($diam(tt) x$).
 
+TODO: How to translate to system of fixpoint equations.
+
 TODO: How to translate to logic formulas?
 
 TODO: Mention that $mu$-calculus already admits a translation to parity games.
@@ -74,7 +76,7 @@ $
   forall a, t'. &t &&->^a t' &&=> exists s'. &&s &&->^a s' &&and (s', t') in R 
 $
 
-Bisimilarity is then defined to be biggest bisimulation, that is the bisimulation that contains all other bisimulations. 
+Bisimilarity is then defined to be biggest bisimulation, that is the bisimulation that contains all other bisimulations, or equivalently the union of all bisimulations.
 
 TODO: Example for bisimilarity
 
