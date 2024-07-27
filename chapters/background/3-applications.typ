@@ -53,7 +53,7 @@ $
   sem(boxx(A) phi)_rho &= { s in bb(S) | exists t in bb(S), a in sem(A). s ->^a t and t in sem(phi)_rho }
 $
 
-For example the liveness property, or lack of deadlocks, representing the fact that from a state it is impossible to reach a state from which no transition is possible, can be expressed with the formula $nu x. boxx(tt) tt and diam(tt) x$. This can be read as requiring a state $s$ to be able to make at least one transition ($boxx(t) tt$) and that after any transition with any label from $s$ the same property should hold ($diam(tt) x$).
+For example the liveness property, or lack of deadlocks, representing the fact that it is impossible to reach a state from which no transition is possible, can be expressed with the formula $nu x. boxx(tt) tt and diam(tt) x$. This can be read as requiring a state $s$ to be able to make at least one transition, that is it satisfies $boxx(tt) tt$, and that after one transition the same property should hold, that is it satisfies $diam(tt) x$.
 
 It is possible to translate $mu$-calculus formulas into systems of fixpoint equations by extracting each fixpoint subformula into its own equation and replacing it with its variable, assuming that no variable is used in multiple fixpoints. It is required that outer fixpoints appear later in the system of equations. For example the formula $mu x. boxx(tt) x or (nu y. diam(a) y and x)$ would be translated into the following system:
 
