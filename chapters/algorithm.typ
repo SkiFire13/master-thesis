@@ -21,7 +21,9 @@ The way we do this transformation is by providing auxiliary vertices that will b
 
     - $V'_1 = V_1 union { w1, l1 }$
 
-    - $E' = E union { (v, w_i) | i in {0,1} and v in V_(1-i) and v E = varempty } union { (w0, l1), (l1, w0), (w1, l0), (l0, w1) }$
+    - #box(baseline: 2em, $
+    E' = E &union { (v, w_i) | i in {0,1} and v in V_(1-i) and v E = varempty } \ &union { (w0, l1), (l1, w0), (w1, l0), (l0, w1) }
+    $)
 
     - #box(baseline: 2em, math.equation(block: true, $p'(v) = cases(
         p(v) & "if" v in V \
