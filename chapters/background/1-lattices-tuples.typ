@@ -56,7 +56,7 @@ When we will later characterize the solutions of a system of fixpoint equations 
 
 // TODO: Image example of basis of non-powerset
 
-#example("basis of powerset")[
+#example("basis of powerset", label: <powerset-basis>)[
   Given a set $X$, a basis of the poset $(2^X, subset.eq)$ is the set of singletons $B_(2^X) = { {x} | x in X }$.
 ]
 

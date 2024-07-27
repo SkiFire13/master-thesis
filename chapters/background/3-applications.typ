@@ -2,7 +2,7 @@
 
 == Applications
 
-=== $mu$-calculus
+=== $mu$-calculus <mucalculus-application>
 
 The $mu$-calculus is a propositional modal logic extended with support for least and greatest fixpoints. It was first introduced by Dana Scott and Jaco de Bakker and later developed by Dexter Kozen in @mucalculus. It is mainly used to describe properties of (labelled) transition systems to be verified.
 
@@ -31,7 +31,7 @@ The semantics of a formula are given by the set of states that satisfy the formu
   $
 )
 
-We will thus say that a state $s$ satisfies a $mu$-calculus formula $phi$ if it is contained in its semantics, that is $s in sem(phi)_rho$, where $rho$ is initially undefined for all $x in Var$ and fixed for all $p in Prop$.
+We will thus say that a state $s$ satisfies a $mu$-calculus formula $phi$ if it is contained in its semantics, that is $s in sem(phi)_rho_0$, where $rho_0$ is initially undefined for all $x in Var$ and with some fixed value for all $p in Prop$.
 
 Intuitively the $mu$-calculus formulas have a similar meaning as in the common propositional logic, however it is also a modal logic thanks to the $diam(\_)$ and $boxx(\_)$ operators, requiring a formula to hold for respectively all or any state reachable by the current state through a transition with the given action. Fixpoints then allow to propagate this requirements after any number of transitions.
 
@@ -55,7 +55,9 @@ $
 
 For example the liveness property, or lack of deadlocks, representing the fact that it is impossible to reach a state from which no transition is possible, can be expressed with the formula $nu x. boxx(tt) tt and diam(tt) x$. This can be read as requiring a state $s$ to be able to make at least one transition, that is it satisfies $boxx(tt) tt$, and that after one transition the same property should hold, that is it satisfies $diam(tt) x$.
 
-It is possible to translate $mu$-calculus formulas into systems of fixpoint equations by extracting each fixpoint subformula into its own equation and replacing it with its variable, assuming that no variable is used in multiple fixpoints. It is required that outer fixpoints appear later in the system of equations. For example the formula $mu x. boxx(tt) x or (nu y. diam(a) y and x)$ would be translated into the following system:
+It is possible to translate $mu$-calculus formulas into systems of fixpoint equations over $2^bb(S)$, the powerset lattice of its states. Such system can be obtained by extracting each fixpoint subformula into its own equation and replacing it with its variable, assuming that no variable is used in multiple fixpoints. Since the order of equations matter, outer fixpoints must appear later in the system of equations. It can be shown that each function in the system is monotone, and so it always admits a solution.
+
+For example the formula $mu x. boxx(tt) x or (nu y. diam(a) y and x)$ would be translated into the following system, where for simplicity we used formulas instead of their semantics:
 
 $
   syseq(
@@ -64,11 +66,9 @@ $
   )
 $
 
-TODO: How to translate to logic formulas? (Or describe later?)
-
 TODO: Mention that $mu$-calculus already admits a translation to parity games.
 
-=== Bisimilarity
+=== Bisimilarity <bisimilarity-application>
 
 Bisimilarity @bisimilarity is a binary relation on states of a labelled transition system, where two states are in the relation if they have the same "behaviour", for some definition of behaviour. We will focus on the strong bisimilarity $bisim$, where the "behaviour" is identified with the possible transitions from a state. Bisimilarity is usually defined in terms of bisimulations, which are also binary relations on states. For the strong bisimilarity the associated bisimulations $R$ have the following requirement: 
 
@@ -97,9 +97,7 @@ $
   }
 $
 
-Most notably the set of relations is a lattice when paired with the set inclusion operator $subset$ and the given function in the fixpoint equation is monotone, so this satisfies our requirements for a system of (one) fixpoint equations we can solve.
-
-TODO: How to translate to logic formulas? (Or describe later?)
+This is a single fixpoint equation over $2^(bb(S) times bb(S))$, the powerset lattice of binary relations of states, and it can be shown the associated function is monotone.
 
 TODO: Mention the existance of a $O(M log N)$ algorithm for solving strong bisimilarity which will surely be better than solving the fixpoint equation.
 
