@@ -26,7 +26,7 @@
 #include "chapters/1-introduction.typ"
 #include "chapters/2-background.typ"
 #include "chapters/3-algorithm.typ"
-#include "chapters/4-profiling.typ"
+#include "chapters/4-implementation.typ"
 #include "chapters/5-conclusion.typ"
 
 // TODO: Move to template/a more organized place

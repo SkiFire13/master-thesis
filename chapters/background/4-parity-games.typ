@@ -26,7 +26,7 @@ We will first introduce graphs and some convenient notation for them. Moreover w
 ]
 
 #definition("play")[
-  Let $G = (V_0, V_1, E, p)$ be a parity game. Starting from a vertex $v_0 in V_0 union V_1$ we can build a potentially infinite sequence $pi = v_0 v_1 ...$ such that $forall i. v_i E v_(i+1)$. If the play is finite, that is $pi = v_0 v_1 ... v_n$, then $v_n E = emptyset$ is also required. Such sequence is called a play.
+  Let $G = (V_0, V_1, E, p)$ be a parity game. Starting from a vertex $v_0 in V_0 union V_1$ we can build a potentially infinite sequence $pi = v_0 v_1 ...$ such that $forall i. v_i E v_(i+1)$. If the play is finite, that is $pi = v_0 v_1 ... v_n$, then $v_n E = varempty$ is also required. Such sequence is called a play.
 ]
 
 #definition("winner of a play")[
@@ -42,11 +42,11 @@ Total parity games instead require every vertex to have at least one successor, 
 We will mostly assume bipartite parity games, while we will show that we can convert any parity game to a compatible total parity game.
 
 #definition("bipartite parity game")[
-  Let $G = (V_0, V_1, E, p)$ be a parity game. It is also a bipartite parity game if the graph $(V_0, V_1, E)$ is bipartite, that is $forall v in V_i. v E sect V_i = emptyset$.
+  Let $G = (V_0, V_1, E, p)$ be a parity game. It is also a bipartite parity game if the graph $(V_0, V_1, E)$ is bipartite, that is $forall v in V_i. v E sect V_i = varempty$.
 ]
 
 #definition("total parity game")[
-  Let $G = (V_0, V_1, E, p)$ be a parity game. It is also a total parity game if every vertex has at least one successor, that if $forall v in V_0 union V_1. v E != emptyset$.
+  Let $G = (V_0, V_1, E, p)$ be a parity game. It is also a total parity game if every vertex has at least one successor, that if $forall v in V_0 union V_1. v E != varempty$.
 ]
 
 === Strategies
@@ -54,13 +54,13 @@ We will mostly assume bipartite parity games, while we will show that we can con
 By the well-known determinacy of parity games @pg_ermeson @pg_zielonka we know that each vertex is winning for exactly one of the two players, that is that player can force every play to be winning for them. Moreover it is known that the winning player also has a so-called memoryless winning strategy, that is a way to choose the next vertex in the play without considering the previous ones such that any resulting play is winning for them. From now on we will focus only on strategies and plays induced by strategies, as they are finite and easier to reason about.
 
 #definition("strategy")[
-  Let $G = (V_0, V_1, E, p)$ be a parity game. A (memoryless) strategy for player $i$ is a function from $v in V_i$ such that $v E != emptyset$ to $v E$.
+  Let $G = (V_0, V_1, E, p)$ be a parity game. A (memoryless) strategy for player $i$ is a function from $v in V_i$ such that $v E != varempty$ to $v E$.
 ]
 
 #definition("strategy induced instance")[
   Let $G = (V_0, V_1, E, p)$ be a parity game, $sigma$ be a strategy for player 0 and $tau$ be a strategy for player 1. An instance of the game $G$ induced by the strategies $sigma$ and $tau$ is a tuple $(G, sigma, tau)$.
 
-  Given a starting vertex $v_0 in V_0 union V_1$ an instance also uniquely defines a play, called an induced play, where if $v_i E != emptyset$ then $v_(i+1) = sigma(v_i)$ if $v_i in V_0$ and $v_(i+1) = tau(v_i)$ if $v_i in V_1$, otherwise the play is finite and stops at $v_i$.
+  Given a starting vertex $v_0 in V_0 union V_1$ an instance also uniquely defines a play, called an induced play, where if $v_i E != varempty$ then $v_(i+1) = sigma(v_i)$ if $v_i in V_0$ and $v_(i+1) = tau(v_i)$ if $v_i in V_1$, otherwise the play is finite and stops at $v_i$.
 ]
   
 // TODO: Do we give a shorthand syntax to such plays?

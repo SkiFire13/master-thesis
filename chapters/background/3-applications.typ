@@ -17,7 +17,7 @@ The semantics of a formula are given by the set of states that satisfy the formu
 #eq-columns(
   $
     sem(tt)_rho &= bb(S) \
-    sem(ff)_rho &= emptyset \
+    sem(ff)_rho &= varempty \
     sem(p)_rho &= rho(p) \
     sem(phi or psi)_rho &= sem(phi)_rho union sem(psi)_rho \
     sem(phi and psi)_rho &= sem(phi)_rho sect sem(psi)_rho
@@ -54,6 +54,8 @@ $
 $
 
 For example the liveness property, or lack of deadlocks, representing the fact that it is impossible to reach a state from which no transition is possible, can be expressed with the formula $nu x. boxx(tt) tt and diam(tt) x$. This can be read as requiring a state $s$ to be able to make at least one transition, that is it satisfies $boxx(tt) tt$, and that after one transition the same property should hold, that is it satisfies $diam(tt) x$.
+
+// TODO: Mention translation to parity game?
 
 It is possible to translate $mu$-calculus formulas into systems of fixpoint equations over $2^bb(S)$, the powerset lattice of its states. Such system can be obtained by extracting each fixpoint subformula into its own equation and replacing it with its variable, assuming that no variable is used in multiple fixpoints. Since the order of equations matter, outer fixpoints must appear later in the system of equations. It can be shown that each function in the system is monotone, and so it always admits a solution.
 

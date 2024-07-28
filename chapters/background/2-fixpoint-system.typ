@@ -30,7 +30,7 @@ We will now define what is a system of fixpoint equations and what is its soluti
 // TODO: tup(f) monotone according to pointwise order? Is it useful?
 
 #notation("empty system of fixpoint equations")[
-  A system of equations with no equations or variables is conveniently written as $emptyset$.
+  A system of equations with no equations or variables is conveniently written as $varempty$.
 ]
 
 #definition("substitution")[
@@ -46,7 +46,7 @@ We can now define the solution for a system of fixpoint equations recursively, s
   Let $(L, sub)$ be a complete lattice and $E$ be a system of $n$ fixpoint equations over $L$ and variables $x_i$ for $i in range(n)$. The solution of $E$ is $s = sol(E)$, with $s in L^n$ inductively defined as:
 
   $
-    sol(emptyset) &= () \
+    sol(varempty) &= () \
     sol(E) &= (sol(E[x_n := s_n]), s_n)
   $
 
@@ -62,11 +62,11 @@ We can now define the solution for a system of fixpoint equations recursively, s
     )
   $
 
-  To solve this system of fixpoint equations we apply the definiton of its solution, getting $sol(E) = (sol(E[x_2 := s_2]), s_2)$ with $s_2 = nu(lambda x. sol(E[x_2 := x]) sect x)$. In order to find $s_2$ we will need to $E[x_2 := x]$, that is the system of the single fixpoint equation $x_1 feq_mu x_1 union x$ and parameterized over $x$. To do this we apply the definition again, getting $sol(E[x_2 := x]) = (sol(emptyset), s_1)$ with $s_1 = mu(lambda x'. x' union x)$. At this point we have hit the base case with $sol(emptyset)$, which is just $()$, while we can find $s_1$ by solving the given fixpoint equation, getting $s_1 = x$ because $x$ is the smallest value that is equal to itself when joined with $x$. We thus get $sol(E[x_2 := x]) = (x)$, and we are back to find $s_2$, whose definition can now be simplified to $nu(lambda x. x sect x)$. Thus fixpoint equation can now be solved, getting $s_2 = X$ because $X$ is the greatest element of $2^X$ and also sasfies the given equation. Finally, we can get $sol(E[x_2 := s_2]) = s_2 = X$ by substituting $s_2$ in place of $x$ in $sol(E[x_2 := x])$, and with this we get $sol(E) = (X, X)$.
+  To solve this system of fixpoint equations we apply the definiton of its solution, getting $sol(E) = (sol(E[x_2 := s_2]), s_2)$ with $s_2 = nu(lambda x. sol(E[x_2 := x]) sect x)$. In order to find $s_2$ we will need to $E[x_2 := x]$, that is the system of the single fixpoint equation $x_1 feq_mu x_1 union x$ and parameterized over $x$. To do this we apply the definition again, getting $sol(E[x_2 := x]) = (sol(varempty), s_1)$ with $s_1 = mu(lambda x'. x' union x)$. At this point we have hit the base case with $sol(varempty)$, which is just $()$, while we can find $s_1$ by solving the given fixpoint equation, getting $s_1 = x$ because $x$ is the smallest value that is equal to itself when joined with $x$. We thus get $sol(E[x_2 := x]) = (x)$, and we are back to find $s_2$, whose definition can now be simplified to $nu(lambda x. x sect x)$. Thus fixpoint equation can now be solved, getting $s_2 = X$ because $X$ is the greatest element of $2^X$ and also sasfies the given equation. Finally, we can get $sol(E[x_2 := s_2]) = s_2 = X$ by substituting $s_2$ in place of $x$ in $sol(E[x_2 := x])$, and with this we get $sol(E) = (X, X)$.
 
   To recap, the steps performed were:
   - $sol(E) = (sol(E[x_2 := s_2]), s_2)$ with $s_2 = nu(lambda x. sol(E[x_2 := x]) sect x)$
-  - $sol(E[x_2 := x]) = (sol(emptyset), s_1)$ with $s_1 = mu(lambda x'. x' union x)$
+  - $sol(E[x_2 := x]) = (sol(varempty), s_1)$ with $s_1 = mu(lambda x'. x' union x)$
   - solving $s_1$ gives $s_1 = x$
   - solving $s_2$ gives $s_2 = nu(lambda x. x sect x) = X$
   - $sol(E) = (X, X)$
@@ -85,10 +85,10 @@ Notice that the way the solution of a system of fixpoint equations is defined de
   
   This time the steps needed will be the following:
   - $sol(E') = (sol(E'[x_2 := s_2]), s_2)$ with $s_2 = mu(lambda x. sol(E'[x_2 := x]) union x)$
-  - $sol(E'[x_2 := x]) = (sol(emptyset), s_1)$ with $s_1 = nu(lambda x'. x' sect x)$
+  - $sol(E'[x_2 := x]) = (sol(varempty), s_1)$ with $s_1 = nu(lambda x'. x' sect x)$
   - solving $s_1$ gives $s_1 = x$
-  - solving $s_2$ gives $s_2 = mu(lambda x. x sect x) = emptyset$
-  - $sol(E') = (emptyset, emptyset)$
+  - solving $s_2$ gives $s_2 = mu(lambda x. x sect x) = varempty$
+  - $sol(E') = (varempty, varempty)$
 
-  Notice that $sol(E) = (X, X) != (emptyset, emptyset) = sol(E')$
+  Notice that $sol(E) = (X, X) != (varempty, varempty) = sol(E')$
 ]
