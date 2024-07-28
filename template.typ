@@ -73,7 +73,7 @@
     set heading(numbering: "1.1.1")
     show heading.where(level: 1): it => {
       pagebreak-to-right(weak: true)
-      text(size: 24pt, it)
+      smallcaps(text(size: 24pt, it))
       v(1.5em)
     }
     show heading.where(level: 2): it => {

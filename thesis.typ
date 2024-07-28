@@ -23,11 +23,11 @@
   lang: "en",
 )
 
-#include "chapters/introduction.typ"
-#include "chapters/background.typ"
-#include "chapters/algorithm.typ"
-#include "chapters/profiling.typ"
-#include "chapters/conclusion.typ"
+#include "chapters/1-introduction.typ"
+#include "chapters/2-background.typ"
+#include "chapters/3-algorithm.typ"
+#include "chapters/4-profiling.typ"
+#include "chapters/5-conclusion.typ"
 
 // TODO: Move to template/a more organized place
 #bibliography("sources.bib")
