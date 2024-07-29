@@ -85,7 +85,82 @@ We then used the parity game instances included in the Oink @oink collection of 
 
 == Testing with $mu$-calculus
 
-// TODO: Testing mucalc (aut format)
+As mentioned in @mucalculus-application and @mucalculus-translation, $mu$-calculus formulas can be translated to systems of fixpoint equations and then to logic formulas. We implemented this in the _mucalc_ crate, which does this after parsing a labeled transition system and a $mu$-calculus formula from two given files.
+
+The labelled transition system is expected to be in the AUT (Aldebaran) format, according to the following EBNF grammar, based on @aut_spec:
+
+#[
+  #show "<": sym.angle.l
+  #show ">": sym.angle.r
+
+  #let s = h(0.5em)
+
+  #let aut = mathstr("aut")
+  #let header = mathstr("header")
+  #let initialstate = mathstr("initial-state")
+  #let transitionscount = mathstr("transitions-count")
+  #let statescount = mathstr("states-count")
+  #let transition = mathstr("transition")
+  #let fromstate = mathstr("from-state")
+  #let label = mathstr("label")
+  #let unquotedlabel = mathstr("unquoted-label")
+  #let quotedlabel = mathstr("quoted-label")
+  #let tostate = mathstr("to-state")
+
+  $
+    <aut> &::= <header> #s <transition>^* \
+    <header> &::= sans("des") #s sans("(") #s <initialstate> #s sans(",") #s <transitionscount> #s sans(",") #s <statescount> sans(")" #s) \
+    <initialstate> &::= bb(N) \
+    <transitionscount> &::= bb(N) \
+    <statescount> &::= bb(N) \
+    <transition> &::= sans("(") #s <fromstate> #s sans(",") #s <label> #s sans(",") #s <tostate> #s sans(")") \
+    <fromstate> &::= bb(N) \
+    <label> &::= <unquotedlabel> | <quotedlabel> \
+    <unquotedlabel> &::= ("any character except \"" #h(0.3em)) #s ("any character except ," #h(0.3em))^* \
+    <quotedlabel> &::= sans("\"") #s ("any character except \"" #h(0.3em))^* #s sans("\"") \
+    <tostate> &::= bb(N) \
+  $
+]
+
+The grammar consists of a header containing the literal "des" followed by the initial state number, the number of transitions and the number of states. Following that are all the transitions, encoded as a triple with the starting state, the label, which can be quoted or not, and the ending state. Differently from the specification at @aut_spec, we have preferred a slightly different definition for the quoted and unquoted labels to simplify the implementation. We have not observed inputs for which out definition makes a difference.
+
+The expect $mu$-calculus formula is expected to be of the more expressive variant described in @mucalculus-application, according to the following EBNF grammar:
+
+#[
+  #show "<": sym.angle.l
+  #show ">": sym.angle.r
+
+  #let s = h(0.5em)
+
+  #let expr = mathstr("expr")
+  #let fixexpr = mathstr("fix-expr")
+  #let var = mathstr("var")
+  #let orexpr = mathstr("or-expr")
+  #let andexpr = mathstr("and-expr")
+  #let modalexpr = mathstr("modal-expr")
+  #let action = mathstr("action")
+  #let label = mathstr("label")
+  #let atom = mathstr("atom")
+
+  $
+    <expr> &::= <fixexpr> | <orexpr> \
+    <fixexpr> &::= (sans("mu") | sans("nu")) #s <var> #s sans(".") #s <orexpr> \
+    <var> &::= ("any identifier") \
+    <orexpr> &::= <andexpr> #s (#s sans("||") #s <andexpr> #s)^* \
+    <andexpr> &::= <modalexpr> #s (#s sans("&&") #s <modalexpr> #s)^* \
+    <modalexpr> &::= (sans("＜") #s action #s sans("＞") #s atom)
+      | ( #s sans("[") #s action #s sans("]") #s atom )
+      | atom \
+    <action> &::= label | sans("not") #s label | sans("true") \
+    <label> &::= ("any character except ＞ and ]" #h(0.3em)) \
+    <atom> &::= sans("true") | sans("false") | <var> | sans("(") #s <expr> #s sans(")") 
+  $
+]
+
+This follows the formal definition of a $mu$-calculus formula given previously, with the main changes being the replacement of mathematical symbols in favour of ASCII characters and a more explicit definition of the precedence rules.
+
+The two grammars for labelled transition systems and $mu$-calculus formulas have been chosen to be compatible with the ones used in LCSFE, in order to simplify a comparison between the two. However they have also been extended in order to allow for quoted labels in the labelled transition system grammar, which appeared in some instances used for testing, and more convenient precedence rules for the $mu$-calculus grammar, which helped when writing some more complex formulas.
+
 // TODO: mucalc Gossips vs Flori vs mCRL2 (bad case deadlock and better case ??)
 // TODO: mucalc Evaluation on VLTS benchmarks (bad cases and good cases)
 
