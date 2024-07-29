@@ -68,7 +68,7 @@ It can be proven that a selection always exists and is $E(b, i)$. Moreover it ca
 
 === Logic for upward-closed sets
 
-Ideally we would be interested in the least selection; this can be shown to always exist in finite lattices, but not in infinite ones. However the least selection can be exponential with respect to the basis size; for this reason a logic for upward-closed sets is used to represent the $E(b, i)$ set in a compact way. Additionally this allows us to generate sets of moves which are typically small, even if they are not the least ones. 
+Ideally we would be interested in the least selection; this can be shown to always exist in finite lattices, but not in infinite ones. However the least selection can be exponential with respect to the basis size; for this reason a logic for upward-closed sets is used to represent the $E(b, i)$ set in a compact way. Additionally this allows us to generate sets of moves which are typically small, even if they are not the least ones. From now on we will refer to formulas in such logic with "logic formulas".
 // TODO(Prof): "since not compositional"?
 
 // TODO: Example least selection is exponential
