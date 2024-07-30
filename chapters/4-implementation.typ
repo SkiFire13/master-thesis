@@ -163,11 +163,9 @@ The two grammars for labelled transition systems and $mu$-calculus formulas have
 
 === Performance comparison
 
-We compared the performance with LCSFE and mCRL2 on the examples used originally in @flori. All the tests were performed on a computer equipped with a AMD Ryzen 3700x and 32GB of DDR4 RAM running Windows 10. LCSFE and our implementation were compiled using Rust's release profile.
+We compared the performance with LCSFE and mCRL2 on the mCRL2 examples used originally in @flori. All the tests were performed on a computer equipped with a AMD Ryzen 3700x and 32GB of DDR4 RAM running Windows 10. LCSFE and our implementation were compiled using Rust's release profile.
 
-We started with the "bridge referee" example, a labelled transition system with 102 states and 177 transitions, checking the formula $mu x. boxx(#h(0em)"report"(17)) #h(0.3em) tt or boxx(tt) #h(0.3em) x$, corresponding to the fact that from the initial state the system can reach a state where a transition with label "report(17)" can be performed.
-
-We start by using mCRL2's suggested workflow to verify whether the formula holds or not. We first use mCRL2 to convert the mCRL2 specification into mCRL2's internal lps format:
+We started with the "bridge referee" example from mCRL2, a labelled transition system with 102 states and 177 transitions, checking the formula $mu x. boxx(#h(0em)"report"(17)) #h(0.3em) tt or boxx(tt) #h(0.3em) x$, corresponding to the fact that from the initial state the system can reach a state where a transition with label "report(17)" can be performed. Using mCRL2's suggested workflow we first converted the mCRL2 specification into its internal lps format using the `mcrl22lps` utility:
 
 ```cmd
 > mcrl22lps bridge-referee.mcrl2 bridge.lps --timings
@@ -178,7 +176,7 @@ We start by using mCRL2's suggested workflow to verify whether the formula holds
     total: 0.024
 ```
 
-Then, we bundle together the lps file and a file holding the formula specified above into a pbes file, another internal format.
+Then, we bundled together the lps file and a file holding the formula specified above into a pbes file, another internal format, using the `lps2pbes` utility.
 
 ```cmd
 > lps2pbes bridge.lps --formula=bridge_report_17.mcf \
@@ -190,7 +188,7 @@ Then, we bundle together the lps file and a file holding the formula specified a
     total: 0.016
 ```
 
-Finally, mCRL2 converts the pbes file into a boolean parity game and solves it.
+Finally, the `pbes2bool` was used to convert the pbes file into a boolean parity game and solve it. It should be noted that $mu$-calculus also admits an ad-hoc translation to parity games, which we would expect to be better than our generic approach.
 
 ```cmd
 > pbes2bool bridge_report_17.pbes -rjittyc --timings
@@ -204,7 +202,7 @@ true
     total: 0.038349
 ```
 
-We now verify the same formula with LCSFE and our implementation. First, we use mCRL2 to convert the state machine to a labelled transition system in AUT format. To do this we will reuse the lps file previously generated to generate a lts file:
+We then verified the same formula with LCSFE and our implementation. We used mCRL2 again to convert the mCRL2 machine specification to a labelled transition system in AUT format we can use. To do this we reused the lps file previously generated to produce a lts file using the `lps2lts` utility:
 
 ```cmd
 > lps2lts bridge.lps bridge.lts -rjittyc --timings
@@ -215,7 +213,7 @@ We now verify the same formula with LCSFE and our implementation. First, we use 
     total: 0.035608
 ```
 
-We can then convert it to a AUT file using the `ltsconvert` utility, which converts between different labelled transition systems formats:
+The lts file was then converted to an AUT file using the `ltsconvert` utility, which converts between different labelled transition systems formats:
 
 ```cmd
 > ltsconvert bridge.lts bridge.aut --timings
@@ -227,7 +225,7 @@ We can then convert it to a AUT file using the `ltsconvert` utility, which conve
     total: 0.002
 ```
 
-Now we verify the formula using LCSFE:
+Finally we verified the formula using LCSFE and our implementation
 
 ```cmd
 > lcsfe-cli mu-ald bridge.aut bridge_report_17.mcf 0
@@ -237,8 +235,6 @@ Preprocessing took: 0.0004837 sec.
 Solving the verification task took: 0.0000129 sec.
 Result: The property is satisfied from state 0
 ```
-
-and with our implementation:
 
 ```cmd
 > mucalc bridge.aut bridge_report_17.mcf
@@ -251,7 +247,7 @@ The formula is satisfied
 
 In this very small example we can see that our implementation is slightly slower. However it should be noted that it is also doing slightly more work by bridging the symbolic formulation and the strategy iteration solver, thus masking any potential difference in complexity.
 
-We then tested the second formula that was used in @flori, which uses the bigger "gossip" labelled transition system, with 9152 states and 183041 transitions. The formula tested was $nu x. boxx(tt) tt and diam(tt) x$, which represents the lack of deadlocks. It should be noted that deadlock formulas that are satisfied, like this one, are a kind of worst case for local algorithms, because they require visiting the whole graph in order to determine whether they are satisfied or not.
+We then tested the second formula that was used in @flori, which uses the bigger "gossip" labelled transition system, also an example from mCRL2, with 9152 states and 183041 transitions. The formula tested was $nu x. boxx(tt) tt and diam(tt) x$, which represents the lack of deadlocks. It should be noted that formulas checking for absence of deadlock that are satisfied, like this one, are a worst case for local algorithms because they require visiting the whole graph, thus negating the advantage of local algorithms to visit only the states that are relevant.
 
 Just like before we first checked it using mCRL2:
 
@@ -286,7 +282,7 @@ true
     total: 1.422398
 ```
 
-The formula is thus confirmed to be valid. Then as before we used mCRL2 to convert it to the AUT format and checked it using LCSFE and our implementation. It should be noted that for LCSFE we had to rise the default stack space since the recursive nature of the solver lead it to a stack overflow.
+Which confirms the formula to be valid. Then as before we used mCRL2 to convert it to the AUT format and checked it again using LCSFE and our implementation. It should be noted that for LCSFE we had to rise the default stack space since the recursive nature of the solver lead it to a stack overflow.
 
 ```cmd
 > lps2lts gossip.lps gossip.lts -rjittyc --timings
@@ -325,7 +321,7 @@ Solve took 164.6531ms
 The formula is satisfied
 ```
 
-Our implementation is an order of magnitude faster than LCSFE, confirming that the better parity game solving algorithm does make a difference, to the point where the bottleneck becomes the generation of the AUT file. Compared with mCRL2 they both take a similar amount of time, most of which is spent in mCRL2 in both cases. Overall however mCRL2 is slightly faster, probably due to the costs of the intermediate conversions to produce the AUT file or the overhead of using a local algorithm in a case where all states must be explored regardless.
+Our implementation is an order of magnitude faster than LCSFE, confirming that the better parity game solving algorithm does make a difference, to the point where the bottleneck becomes the generation of the AUT file. Compared with mCRL2 our implementation overall takes a similar amount of time, most of which is spent doing conversions with mCRL2. Overall however the pure mCRL2 approach is slightly faster, probably due to the costs of the intermediate conversions to produce the AUT file or the overhead of using a local algorithm in a case where all states must be explored regardless.
 
 // TODO: mucalc Evaluation on VLTS benchmarks (bad cases and good cases)
 
