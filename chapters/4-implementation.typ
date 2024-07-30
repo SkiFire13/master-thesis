@@ -323,7 +323,10 @@ The formula is satisfied
 
 Our implementation is an order of magnitude faster than LCSFE, confirming that the better parity game solving algorithm does make a difference, to the point where the bottleneck becomes the generation of the AUT file. Compared with mCRL2 our implementation overall takes a similar amount of time, most of which is spent doing conversions with mCRL2. Overall however the pure mCRL2 approach is slightly faster, probably due to the costs of the intermediate conversions to produce the AUT file or the overhead of using a local algorithm in a case where all states must be explored regardless.
 
+We also tried running some of the benchmarks in the VLTS suite to understand the limitations and the strengths of our implementation. For each instance chosen we verified the $mu$-calculus formulas $nu x. boxx(tt) tt and diam(tt) x$, which checks for absence of deadlocks, and $mu x. boxx(tt) x or (mu y. boxx(#h(0em)"tau"#h(0em)) y)$, which checks for absense of livelocks or cycles of only tau transitions.
 // TODO: mucalc Evaluation on VLTS benchmarks (bad cases and good cases)
+
+// TODO: boxx and diam are wrong (inverted?). Also re-check the livelock formula
 
 TODO: Generate random FIFO/LIFO using CADP and gather measurements on them?
 
