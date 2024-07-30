@@ -151,7 +151,7 @@ The expect $mu$-calculus formula is expected to be of the more expressive varian
     <modalexpr> &::= (sans("＜") #s action #s sans("＞") #s atom)
       | ( #s sans("[") #s action #s sans("]") #s atom )
       | atom \
-    <action> &::= label | sans("not") #s label | sans("true") \
+    <action> &::= sans("true") | label | sans("not") #s label \
     <label> &::= ("any character except ＞ and ]" #h(0.3em)) \
     <atom> &::= sans("true") | sans("false") | <var> | sans("(") #s <expr> #s sans(")") 
   $
@@ -161,11 +161,177 @@ This follows the formal definition of a $mu$-calculus formula given previously, 
 
 The two grammars for labelled transition systems and $mu$-calculus formulas have been chosen to be compatible with the ones used in LCSFE, in order to simplify a comparison between the two. However they have also been extended in order to allow for quoted labels in the labelled transition system grammar, which appeared in some instances used for testing, and more convenient precedence rules for the $mu$-calculus grammar, which helped when writing some more complex formulas.
 
-// TODO: mucalc Gossips vs Flori vs mCRL2 (bad case deadlock and better case ??)
+=== Performance comparison
+
+We compared the performance with LCSFE and mCRL2 on the examples used originally in @flori. All the tests were performed on a computer equipped with a AMD Ryzen 3700x and 32GB of DDR4 RAM running Windows 10. LCSFE and our implementation were compiled using Rust's release profile.
+
+We started with the "bridge referee" example, a labelled transition system with 102 states and 177 transitions, checking the formula $mu x. boxx(#h(0em)"report"(17)) #h(0.3em) tt or boxx(tt) #h(0.3em) x$, corresponding to the fact that from the initial state the system can reach a state where a transition with label "report(17)" can be performed.
+
+We start by using mCRL2's suggested workflow to verify whether the formula holds or not. We first use mCRL2 to convert the mCRL2 specification into mCRL2's internal lps format:
+
+```cmd
+> mcrl22lps bridge-referee.mcrl2 bridge.lps --timings
+```
+```
+- tool: mcrl22lps
+  timing:
+    total: 0.024
+```
+
+Then, we bundle together the lps file and a file holding the formula specified above into a pbes file, another internal format.
+
+```cmd
+> lps2pbes bridge.lps --formula=bridge_report_17.mcf \
+  bridge_report_17.pbes --timings
+```
+```
+- tool: lps2pbes
+  timing:
+    total: 0.016
+```
+
+Finally, mCRL2 converts the pbes file into a boolean parity game and solves it.
+
+```cmd
+> pbes2bool bridge_report_17.pbes -rjittyc --timings
+```
+```
+true
+- tool: pbes2bool
+  timing:
+    instantiation: 0.009495
+    solving: 0.000028
+    total: 0.038349
+```
+
+We now verify the same formula with LCSFE and our implementation. First, we use mCRL2 to convert the state machine to a labelled transition system in AUT format. To do this we will reuse the lps file previously generated to generate a lts file:
+
+```cmd
+> lps2lts bridge.lps bridge.lts -rjittyc --timings
+```
+```
+- tool: lps2lts
+  timing:
+    total: 0.035608
+```
+
+We can then convert it to a AUT file using the `ltsconvert` utility, which converts between different labelled transition systems formats:
+
+```cmd
+> ltsconvert bridge.lts bridge.aut --timings
+```
+```
+- tool: ltsconvert
+  timing:
+    reachability check: 0.000
+    total: 0.002
+```
+
+Now we verify the formula using LCSFE:
+
+```cmd
+> lcsfe-cli mu-ald bridge.aut bridge_report_17.mcf 0
+```
+```
+Preprocessing took: 0.0004837 sec.
+Solving the verification task took: 0.0000129 sec.
+Result: The property is satisfied from state 0
+```
+
+and with our implementation:
+
+```cmd
+> mucalc bridge.aut bridge_report_17.mcf
+```
+```
+Preprocessing took 432.1µs
+Solve took 1.1076ms
+The formula is satisfied
+```
+
+In this very small example we can see that our implementation is slightly slower. However it should be noted that it is also doing slightly more work by bridging the symbolic formulation and the strategy iteration solver, thus masking any potential difference in complexity.
+
+We then tested the second formula that was used in @flori, which uses the bigger "gossip" labelled transition system, with 9152 states and 183041 transitions. The formula tested was $nu x. boxx(tt) tt and diam(tt) x$, which represents the lack of deadlocks. It should be noted that deadlock formulas that are satisfied, like this one, are a kind of worst case for local algorithms, because they require visiting the whole graph in order to determine whether they are satisfied or not.
+
+Just like before we first checked it using mCRL2:
+
+```cmd
+> mcrl22lps gossip.mcrl2 gossip.lps --timings
+```
+```
+- tool: mcrl22lps
+  timing:
+    total: 0.043529
+```
+
+```cmd
+> lps2pbes gossip.lps --formula=gossip1_deadlock_liveness.mcf \
+  gossip1.pbes --timings
+```
+```
+- tool: lps2pbes
+  timing:
+    total: 0.019922
+```
+
+```cmd
+> pbes2bool gossip1.pbes -rjittyc --timings
+```
+```
+true
+- tool: pbes2bool
+  timing:
+    instantiation: 1.395733
+    solving: 0.001688
+    total: 1.422398
+```
+
+The formula is thus confirmed to be valid. Then as before we used mCRL2 to convert it to the AUT format and checked it using LCSFE and our implementation. It should be noted that for LCSFE we had to rise the default stack space since the recursive nature of the solver lead it to a stack overflow.
+
+```cmd
+> lps2lts gossip.lps gossip.lts -rjittyc --timings
+```
+```
+- tool: lps2lts
+  timing:
+    total: 1.507845
+```
+
+```cmd
+> ltsconvert gossip.lts gossip.aut --timings
+```
+```
+- tool: ltsconvert
+  timing:
+    reachability check: 0.004988
+    total: 0.269247
+```
+
+```cmd
+> lcsfe-cli mu-ald gossip.aut gossip1_deadlock_liveness.mcf 0
+```
+```
+Preprocessing took: 0.1968049 sec.
+Solving the verification task took: 5.6878138 sec.
+Result: The property is satisfied from state 0
+```
+
+```cmd
+> mucalc gossip.aut gossip1_deadlock_liveness.mcf
+```
+```
+Preprocessing took 38.8635ms
+Solve took 164.6531ms
+The formula is satisfied
+```
+
+Our implementation is an order of magnitude faster than LCSFE, confirming that the better parity game solving algorithm does make a difference, to the point where the bottleneck becomes the generation of the AUT file. Compared with mCRL2 they both take a similar amount of time, most of which is spent in mCRL2 in both cases. Overall however mCRL2 is slightly faster, probably due to the costs of the intermediate conversions to produce the AUT file or the overhead of using a local algorithm in a case where all states must be explored regardless.
+
 // TODO: mucalc Evaluation on VLTS benchmarks (bad cases and good cases)
 
-// TODO: Generate random FIFO/LIFO using CADP?
-// TODO: Comparisons with and without improvements?
+TODO: Generate random FIFO/LIFO using CADP and gather measurements on them?
+
+TODO: Comparisons with and without improvements?
 
 == Testing with bisimilarity
 // TODO: Testing bisimilarity
