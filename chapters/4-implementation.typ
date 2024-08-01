@@ -354,6 +354,5 @@ TODO: Generate random FIFO/LIFO using CADP and gather measurements on them?
 TODO: Comparisons with and without improvements?
 
 == Testing with bisimilarity
-// TODO: Testing bisimilarity
 
-// TODO: Mention the existance of a $O(M log N)$ algorithm for solving strong bisimilarity which will surely be better than solving the fixpoint equation.
+We also briefly tested performance of our bisimilarity checker implementation. For that we used some of the instances mentioned above and a reduced version of them according to strong bisimilarity. We then tried checking states from them that are bisimilar and some that are not, with unsatisfying though expected results. It should be noted that strong bisimilarity admits an algorithm that runs in $O(M log N)$ @bisimilaritymlogn time, where $N$ is the number of states and $M$ the number of transitions. In comparison, for states that are bisimilar the solver needs to visit at least as many vertexes as states, similarly to the deadlock case for $mu$-calculus, leading to a complexity of $O(N dot M)$ for each the improvement step, let alone the whole algorithm. For states that are not bisimilar the results are instead mixed, with some being recognized immediately, while others needs several transitions before being distinguishable, leading to a similar runtime as the case where they are bisimilar. Ultimately however the goal was to show that this approach was flexible enough, and being able to solve bisimilarity too, although a bit inefficiently, does confirm it.
