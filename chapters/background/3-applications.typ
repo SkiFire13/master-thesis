@@ -100,9 +100,3 @@ $
 $
 
 This is a single fixpoint equation over $2^(bb(S) times bb(S))$, the powerset lattice of binary relations of states, and it can be shown the associated function is monotone.
-
-TODO: Mention the existance of a $O(M log N)$ algorithm for solving strong bisimilarity which will surely be better than solving the fixpoint equation.
-
-=== Parity games
-
-TODO

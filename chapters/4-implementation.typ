@@ -355,3 +355,5 @@ TODO: Comparisons with and without improvements?
 
 == Testing with bisimilarity
 // TODO: Testing bisimilarity
+
+// TODO: Mention the existance of a $O(M log N)$ algorithm for solving strong bisimilarity which will surely be better than solving the fixpoint equation.
