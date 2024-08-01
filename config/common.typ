@@ -70,8 +70,8 @@
 #let Var = mathstr("Var")
 #let tt = mathstr("true")
 #let ff = mathstr("false")
-#let diam(f) = $class("unary", [ #f ])$
-#let boxx(f) = $class("unary", angle.l #f angle.r)$
+#let boxx(f) = $class("unary", [ #f ])$
+#let diam(f) = $class("unary", angle.l #f angle.r)$
 #let sem(of) = $bracket.l.double of bracket.r.double$
 
 #let bisim = sym.tilde.equiv

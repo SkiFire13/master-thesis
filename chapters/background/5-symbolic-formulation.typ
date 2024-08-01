@@ -138,13 +138,13 @@ We can then define the logic formula for the vertex $(s, i)$ as $F(s, phi_i (x_1
   $,
   $
     F(s, x_i) &= F(s, phi_i(tup(x^*))) \
-    F(s, boxx(A) psi) &= and.big_(a in sem(A)) and.big_(s ->^a t) F(t, psi) \
-    F(s, diam(A) psi) &= or.big_(a in sem(A)) or.big_(s ->^a t) F(t, psi) \
+    F(s, diam(A) psi) &= and.big_(a in sem(A)) and.big_(s ->^a t) F(t, psi) \
+    F(s, boxx(A) psi) &= or.big_(a in sem(A)) or.big_(s ->^a t) F(t, psi) \
     F(s, psi_1 and psi_2) &= F(s, psi_1) and F(s, psi_2) \
   $
 )
 
-It's interesting to note that the cases for $boxx(A) psi$ and $diam(A) psi$ are effectively taking the respective semantics definition, which use universal and existential equantifiers, and translating them to finite sequence of respectively conjunctions and disjunctions between the elements that satisfy such quantifiers.
+It's interesting to note that the cases for $diam(A) psi$ and $boxx(A) psi$ are effectively taking the respective semantics definition, which use universal and existential equantifiers, and translating them to finite sequence of respectively conjunctions and disjunctions between the elements that satisfy such quantifiers.
 
 The definition also didn't include fixpoint formulas since those were already been removed when translating to a system of fixpoint equations.
 

@@ -9,7 +9,7 @@ The $mu$-calculus is a propositional modal logic extended with support for least
 Consider a labelled transition system over a set of states $bb(S)$, a set of actions $Act$ and a set of transitions $-> #h(0.2em) subset.eq bb(S) times Act times bb(S)$ (usually written $s ->^a t$ to mean $(s, a, t) in #h(0.2em) ->$). Also, let $Prop$ be a set of propositions and $Var$ be a set of propositional variables. A $mu$-calculus formula for such system is defined inductively in the following way, where $a in Act$, $p in Prop$, $x in Var$ and $eta$ is either $mu$ or $nu$:
 
 $
-  phi, psi := tt | ff | p | x | phi or psi | phi and psi | diam(a) phi | boxx(a) phi | eta x. phi
+  phi, psi := tt | ff | p | x | phi or psi | phi and psi | boxx(a) phi | diam(a) phi | eta x. phi
 $
 
 The semantics of a formula are given by the set of states that satisfy the formula in an environment $rho : Prop union Var -> 2^bb(S)$:
@@ -24,8 +24,8 @@ The semantics of a formula are given by the set of states that satisfy the formu
   $,
   $
     sem(x)_rho &= rho(x) \
-    sem(diam(a) phi)_rho &= { s in bb(S) | forall t. s ->^a t => t in sem(phi)_rho } \
-    sem(boxx(a) phi)_rho &= { s in bb(S) | exists t. s ->^a t and t in sem(phi)_rho } \
+    sem(boxx(a) phi)_rho &= { s in bb(S) | forall t. s ->^a t => t in sem(phi)_rho } \
+    sem(diam(a) phi)_rho &= { s in bb(S) | exists t. s ->^a t and t in sem(phi)_rho } \
     sem(mu x. phi)_rho &= sect.big { S subset.eq bb(S) | sem(phi)_(rho[x := S]) subset.eq S } \
     sem(nu x. phi)_rho &= union.big { S subset.eq bb(S) | S subset.eq sem(phi)_(rho[x := S]) } \
   $
@@ -33,7 +33,7 @@ The semantics of a formula are given by the set of states that satisfy the formu
 
 We will thus say that a state $s$ satisfies a $mu$-calculus formula $phi$ if it is contained in its semantics, that is $s in sem(phi)_rho_0$, where $rho_0$ is initially undefined for all $x in Var$ and with some fixed value for all $p in Prop$.
 
-Intuitively the $mu$-calculus formulas have a similar meaning as in the common propositional logic, however it is also a modal logic thanks to the $diam(\_)$ and $boxx(\_)$ operators, requiring a formula to hold for respectively all or any state reachable by the current state through a transition with the given action. Fixpoints then allow to propagate this requirements after any number of transitions.
+Intuitively the $mu$-calculus formulas have a similar meaning as in the common propositional logic, however it is also a modal logic thanks to the $boxx(\_)$ and $diam(\_)$ operators, requiring a formula to hold for respectively all or any state reachable by the current state through a transition with the given action. Fixpoints then allow to propagate this requirements after any number of transitions.
 
 For convenience we will also consider a slightly more expressive variant of $mu$-calculus. We define a new set as follow, and with the following semantics:
 
@@ -49,22 +49,22 @@ $
 The definition of $mu$-calculus formulas can then be updated by replacing the constructors $[a] phi$ and $angle.l a angle.r phi$ with $[A] phi$ and $angle.l A angle.r phi$ with the following semantics:
 
 $
-  sem(diam(A) phi)_rho &= { s in bb(S) | forall t in bb(S), a in sem(A). s ->^a t => t in sem(phi)_rho } \
-  sem(boxx(A) phi)_rho &= { s in bb(S) | exists t in bb(S), a in sem(A). s ->^a t and t in sem(phi)_rho }
+  sem(boxx(A) phi)_rho &= { s in bb(S) | forall t in bb(S), a in sem(A). s ->^a t => t in sem(phi)_rho } \
+  sem(diam(A) phi)_rho &= { s in bb(S) | exists t in bb(S), a in sem(A). s ->^a t and t in sem(phi)_rho }
 $
 
-For example the liveness property, or lack of deadlocks, representing the fact that it is impossible to reach a state from which no transition is possible, can be expressed with the formula $nu x. boxx(tt) tt and diam(tt) x$. This can be read as requiring a state $s$ to be able to make at least one transition, that is it satisfies $boxx(tt) tt$, and that after one transition the same property should hold, that is it satisfies $diam(tt) x$.
+For example the liveness property, or lack of deadlocks, representing the fact that it is impossible to reach a state from which no transition is possible, can be expressed with the formula $nu x. diam(tt) tt and boxx(tt) x$. This can be read as requiring a state $s$ to be able to make at least one transition, that is it satisfies $diam(tt) tt$, and that after one transition the same property should hold, that is it satisfies $boxx(tt) x$.
 
 // TODO: Mention translation to parity game?
 
 It is possible to translate $mu$-calculus formulas into systems of fixpoint equations over $2^bb(S)$, the powerset lattice of its states. Such system can be obtained by extracting each fixpoint subformula into its own equation and replacing it with its variable, assuming that no variable is used in multiple fixpoints. Since the order of equations matter, outer fixpoints must appear later in the system of equations. It can be shown that each function in the system is monotone, and so it always admits a solution.
 
-For example the formula $mu x. boxx(tt) x or (nu y. diam(a) y and x)$ would be translated into the following system, where for simplicity we used formulas instead of their semantics:
+For example the formula $mu x. diam(tt) x or (nu y. boxx(a) y and x)$ would be translated into the following system, where for simplicity we used formulas instead of their semantics:
 
 $
   syseq(
-    y &feq_nu diam(a) y and x \
-    x &feq_mu boxx(tt) x or y \
+    y &feq_nu boxx(a) y and x \
+    x &feq_mu diam(tt) x or y \
   )
 $
 

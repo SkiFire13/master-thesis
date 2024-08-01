@@ -165,7 +165,7 @@ The two grammars for labelled transition systems and $mu$-calculus formulas have
 
 We compared the performance with LCSFE and mCRL2 on the mCRL2 examples used originally in @flori. All the tests were performed on a computer equipped with a AMD Ryzen 3700x and 32GB of DDR4 RAM running Windows 10. LCSFE and our implementation were compiled using Rust's release profile.
 
-We started with the "bridge referee" example from mCRL2, a labelled transition system with 102 states and 177 transitions, checking the formula $mu x. boxx(#h(0em)"report"(17)) #h(0.3em) tt or boxx(tt) #h(0.3em) x$, corresponding to the fact that from the initial state the system can reach a state where a transition with label "report(17)" can be performed. Using mCRL2's suggested workflow we first converted the mCRL2 specification into its internal lps format using the `mcrl22lps` utility:
+We started with the "bridge referee" example from mCRL2, a labelled transition system with 102 states and 177 transitions, checking the formula $mu x. diam(#h(0em)"report"(17)) #h(0.3em) tt or diam(tt) #h(0.3em) x$, corresponding to the fact that from the initial state the system can reach a state where a transition with label "report(17)" can be performed. Using mCRL2's suggested workflow we first converted the mCRL2 specification into its internal lps format using the `mcrl22lps` utility:
 
 ```cmd
 > mcrl22lps bridge-referee.mcrl2 bridge.lps --timings
@@ -247,7 +247,7 @@ The formula is satisfied
 
 In this very small example we can see that our implementation is slightly slower. However it should be noted that it is also doing slightly more work by bridging the symbolic formulation and the strategy iteration solver, thus masking any potential difference in complexity.
 
-We then tested the second formula that was used in @flori, which uses the bigger "gossip" labelled transition system, also an example from mCRL2, with 9152 states and 183041 transitions. The formula tested was $nu x. boxx(tt) tt and diam(tt) x$, which represents the lack of deadlocks. It should be noted that formulas checking for absence of deadlock that are satisfied, like this one, are a worst case for local algorithms because they require visiting the whole graph, thus negating the advantage of local algorithms to visit only the states that are relevant.
+We then tested the second formula that was used in @flori, which uses the bigger "gossip" labelled transition system, also an example from mCRL2, with 9152 states and 183041 transitions. The formula tested was $nu x. diam(tt) tt and boxx(tt) x$, which represents the lack of deadlocks. It should be noted that formulas checking for absence of deadlock that are satisfied, like this one, are a worst case for local algorithms because they require visiting the whole graph, thus negating the advantage of local algorithms to visit only the states that are relevant.
 
 Just like before we first checked it using mCRL2:
 
@@ -323,7 +323,7 @@ The formula is satisfied
 
 Our implementation is an order of magnitude faster than LCSFE, confirming that the better parity game solving algorithm does make a difference, to the point where the bottleneck becomes the generation of the AUT file. Compared with mCRL2 our implementation overall takes a similar amount of time, most of which is spent doing conversions with mCRL2. Overall however the pure mCRL2 approach is slightly faster, probably due to the costs of the intermediate conversions to produce the AUT file or the overhead of using a local algorithm in a case where all states must be explored regardless.
 
-We also ran our solver on some of the instances in the VLTS benchmark suite to understand the limitations and the strengths of our implementation. For each chosen instance we verified the $mu$-calculus formulas $nu x. boxx(tt) tt and diam(tt) x$, which checks for absence of deadlocks, and $mu x. boxx(tt) x or (mu y. boxx(#h(0em)"tau"#h(0em)) y)$, which checks for the presence of livelocks, which are of only tau transitions. This time we considered the total time including preprocessing, which eventually becomes negligible. For each instance we ran the solver 5 times, ignored the slowest and quickest ones and reported a mean of the remaining 3.
+We also ran our solver on some of the instances in the VLTS benchmark suite to understand the limitations and the strengths of our implementation. For each chosen instance we verified the $mu$-calculus formulas $nu x. diam(tt) tt and boxx(tt) x$, which checks for absence of deadlocks, and $mu x. diam(tt) x or (mu y. diam(#h(0em)"tau"#h(0em)) y)$, which checks for the presence of livelocks, which are of only tau transitions. This time we considered the total time including preprocessing, which eventually becomes negligible. For each instance we ran the solver 5 times, ignored the slowest and quickest ones and reported a mean of the remaining 3.
 
 #[
   #set text(size: 10pt)
@@ -347,7 +347,7 @@ The various labelled transition systems have different sizes, and some have dead
 
 The `vasy_720_390` instance is also interesting because it is not connected, with only 87740 states which are actually reachable from the initial one. This is a favourable case for local algorithms, and in fact the time required to verify the formulas is proportional to the number of actually reachable states rather than the full amount.
 
-// TODO: boxx and diam are wrong (inverted?). Also re-check the livelock formula
+// TODO: diam and boxx are wrong (inverted?). Also re-check the livelock formula
 
 TODO: Generate random FIFO/LIFO using CADP and gather measurements on them?
 
