@@ -323,8 +323,29 @@ The formula is satisfied
 
 Our implementation is an order of magnitude faster than LCSFE, confirming that the better parity game solving algorithm does make a difference, to the point where the bottleneck becomes the generation of the AUT file. Compared with mCRL2 our implementation overall takes a similar amount of time, most of which is spent doing conversions with mCRL2. Overall however the pure mCRL2 approach is slightly faster, probably due to the costs of the intermediate conversions to produce the AUT file or the overhead of using a local algorithm in a case where all states must be explored regardless.
 
-We also tried running some of the benchmarks in the VLTS suite to understand the limitations and the strengths of our implementation. For each instance chosen we verified the $mu$-calculus formulas $nu x. boxx(tt) tt and diam(tt) x$, which checks for absence of deadlocks, and $mu x. boxx(tt) x or (mu y. boxx(#h(0em)"tau"#h(0em)) y)$, which checks for absense of livelocks or cycles of only tau transitions.
-// TODO: mucalc Evaluation on VLTS benchmarks (bad cases and good cases)
+We also ran our solver on some of the instances in the VLTS benchmark suite to understand the limitations and the strengths of our implementation. For each chosen instance we verified the $mu$-calculus formulas $nu x. boxx(tt) tt and diam(tt) x$, which checks for absence of deadlocks, and $mu x. boxx(tt) x or (mu y. boxx(#h(0em)"tau"#h(0em)) y)$, which checks for the presence of livelocks, which are of only tau transitions. This time we considered the total time including preprocessing, which eventually becomes negligible. For each instance we ran the solver 5 times, ignored the slowest and quickest ones and reported a mean of the remaining 3.
+
+#[
+  #set text(size: 10pt)
+  #figure(
+    table(
+      columns: (auto, 4.5em, 4.5em, 4.5em, auto, 4.5em, auto),
+      align: horizon,
+      inset: (x: 0.3em),
+      table.header([*Name*], [*States count*], [*Trans. count*], [*Deadlocks?*], [*Deadlock solve time*], [*Livelocks?*], [*Livelock solve time*]),
+      `cwi_1_2`, [1952], [2387], [no], [8.74 ms], [no], [13.4 ms],
+      `vasy_0_1`, [289], [1224], [no], [4.93 ms], [no], [6.06 ms],
+      `vasy_52_318`, [52268], [318126], [no], [443 s], [yes], [34.9 s],
+      `vasy_69_520`, [69754], [520633], [yes], [122 ms], [no], [6.09 s],
+      `vasy_720_390`, [720247], [390999], [yes], [82 ms], [no], [3.40 s],
+    ),
+    caption: [VLTS benchmark results]
+  )
+]
+
+The various labelled transition systems have different sizes, and some have deadlocks and livelocks while others do not, which greately influences the results and makes the various results not directly comparable to one another. We can for example see that checking for the absense of deadlocks when they are not present quickly becomes very slow, like in `vasy_52_318` where in particular we observed that even single iterations of the strategy iteration algorithm become quite slow. Checking for livelocks instead appears to be generally slower when the answer is negative, because in those cases it doesn't suffice to find the cycle with tau transitions but instead all the graph needs to be considered.
+
+The `vasy_720_390` instance is also interesting because it is not connected, with only 87740 states which are actually reachable from the initial one. This is a favourable case for local algorithms, and in fact the time required to verify the formulas is proportional to the number of actually reachable states rather than the full amount.
 
 // TODO: boxx and diam are wrong (inverted?). Also re-check the livelock formula
 
