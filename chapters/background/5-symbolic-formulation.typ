@@ -144,6 +144,7 @@ We can then define the logic formula for the vertex $(s, i)$ as $F(s, phi_i (x_1
   $
 )
 
+// TODO: This should use composition of operators?
 It's interesting to note that the cases for $diam(A) psi$ and $boxx(A) psi$ are effectively taking the respective semantics definition, which use universal and existential equantifiers, and translating them to finite sequence of respectively conjunctions and disjunctions between the elements that satisfy such quantifiers.
 
 The definition also didn't include fixpoint formulas since those were already been removed when translating to a system of fixpoint equations.
