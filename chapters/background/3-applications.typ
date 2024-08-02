@@ -49,8 +49,8 @@ $
 The definition of $mu$-calculus formulas can then be updated by replacing the constructors $[a] phi$ and $angle.l a angle.r phi$ with $[A] phi$ and $angle.l A angle.r phi$ with the following semantics:
 
 $
-  sem(boxx(A) phi)_rho &= { s in bb(S) | forall t in bb(S), a in sem(A). s ->^a t => t in sem(phi)_rho } \
-  sem(diam(A) phi)_rho &= { s in bb(S) | exists t in bb(S), a in sem(A). s ->^a t and t in sem(phi)_rho }
+  sem(boxx(A) phi)_rho &= { s in bb(S) | forall &&t in bb(S), a in sem(A). s ->^a t => t in sem(phi)_rho } \
+  sem(diam(A) phi)_rho &= { s in bb(S) | exists &&t in bb(S), a in sem(A). s ->^a t and t in sem(phi)_rho }
 $
 
 For example the liveness property, or lack of deadlocks, representing the fact that it is impossible to reach a state from which no transition is possible, can be expressed with the formula $nu x. diam(tt) tt and boxx(tt) x$. This can be read as requiring a state $s$ to be able to make at least one transition, that is it satisfies $diam(tt) tt$, and that after one transition the same property should hold, that is it satisfies $boxx(tt) x$.
