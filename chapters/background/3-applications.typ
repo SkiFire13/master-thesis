@@ -4,7 +4,7 @@
 
 === $mu$-calculus <mucalculus-application>
 
-The $mu$-calculus is a propositional modal logic extended with support for least and greatest fixpoints. It was first introduced by Dana Scott and Jaco de Bakker and later developed by Dexter Kozen in @mucalculus. It is mainly used to describe properties of (labelled) transition systems to be verified.
+The $mu$-calculus is a propositional modal logic extended with support for least and greatest fixpoints. It was first introduced by Dana Scott and Jaco de Bakker and later developed by Dexter Kozen in @mucalculus. Its main use is to help describing properties of (labelled) transition systems to be verified.
 
 Consider a labelled transition system over a set of states $bb(S)$, a set of actions $Act$ and a set of transitions $-> #h(0.2em) subset.eq bb(S) times Act times bb(S)$ (usually written $s ->^a t$ to mean $(s, a, t) in #h(0.2em) ->$). Also, let $Prop$ be a set of propositions and $Var$ be a set of propositional variables. A $mu$-calculus formula for such system is defined inductively in the following way, where $a in Act$, $p in Prop$, $x in Var$ and $eta$ is either $mu$ or $nu$:
 
@@ -33,7 +33,7 @@ The semantics of a formula are given by the set of states that satisfy the formu
 
 We will thus say that a state $s$ satisfies a $mu$-calculus formula $phi$ if it is contained in its semantics, that is $s in sem(phi)_rho_0$, where $rho_0$ is initially undefined for all $x in Var$ and with some fixed value for all $p in Prop$.
 
-Intuitively the $mu$-calculus formulas have a similar meaning as in the common propositional logic, however it is also a modal logic thanks to the $boxx(\_)$ and $diam(\_)$ operators, requiring a formula to hold for respectively all or any state reachable by the current state through a transition with the given action. Fixpoints then allow to propagate this requirements after any number of transitions.
+Intuitively $tt$, $ff$, $p$, $x$, $phi or psi$ and $phi and psi$ formulas have a similar meaning as in the more common propositional logic, representing a formula that is respectively always true, false, satisfying $p$, $x$, either or both of the subformulas. However $mu$-calculus is also a modal logic thanks to the $boxx(\_)$ and $diam(\_)$ operators, which require a formula to hold for respectively all or any state reachable by the current state through a transition with the given action. On top of this fixpoints then allow to propagate this requirements across any number of transitions.
 
 For convenience we will also consider a slightly more expressive variant of $mu$-calculus. We define a new set as follow, and with the following semantics:
 
@@ -46,6 +46,8 @@ $
   sem(tt) &= Act
 $
 
+This extension makes it simplier to require a formula to hold for any successor, or any successor with a transition with a label different from the given one. This extension does not actually give $mu$-calculus more expressiveness, but it allows us to specify some properties in a easier way.
+
 The definition of $mu$-calculus formulas can then be updated by replacing the constructors $[a] phi$ and $angle.l a angle.r phi$ with $[A] phi$ and $angle.l A angle.r phi$ with the following semantics:
 
 $
@@ -53,7 +55,7 @@ $
   sem(diam(A) phi)_rho &= { s in bb(S) | exists &&t in bb(S), a in sem(A). s ->^a t and t in sem(phi)_rho }
 $
 
-For example the liveness property, or lack of deadlocks, representing the fact that it is impossible to reach a state from which no transition is possible, can be expressed with the formula $nu x. diam(tt) tt and boxx(tt) x$. This can be read as requiring a state $s$ to be able to make at least one transition, that is it satisfies $diam(tt) tt$, and that after one transition the same property should hold, that is it satisfies $boxx(tt) x$.
+For example the liveness property, or lack of deadlocks, which expresses the fact that all reachable states can make at least one transition, can be expressed with the formula $nu x. diam(tt) tt and boxx(tt) x$. This can be read as requiring a state $s$ to be able to make at least one transition, that is it satisfies $diam(tt) tt$, and that after one transition the same property should hold, that is it satisfies $boxx(tt) x$. Intuitively the fixpoint is extending the first requirement to any state reachable after a number of transitions.
 
 // TODO: Mention translation to parity game?
 
@@ -67,8 +69,6 @@ $
     x &feq_mu diam(tt) x or y \
   )
 $
-
-TODO: Mention that $mu$-calculus already admits a translation to parity games.
 
 === Bisimilarity <bisimilarity-application>
 

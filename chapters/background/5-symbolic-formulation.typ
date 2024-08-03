@@ -31,7 +31,7 @@ Systems of fixpoint equations can be characterized using a parity game @baldan_g
     - $p((b, i)) < p((b', j))$ if $i < j$.
 ]
 
-Intuitively each player 0's vertex $(b, i)$ represents the fact that the basis element $b$ is under the final solution for the variable $x_i$. Its moves then are all the possible assignments to the tuple of variables $tup(x)$, expressed however as tuples of subsets of the basis, such that $b$ is under the result of $f_i (tup(x))$. Player 1 then can challenge player 0 by claiming that one of those subsets contains an element of the basis that is not actually under the solution, and this continues either infinitely or until one of the two players has no move possible.
+Intuitively each player 0 vertex $(b, i)$ represents the fact that the basis element $b$ is under the final solution for the variable $x_i$. Its moves then are all the possible assignments to the tuple of variables $tup(x)$, expressed however as tuples of subsets of the basis, such that $b$ is under the result of $f_i (tup(x))$. Player 1 then can challenge player 0 by claiming that one of those subsets contains an element of the basis that is not actually under the solution, and this continues either infinitely or until one of the two players has no move possible.
 
 The given priority function is not fully specified, but it can be shown that there exist a mapping to $bb(N)$ that satisfies the given order and partition into even/odd. An intuitive way would be to just list the priorities in order and give to map each of them to the next available even or odd natural number.
 
@@ -64,7 +64,7 @@ The idea will then be for player 0 to avoid playing a move $tup(Y)$ if there exi
 ]
 
 // TODO: Cite where this was proven
-It can be proven that a selection always exists and is $E(b, i)$. Moreover it can be proven that the winner of a game where player 0's moves are replaced with a selection is the same as the winner in the original game. This allows us to soundly use a selection as an alternative set of moves for player 0, which is possibly smaller than the original one.
+It can be proven that a selection always exists and is $E(b, i)$. Moreover it can be proven that the winner of a game where player 0 moves are replaced with a selection is the same as the winner in the original game. This allows us to soundly use a selection as an alternative set of moves for player 0, which is possibly smaller than the original one.
 
 === Logic for upward-closed sets
 
@@ -122,7 +122,7 @@ $
   )
 $
 
-We need to define a logic formula representing the moves for player 0 for each vertex $(b, i)$ for a basis element $b$ and a variable index $i$. Recall that the system of equations is defined over $2^bb(S)$, the powerset lattice of its states, and whose basis is $bb(S)$ as shown in @powerset-basis. We thus need to define a formula for each state $s$ and index $i$ such that the formula is true when the state $s$ satisfies the formula $phi_i (tup(x^*))$, with $tup(x^*)$ representing the actual sets of states that satisfies each subformula. Moreover we are allowed to refer to any vertex controlled by player 0 in this formula, which is equivalent to being able to require that any another state $s'$ satisfies one of the formulas $phi_j (tup(x^*))$.
+We need to define a logic formula representing the moves for player 0 for each vertex $(b, i)$ for a basis element $b$ and a variable index $i$. Recall that the system of equations is defined over $2^bb(S)$, the powerset lattice of its states, and whose basis is $bb(S)$ as shown in @powerset-basis. We thus need to define a formula for each state $s$ and index $i$ such that the formula is true when the state $s$ satisfies the formula $phi_i (tup(x^*))$, with $tup(x^*)$ representing the actual solution of the system. Moreover we are allowed to refer to any vertex controlled by player 0 in this formula, which is equivalent to being able to require that any another state $s'$ satisfies one of the formulas $phi_j (tup(x^*))$.
 
 We can then define the logic formula for the vertex $(s, i)$ as $F(s, phi_i (x_1, ..., x_n))$, where $F$ is in turn defined by structural induction on its second argument:
 
@@ -145,13 +145,13 @@ We can then define the logic formula for the vertex $(s, i)$ as $F(s, phi_i (x_1
 )
 
 // TODO: This should use composition of operators?
-It's interesting to note that the cases for $diam(A) psi$ and $boxx(A) psi$ are effectively taking the respective semantics definition, which use universal and existential equantifiers, and translating them to finite sequence of respectively conjunctions and disjunctions between the elements that satisfy such quantifiers.
+It is interesting to note that the cases for $diam(A) psi$ and $boxx(A) psi$ are effectively taking the respective semantics definition, which use universal and existential equantifiers, and translating them to finite sequence of respectively conjunctions and disjunctions between the elements that satisfy such quantifiers.
 
-The definition also didn't include fixpoint formulas since those were already been removed when translating to a system of fixpoint equations.
+The definition also did not include fixpoint formulas since those were already been removed when translating to a system of fixpoint equations.
 
 === Translating bisimilarity
 
-Likewise for bisimilarity we have seen in @bisimilarity-application that it can be translated to a fixpoint equation, which in turn can be seen as a system of a single fixpoint equation. As with $mu$-calculus formulas the domain is the powerset lattice $2^(bb(S) times bb(S))$, meaning its basis is simply $bb(S) times bb(S)$. Since there is just one variable and equation we will only define $F(s_1, s_2)$, representing the formula for the player 0 vertex $((s_1, s_2), 1)$:
+Likewise for bisimilarity we have seen in @bisimilarity-application that it can be translated to a fixpoint equation, which in turn can be seen as a system of a single fixpoint equation. As with $mu$-calculus formulas the domain is the powerset lattice $2^(bb(S) times bb(S))$, and thus its basis is $bb(S) times bb(S)$. Since there is just one variable and equation we will only define $F(s_1, s_2)$, representing the formula for the player 0 vertex $((s_1, s_2), 1)$:
 
 $
   F(s_1, s_2) =

@@ -11,7 +11,7 @@ In this section we will explain our design choices, what was actually implemente
 == Technologies used
 
 // TODO: Cite Rust
-Just like LCSFE, our implementation is written in Rust, a modern systems programming language, focused on performance and correctness and whose goal is to rival languages like C and C++ while offering memory safety. Just like C and C++, Rust mainly follows the imperative paradigm, allowing mutations, loops and general side effects, but it also includes lot of functional programming related features, like algebraic data structures and most notably _enums_, pattern matching, which allows to exhaustively inspect those enums, and closures, which are anonymous function that can capture their outer environment, although with some limitations due to how the memory management works. Rust is also immutability by default, which has become quite popular recently and helps avoid some classes of logic errors. Among other features there are _traits_, which work similarly to type classes in Haskell and fill the same usecases as interfaces in popular OOP languages like Java. It should also be mentioned that in Rust programs are organized in crates, which make up the unit of compilation, and modules, which are a hierarchical division internal to a crate and help organize code and avoid name clashes.
+Just like LCSFE, our implementation is written in Rust @rust, a modern systems programming language, focused on performance and correctness and whose goal is to rival languages like C and C++ while offering memory safety. Just like C and C++, Rust mainly follows the imperative paradigm, allowing mutations, loops and general side effects, but it also includes lot of functional programming related features, like algebraic data structures and most notably _enums_, pattern matching, which allows to exhaustively inspect those enums, and _closures_, which are anonymous function that can capture their outer environment, although with some limitations due to how the memory management works. Among other features there are _traits_, which work similarly to type classes in Haskell and fill the same usecases as interfaces in popular OOP languages like Java. It should also be mentioned that Rust programs are organized in _crates_, which make up the unit of compilation, and _modules_, which are a hierarchical division internal to a crate and help organize code and avoid name clashes.
 
 The most interesting features however are its _ownership_ system and its borrow checker, which allow the compiler to guarantee memory safety without a garbage collection or other kind of runtime support. The ownership system enforces that every value has exactly one _owner_, which is responsible for freeing up its resources, making classes of issues like use-after-free impossible, and others like memory leaking much more difficult to hit. The borrow checker instead rules how borrows can be created and used. Every variable can be borrowed, creating either a shared reference or an exclusive references, which are pointers with a special meaning for the compiler. The borrow checker ensures that at any point in time there can be either multiple shared references or one exclusive reference pointing to a variable, but not both. Coupled with the fact that only exclusive references allow mutations, this system guarantees that references always point to valid data.
 
@@ -50,7 +50,7 @@ The priority of vertices must however also be taken into account in order to det
 
 These functions can be trivially converted to logic formulas. Notice that the atom $(w_0, i)$, where $i$ is the index of the equation with variable $x_u$, is true if and only if the solution for $x_u$ is $w_0$, otherwise if the atom is false then the solution is $w_1$. As such the equations of the system can be converted to logic formulas by replacing each variable $x_u$ with the atom $(w_0, i)$, where $i$ is the index of variable the $x_u$, each $join$ with $or$ and each $meet$ with $and$.
 
-The _parity_ crate implements this conversion from parity games to systems of fixpoint equations and then logic formulas, along with a parser for parity games specified in the pgsolver @pgsolver format, according to the following EBNF grammar:
+The _parity_ crate implements this conversion from parity games to systems of fixpoint equations and then logic formulas, along with a parser for parity games specified in the pgsolver @pgsolver format, according to the following grammar:
 
 #[
   #show "<": sym.angle.l
@@ -77,17 +77,17 @@ The _parity_ crate implements this conversion from parity games to systems of fi
   $
 ]
 
-For simplicity we didn't implement the full grammar specification, but only the useful parts for testing.
+For simplicity we avoided implementing the full grammar specification, but only the useful parts for testing.
 
 TODO: example of parity game converted to system of fixpoint equations?
 
-We then used the parity game instances included in the Oink @oink collection of parity game solvers to test our implementation.
+We then used some of the parity game instances included in the Oink @oink collection of parity game solvers to test our implementation with positive results.
 
 == Testing with $mu$-calculus
 
 As mentioned in @mucalculus-application and @mucalculus-translation, $mu$-calculus formulas can be translated to systems of fixpoint equations and then to logic formulas. We implemented this in the _mucalc_ crate, which does this after parsing a labeled transition system and a $mu$-calculus formula from two given files.
 
-The labelled transition system is expected to be in the AUT (Aldebaran) format, according to the following EBNF grammar, based on @aut_spec:
+The labelled transition system is expected to be in the AUT (Aldebaran) format, according to the following grammar, which based on the one given in @aut_spec:
 
 #[
   #show "<": sym.angle.l
@@ -122,9 +122,9 @@ The labelled transition system is expected to be in the AUT (Aldebaran) format, 
   $
 ]
 
-The grammar consists of a header containing the literal "des" followed by the initial state number, the number of transitions and the number of states. Following that are all the transitions, encoded as a triple with the starting state, the label, which can be quoted or not, and the ending state. Differently from the specification at @aut_spec, we have preferred a slightly different definition for the quoted and unquoted labels to simplify the implementation. We have not observed inputs for which out definition makes a difference.
+The grammar consists of a header containing the literal "des" followed by the initial state number, the number of transitions and the number of states. Following that are all the transitions, encoded as a triple with the starting state, the label, which can be quoted or not, and the ending state. Differently from the specification at @aut_spec, we have preferred a slightly different definition for the quoted and unquoted labels to simplify the implementation. We have not observed inputs for which this makes a difference.
 
-The expect $mu$-calculus formula is expected to be of the more expressive variant described in @mucalculus-application, according to the following EBNF grammar:
+The $mu$-calculus formula is expected to be of the more expressive variant described in @mucalculus-application, according to the following grammar:
 
 #[
   #show "<": sym.angle.l
@@ -148,10 +148,10 @@ The expect $mu$-calculus formula is expected to be of the more expressive varian
     <var> &::= ("any identifier") \
     <orexpr> &::= <andexpr> #s (#s sans("||") #s <andexpr> #s)^* \
     <andexpr> &::= <modalexpr> #s (#s sans("&&") #s <modalexpr> #s)^* \
-    <modalexpr> &::= (sans("＜") #s action #s sans("＞") #s atom)
-      | ( #s sans("[") #s action #s sans("]") #s atom )
+    <modalexpr> &::= (sans("＜") #s <action> #s sans("＞") #s <atom>)
+      | ( #s sans("[") #s <action> #s sans("]") #s <atom> )
       | atom \
-    <action> &::= sans("true") | label | sans("not") #s label \
+    <action> &::= sans("true") | <label> | sans("not") #s <label> \
     <label> &::= ("any character except ＞ and ]" #h(0.3em)) \
     <atom> &::= sans("true") | sans("false") | <var> | sans("(") #s <expr> #s sans(")") 
   $
@@ -163,9 +163,9 @@ The two grammars for labelled transition systems and $mu$-calculus formulas have
 
 === Performance comparison
 
-We compared the performance with LCSFE and mCRL2 on the mCRL2 examples used originally in @flori. All the tests were performed on a computer equipped with a AMD Ryzen 3700x and 32GB of DDR4 RAM running Windows 10. LCSFE and our implementation were compiled using Rust's release profile.
+We compared the performance with LCSFE and mCRL2 on the mCRL2 examples used originally in @flori. All the tests were performed on a computer equipped with an AMD Ryzen 3700x and 32GB of DDR4 RAM running Windows 10. LCSFE and our implementation were compiled using the Rust release profile, which applies optimizations to the code produced.
 
-We started with the "bridge referee" example from mCRL2, a labelled transition system with 102 states and 177 transitions, checking the formula $mu x. diam(#h(0em)"report"(17)) #h(0.3em) tt or diam(tt) #h(0.3em) x$, corresponding to the fact that from the initial state the system can reach a state where a transition with label "report(17)" can be performed. Using mCRL2's suggested workflow we first converted the mCRL2 specification into its internal lps format using the `mcrl22lps` utility:
+We started with the "bridge referee" example from mCRL2, a labelled transition system with 102 states and 177 transitions, checking the formula $mu x. diam(#h(0em)"report"(17)) #h(0.3em) tt or diam(tt) #h(0.3em) x$, corresponding to the fact that from the initial state the system can reach a state where a transition with label "report(17)" can be performed. Using the workflow suggested by mCRL2 we first converted the mCRL2 specification into its internal lps format using the `mcrl22lps` utility:
 
 ```cmd
 > mcrl22lps bridge-referee.mcrl2 bridge.lps --timings
@@ -343,7 +343,7 @@ We also ran our solver on some of the instances in the VLTS benchmark suite to u
   )
 ]
 
-The various labelled transition systems have different sizes, and some have deadlocks and livelocks while others do not, which greately influences the results and makes the various results not directly comparable to one another. We can for example see that checking for the absense of deadlocks when they are not present quickly becomes very slow, like in `vasy_52_318` where in particular we observed that even single iterations of the strategy iteration algorithm become quite slow. Checking for livelocks instead appears to be generally slower when the answer is negative, because in those cases it doesn't suffice to find the cycle with tau transitions but instead all the graph needs to be considered.
+The various labelled transition systems have different sizes, and some have deadlocks and livelocks while others do not, which greately influences the results and makes the various results not directly comparable to one another. We can for example see that checking for the absense of deadlocks when they are not present quickly becomes very slow, like in `vasy_52_318` where in particular we observed that even single iterations of the strategy iteration algorithm become quite slow. Checking for livelocks instead appears to be generally slower when the answer is negative, because in those cases it does not suffice to find the cycle with tau transitions but instead all the graph needs to be considered.
 
 The `vasy_720_390` instance is also interesting because it is not connected, with only 87740 states which are actually reachable from the initial one. This is a favourable case for local algorithms, and in fact the time required to verify the formulas is proportional to the number of actually reachable states rather than the full amount.
 
