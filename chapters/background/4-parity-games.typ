@@ -1,10 +1,57 @@
 #import "../../config/common.typ": *
+#import "@preview/cetz:0.2.2": canvas, draw, tree
 
 == Parity games
 
 Parity games @pg_ermeson @pg_zielonka are games with two players, 0 and 1, performed on directed graphs. A token is placed in a position, represented by nodes, and the two players move it along the edges of the graph. The set of nodes is partitioned in two sets and the player that chooses the move is determined by the subset in which the node for the current position is in. To each node is also associated a _priority_, represented by a natural number. The sequence of positions visited in a game is called _play_ and could be finite or infinite, depending on whether a position with no moves is reached or not. In case of a finite play the player who cannot move loses, otherwise if the play is infinite the priorities of the positions that are visited infinitely many times are considered: if the biggest one is even then player 0 wins, otherwise player 1 is the winner. Players are also sometimes called $exists$ and $forall$ or $lozenge$ and $square$ due to their meaning when using parity games for solving $mu$-calculus or fixpoints.
 
-// TODO: Image example of parity game?
+In @parity-example we can see an example of a parity game with 5 vertices. Circles represent vertices controlled by player 0 while squares represent vertices controlled by player 1. Each vertex is shown with its name and its priority. The vertices have been divided in two groups based on the winner on the vertices in them. The left one is winning for player 0 because from $v_0$ it can always go downwards to $v_1$, from which the only possible response possible for player 1 is to go back to $v_0$. Player 0 can thus force such play in which the higher infinitely visited priority is 2, hence the vertices are winning for player 0. In the right group a similar thing happens where player 1 can force any play to go through vertex $v_3$ infinitely often and thus winning the game. Notice that the edges from $v_0$ to $v_2$ and from $v_2$ to $v_1$ are never a good choice for the players, since they lead from a vertex that is winning for the player to one that is losing.
+
+#let parity_game_example = canvas({
+  import draw: *
+
+  set-style(content: (padding: .2), stroke: black)
+
+  let node(pos, name, p, label) = {
+    if p == 0 {
+      circle(pos, name: name, radius: .65, stroke: black)
+    } else {
+      let (x, y) = pos
+      rect((x - .65, y + .65), (x + .65, y - .65), name: name, radius: 0.05)
+    }
+    content(pos, label)
+  }
+
+  node((0, 0), "v0", 0, $v_0: 0$)
+  node((0, -3.5), "v1", 1, $v_1: 2$)
+  node((3.5, 0), "v2", 1, $v_2: 3$)
+  node((3.5, -3.5), "v3", 0, $v_3: 5$)
+  node((6.5, -1.75), "v4", 0, $v_4: 4$)
+
+  let edge(ni, ai, nf, af, a) = {
+    let pi = (name: ni, anchor: ai)
+    let pf = (name: nf, anchor: af)
+    bezier(pi, pf, (pi, 50%, a, pf), fill: none, mark: (end: ">"))
+  }
+
+  edge("v0", 235deg, "v1", 125deg, -20deg)
+  edge("v1", 55deg, "v0", 305deg, -20deg)
+  edge("v0", 0deg, "v2", 180deg, 0deg)
+  edge("v2", 230deg, "v1", 20deg, 10deg)
+  edge("v2", 270deg, "v3", 90deg, 0deg)
+  edge("v3", -10deg, "v4", 260deg, -20deg)
+  edge("v4", 190deg, "v3", 55deg, -20deg)
+  edge("v4", 140deg, "v2", -20deg, -20deg)
+
+  rect((-1, 1), (1, -4.5), radius: .5, stroke: .5pt)
+  rect((2.5, 1), (7.5, -4.5), radius: .5, stroke: .5pt)
+})
+
+#figure(
+  parity_game_example,
+  caption: [Example of a parity game],
+) <parity-example>
+
 We will first introduce graphs and some convenient notation for them. Moreover we will also need a formal notion for infinitely recurring elements in a sequence in order to describe the winner of a parity game.
 
 #notation("graph, successors and predecessors")[
@@ -17,8 +64,6 @@ We will first introduce graphs and some convenient notation for them. Moreover w
 #definition("infinitely recurring elements")[
   Let $pi = v_0 v_1 v_2 ...$ an infinite sequence of elements. We define $inf(pi)$ as the set of infinitely recurring elements of $pi$, that is $inf(pi) = { v | forall n. exists i >= n. v_i = v }$.
 ]
-
-// TODO: Explain informally notions of parity games
 
 #definition("parity graph, parity game")[
   Let $(V, E)$ be a finite graph and $p: V -> bb(N)$ a so called priority function. A parity graph is a triple $G = (V, E, p)$.

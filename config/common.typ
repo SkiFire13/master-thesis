@@ -36,8 +36,8 @@
 #let theorem = environment("Theorem")
 
 #let sub = math.class("relation", sym.subset.eq.sq)
-#let meet = math.class("unary", sym.sect.sq)
-#let join = math.class("unary", sym.union.sq)
+#let meet = math.class("vary", sym.sect.sq)
+#let join = math.class("vary", sym.union.sq)
 
 #let up = math.class("unary", sym.arrow.t)
 #let psub = math.class("binary", $scripts(sub)^and$)

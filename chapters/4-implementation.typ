@@ -6,11 +6,8 @@ The final goal of this thesis was a concrete implementation of the algorithms ex
 
 In this section we will explain our design choices, what was actually implemented, and we will give a performance comparison with some existing tools.
 
-// TODO: Link to implementation
-
 == Technologies used
 
-// TODO: Cite Rust
 Just like LCSFE, our implementation is written in Rust @rust, a modern systems programming language, focused on performance and correctness and whose goal is to rival languages like C and C++ while offering memory safety. Just like C and C++, Rust mainly follows the imperative paradigm, allowing mutations, loops and general side effects, but it also includes lot of functional programming related features, like algebraic data structures and most notably _enums_, pattern matching, which allows to exhaustively inspect those enums, and _closures_, which are anonymous function that can capture their outer environment, although with some limitations due to how the memory management works. Among other features there are _traits_, which work similarly to type classes in Haskell and fill the same usecases as interfaces in popular OOP languages like Java. It should also be mentioned that Rust programs are organized in _crates_, which make up the unit of compilation, and _modules_, which are a hierarchical division internal to a crate and help organize code and avoid name clashes.
 
 The most interesting features however are its _ownership_ system and its borrow checker, which allow the compiler to guarantee memory safety without a garbage collection or other kind of runtime support. The ownership system enforces that every value has exactly one _owner_, which is responsible for freeing up its resources, making classes of issues like use-after-free impossible, and others like memory leaking much more difficult to hit. The borrow checker instead rules how borrows can be created and used. Every variable can be borrowed, creating either a shared reference or an exclusive references, which are pointers with a special meaning for the compiler. The borrow checker ensures that at any point in time there can be either multiple shared references or one exclusive reference pointing to a variable, but not both. Coupled with the fact that only exclusive references allow mutations, this system guarantees that references always point to valid data.
@@ -30,7 +27,6 @@ The dependent crates are:
 
 - _parity_, which implements the parsing and translation from parity games to a system of fixpoint equations, which we see in section @parity-implementation, and a binary crate for the associated CLI;
 - _mucalc_, which implements the parsing of labelled transition system files from the AUT format (also called Aldebaran), the parsing of a subset of $mu$-calculus formulas and the translation from them to a system of fixpoint equations, along with a binary crate for the associated CLI;
-// TODO: Cite paper of AUT format (?)
 - _bisimilarity_, which implements the translation from a bisimilarity problem between two states of two different labelled transition systems to a system of one fixpoint equation, along with a bianry crate for the associated CLI. 
 
 == Testing with parity games <parity-implementation>
@@ -79,9 +75,30 @@ The _parity_ crate implements this conversion from parity games to systems of fi
 
 For simplicity we avoided implementing the full grammar specification, but only the useful parts for testing.
 
-TODO: example of parity game converted to system of fixpoint equations?
+For example the parity game shown in @parity-example would be specified in the following way:
 
-We then used some of the parity game instances included in the Oink @oink collection of parity game solvers to test our implementation with positive results.
+```
+parity 5
+0 0 0 1,2;
+1 2 1 0;
+2 3 1 1,3;
+3 5 0 4;
+4 4 0 2,3;
+```
+
+It would then be translated to the following system of fixpoint equations:
+
+$
+  syseq(
+    v_0 &feq_nu v_1 join v_2 \
+    v_1 &feq_nu v_0 \
+    v_2 &feq_mu v_1 meet v_3 \
+    v_4 &feq_nu v_2 join v_3 \
+    v_3 &feq_mu v_4
+  )
+$
+
+We used some of the parity game instances included in the Oink @oink collection of parity game solvers to test our implementation with positive results.
 
 == Testing with $mu$-calculus
 
@@ -345,9 +362,11 @@ We also ran our solver on some of the instances in the VLTS benchmark suite to u
 
 The various labelled transition systems have different sizes, and some have deadlocks and livelocks while others do not, which greately influences the results and makes the various results not directly comparable to one another. We can for example see that checking for the absense of deadlocks when they are not present quickly becomes very slow, like in `vasy_52_318` where in particular we observed that even single iterations of the strategy iteration algorithm become quite slow. Checking for livelocks instead appears to be generally slower when the answer is negative, because in those cases it does not suffice to find the cycle with tau transitions but instead all the graph needs to be considered.
 
+In the `cwi_1_2` we observed the computation of play profiles for newly expanded vertices to be especially effective, allowing the valuation step to be performed only once.
+
 The `vasy_720_390` instance is also interesting because it is not connected, with only 87740 states which are actually reachable from the initial one. This is a favourable case for local algorithms, and in fact the time required to verify the formulas is proportional to the number of actually reachable states rather than the full amount.
 
-// TODO: diam and boxx are wrong (inverted?). Also re-check the livelock formula
+// TODO: Re-check the livelock formula
 
 TODO: Generate random FIFO/LIFO using CADP and gather measurements on them?
 

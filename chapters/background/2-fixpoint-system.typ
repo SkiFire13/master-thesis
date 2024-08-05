@@ -2,8 +2,7 @@
 
 == Systems of fixpoint equations
 
-// TODO: Cite @baldan_upto ?
-We will now define what is a system of fixpoint equations and what is its solution. Intuitively this will be very similar to a normal system of equations, except for the fact that each equation is changed to be a fixpoint equation. Since there can be more than one fixpoint we will also need to specify which kind of fixpoint the equation specifies, which we will do by using respectively the symbols $lfp$ and $gfp$ in subscript after the equal sign to denote the fact that we refer to the least or greatest fixpoint, respectively.
+We will now define what is a system of fixpoint equations and what is its solution, following the definition given in @baldan_games. Intuitively this will be very similar to a normal system of equations, except for the fact that each equation is changed to be a fixpoint equation. Since there can be more than one fixpoint we will also need to specify which kind of fixpoint the equation specifies, which we will do by using respectively the symbols $lfp$ and $gfp$ in subscript after the equal sign to denote the fact that we refer to the least or greatest fixpoint, respectively.
 
 #definition("system of fixpoint equation")[
   Let $(L, sub)$ be a complete lattice. A system of fixpoint equations $E$ over $L$ is a system of the following shape:
@@ -26,8 +25,6 @@ We will now define what is a system of fixpoint equations and what is its soluti
   - $tup(f) = (f_1, ..., f_n)$ but also seen as $tup(f): L^n -> L^n$ with $tup(f)(x_1, ..., x_n) = (f_1 (x_1), ..., f_n (x_n))$;
   - $tup(eta) = (eta_1, ..., eta_n)$.
 ]
-
-// TODO: tup(f) monotone according to pointwise order? Is it useful?
 
 #notation("empty system of fixpoint equations")[
   A system of equations with no equations or variables is conveniently written as $varempty$.
