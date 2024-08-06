@@ -161,3 +161,5 @@ $
       (and.big_(s_2 ->^a t_2) or.big_(s_1 ->^a t_1) F(t_1, t_2))
     )
 $
+
+TODO: Example formulas for the bisimulation example given earlier
