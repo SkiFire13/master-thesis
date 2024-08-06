@@ -1,4 +1,5 @@
 #import "../../config/common.typ": *
+#import "@preview/cetz:0.2.2": canvas, draw
 
 == Applications
 
@@ -70,7 +71,7 @@ $
 
 === Bisimilarity <bisimilarity-application>
 
-Bisimilarity @bisimilarity is a binary relation on states of a labelled transition system, where two states are in the relation if they have the same "behaviour", for some definition of behaviour. We will focus on the strong bisimilarity $bisim$, where the "behaviour" is identified with the possible transitions from a state. Bisimilarity is usually defined in terms of bisimulations, which are also binary relations on states. For the strong bisimilarity the associated bisimulations $R$ have the following requirement: 
+Bisimilarity @bisimilarity is a binary relation on states of a labelled transition system, where two states are in the relation if they are indistuinguishable by only looking at some kind of behaviour. We will focus on the strong bisimilarity $bisim$, where such behaviour is identified with the possible transitions from a state. Bisimilarity is usually defined in terms of bisimulations, which are also binary relations on states. For the strong bisimilarity the associated bisimulations $R$ have the following requirement: 
 
 $
   (s, t) in R 
@@ -83,9 +84,47 @@ $
   forall a, t'. &t &&->^a t' &&=> exists s'. &&s &&->^a s' &&and (s', t') in R 
 $
 
-Bisimilarity is then defined to be biggest bisimulation, that is the bisimulation that contains all other bisimulations, or equivalently the union of all bisimulations.
+Bisimilarity is then defined to be the biggest bisimulation, that is the bisimulation that contains all other bisimulations, or equivalently the union of all bisimulations.
 
-TODO: Example for bisimilarity
+#let bisimilarity_example = canvas({
+  import draw: *
+
+  set-style(content: (padding: .2), stroke: black)
+
+  let node(pos, name, label) = {
+    circle(pos, name: name, radius: 1em)
+    content(pos, label)
+  }
+  let edge(ni, ai, nf, af, a, l, d) = {
+    let pi = (name: ni, anchor: ai)
+    let pf = (name: nf, anchor: af)
+    let bname = ni + "-" + nf
+    bezier(pi, pf, (pi, 50%, a, pf), name: bname, fill: none, mark: (end: ">"))
+    content(bname + ".ctrl-0", l, anchor: d)
+  }
+
+  node((1, 0), "v0", $v_0$)
+  node((0, -1.5), "v1", $v_1$)
+  node((2, -1.5), "v2", $v_2$)
+  node((1, -3), "v3", $v_3$)
+  edge("v0", 200deg, "v1", 80deg, -20deg, $a$, "east")
+  edge("v0", -20deg, "v2", 100deg, 20deg, $a$, "west")
+  edge("v1", -80deg, "v3", 160deg, -20deg, $b$, "east")
+  edge("v2", -100deg, "v3", 20deg, 20deg, $b$, "west")
+
+  node((6, 0), "u0", $u_0$)
+  node((6, -1.5), "u1", $u_1$)
+  node((6, -3), "u2", $u_2$)
+  edge("u0", -90deg, "u1", 90deg, 0deg, $a$, "west")
+  edge("u1", -90deg, "u2", 90deg, 0deg, $b$, "west")
+})
+
+#figure(
+  bisimilarity_example,
+  caption: [Example of a strong bisimilarity problem],
+) <bisimilarity-example>
+
+Consider for example the two given labelled transition systems. They are obviously different, but by only looking at the possible transitions it is impossible to distinguish $v_0$ from $u_0$. It is however possible to distinguish for example $v_1$ from $u_0$, because the former can perform one transition with action $b$ while the latter can only perform a transition with action $a$.
 
 For our purposes however there is an alternative formulation based on a greatest fixpoint:
 
