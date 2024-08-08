@@ -1,4 +1,5 @@
 #import "../../config/common.typ": *
+#import "@preview/cetz:0.2.2": canvas, draw
 
 == Partial orders, lattices and monotone functions
 
@@ -13,6 +14,8 @@ We start by defining what is a lattice and introducing some related concepts. Th
   A partially ordered set (poset, for short) is a pair $(X, sub)$.
 ]
 
+A common example of poset is $bb(N)$, the set of natural numbers, equipped with the $<=$ relation.
+
 // TODO: Preorder?
 
 #definition("join and meet")[
@@ -21,7 +24,35 @@ We start by defining what is a lattice and introducing some related concepts. Th
   - (Join): $forall s in S. join S sub s$ and $forall t in X. forall s in S. t sub s => t sub join S$
 ]
 
-Meet and join do not always exist, but when they do it can be proven that they are unique. For our purposes we will however be interested in posets where meet and join always exists, also called lattices.
+Meet and join do not always exist, but when they do it can be proven that they are unique. For our purposes we will however be interested in posets where meet and join always exists, also commonly called _lattices_. Lattices can conveniently be visualized using _Hasse diagrams_, like the following:
+
+#let lattice_example = canvas({
+  import draw: *
+
+  set-style(content: (padding: .2), stroke: black)
+
+  let node(pos, name, label) = content(pos, label, name: name)
+
+  node((1.5, 0), "top", $top$)
+  node((0, -2), "a", $a$)
+  node((1.5, -2), "b", $b$)
+  node((3, -1), "c", $c$)
+  node((3, -3), "d", $d$)
+  node((1.5, -4), "bot", $bot$)
+
+  line("top", "a")
+  line("top", "b")
+  line("top", "c")
+  line("a", "bot")
+  line("b", "bot")
+  line("c", "d")
+  line("d", "bot")
+})
+
+#figure(
+  lattice_example,
+  caption: [Hasse diagram of a lattice],
+) <lattice-example>
 
 #definition("complete lattice")[
   Let $(L, sub)$ be a poset. It is also a lattice if meet and join exist for every pair of elements, that is given $x, y in L$ both $meet {x, y}$ and $join {x, y}$ are defined.
