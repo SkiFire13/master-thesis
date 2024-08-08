@@ -87,5 +87,5 @@ Notice that the way the solution of a system of fixpoint equations is defined de
   - solving $s_2$ gives $s_2 = mu(lambda x. x sect x) = varempty$
   - $sol(E') = (varempty, varempty)$
 
-  Notice that $sol(E) = (X, X) != (varempty, varempty) = sol(E')$
+  Notice that $sol(E) = (X, X) != (varempty, varempty) = sol(E')$, meaning that the difference order of the equations in the two systems does indeed influence the solution.
 ]
