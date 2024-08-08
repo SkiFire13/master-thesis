@@ -24,7 +24,22 @@ A common example of poset is $bb(N)$, the set of natural numbers, equipped with 
   - (Join): $forall s in S. join S sub s$ and $forall t in X. forall s in S. t sub s => t sub join S$
 ]
 
-Meet and join do not always exist, but when they do it can be proven that they are unique. For our purposes we will however be interested in posets where meet and join always exists, also commonly called _lattices_. Lattices can conveniently be visualized using _Hasse diagrams_, like the following:
+Meet and join do not always exist, but when they do it can be proven that they are unique. For our purposes we will however be interested in posets where meet and join always exists, also commonly called _lattices_. 
+
+#definition("complete lattice")[
+  Let $(L, sub)$ be a poset. It is also a lattice if meet and join exist for every pair of elements, that is given $x, y in L$ both $meet {x, y}$ and $join {x, y}$ are defined.
+  It is a complete lattice if meet and join exist for every subset, that is given $S subset.eq L$ both $meet S$ and $join S$ are defined.
+]
+
+Two interesting elements of every complete lattice $L$ are the _bottom_ element $bot = meet varempty$ and the _top_ element $top = join L$.
+
+From now on we will work with complete lattices. For most examples we will however use finite lattices, which can be proved to also be complete lattices.
+
+#lemma("finite complete lattices")[
+  Let $(L, sub)$ be a finite lattice, that is a lattice where $L$ is a finite set. Then it is also a complete lattice.
+]
+
+Lattices can conveniently be visualized using _Hasse diagrams_, like the ones in @lattice-example. On the left there is a simple complete lattice, with a maximum element $top$ and a minimum element $bot$. Lines connect elements that are in the $sub$, with the lower element being the one on the left, omitting however those pairs that can be obtained by transitivity. For example $bot sub a sub top$ and hence $bot sub top$, but this is left implicit. The right diagram shows an infinite complete lattice, in this case the set $bb(N)$ of natural numbers equipped with a top element $omega$. Note that the plain set of natural numbers is not a complete lattice because $join bb(N)$ is not defined, it is however a lattice because given any two number we can compute meet and join respectively with the $max$ and $min$ functions.
 
 #let lattice_example = canvas({
   import draw: *
@@ -47,27 +62,21 @@ Meet and join do not always exist, but when they do it can be proven that they a
   line("b", "bot")
   line("c", "d")
   line("d", "bot")
+
+  node((6, 0), "omega", $omega$)
+  node((6, -1.6), "2", $2$)
+  node((6, -2.8), "1", $1$)
+  node((6, -4), "0", $0$)
+
+  line("omega", "2", stroke: (dash: "densely-dotted"))
+  line("2", "1")
+  line("1", "0")
 })
 
 #figure(
   lattice_example,
-  caption: [Hasse diagram of a lattice],
+  caption: [Hasse diagram of two complete lattices],
 ) <lattice-example>
-
-#definition("complete lattice")[
-  Let $(L, sub)$ be a poset. It is also a lattice if meet and join exist for every pair of elements, that is given $x, y in L$ both $meet {x, y}$ and $join {x, y}$ are defined.
-  It is a complete lattice if meet and join exist for every subset, that is given $S subset.eq L$ both $meet S$ and $join S$ are defined.
-]
-
-// TODO: Bottom and Top?
-
-From now on we will work with complete lattices. For most examples we will however use finite lattices, which can be proved to also be complete lattices.
-
-#lemma("finite complete lattices")[
-  Let $(L, sub)$ be a finite lattice, that is a lattice where $L$ is a finite set. Then it is also a complete lattice.
-]
-
-// TODO: Image example of complete lattice?
 
 #definition("powerset")[
   Let $X$ be a set. Its powerset, written $2^X$, is the set of all subsets of $X$, that is $2^X = {S | S subset.eq X}$.
