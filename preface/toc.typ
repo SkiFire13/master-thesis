@@ -8,13 +8,15 @@
 }
 
 #let toc() = page[
-  #show outline.entry.where(level: 1): it => {
-    show repeat: none
-    v(12pt, weak: true)
-    smallcaps(it)
-  }
+  #[
+    #show outline.entry.where(level: 1): it => {
+      show repeat: none
+      v(12pt, weak: true)
+      smallcaps(it)
+    }
 
-  #outline(title: [= Index], indent: auto)
-  #extra-outline(title: [= Index of figures], target: figure.where(kind: image))
-  #extra-outline(title: [= Index of tables], target: figure.where(kind: table))
+    #outline(title: [= Index] + v(.5em), indent: auto)
+  ]
+  #extra-outline(title: [= Index of figures] + v(.5em), target: figure.where(kind: image))
+  #extra-outline(title: [= Index of tables] + v(.5em), target: figure.where(kind: table))
 ]
