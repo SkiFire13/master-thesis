@@ -1,6 +1,6 @@
 #import "../config/common.typ": *
 
-= Implementation and performance considerations
+= Implementation
 
 The final goal of this thesis was a concrete implementation of the algorithms explained until now, which ultimately was a rewrite and expansion of the work done in LCSFE @flori to use a different and possibly better algorithm for solving the generated parity game. The final implementation is available in the repository #underline(link("https://github.com/SkiFire13/master-thesis-code"))
 
