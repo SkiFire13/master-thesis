@@ -141,7 +141,7 @@ The labelled transition system is expected to be in the AUT (Aldebaran) format, 
 
 The grammar consists of a header containing the literal "des" followed by the initial state number, the number of transitions and the number of states. Following that are all the transitions, encoded as a triple with the starting state, the label, which can be quoted or not, and the ending state. Differently from the specification at @aut_spec, we have preferred a slightly different definition for the quoted and unquoted labels to simplify the implementation. We have not observed inputs for which this makes a difference.
 
-The $mu$-calculus formula is expected to be of the more expressive variant described in @mucalculus-application, according to the following grammar:
+The $mu$-calculus formula is expected to follow the more expressive definition described in @mucalculus-application, except we omitted propositions for simplify. The gramma is the following:
 
 #[
   #show "<": sym.angle.l
