@@ -50,17 +50,17 @@ Lattices can conveniently be visualized using _Hasse diagrams_, like the ones in
 
   node((1.5, 0), "top", $top$)
   node((0, -2), "a", $a$)
-  node((1.5, -2), "b", $b$)
-  node((3, -1), "c", $c$)
-  node((3, -3), "d", $d$)
+  node((2.25, -1.25), "b", $b$)
+  node((1.5, -2.5), "c", $c$)
+  node((3, -2.5), "d", $d$)
   node((1.5, -4), "bot", $bot$)
 
   line("top", "a")
   line("top", "b")
-  line("top", "c")
   line("a", "bot")
-  line("b", "bot")
-  line("c", "d")
+  line("b", "c")
+  line("b", "d")
+  line("c", "bot")
   line("d", "bot")
 
   node((6, 0), "omega", $omega$)
@@ -96,9 +96,13 @@ When we will later characterize the solutions of a system of fixpoint equations 
 
 // TODO: Image example of basis of non-powerset
 
-#example("basis of powerset", label: <powerset-basis>)[
+To give an example of a basis, consider the left lattice in @lattice-example. A basis for it is the set ${a, c, d}$, where we can express the other elements with $bot = join varempty$, $b = join {c, d}$ and $top = join {a, c, d} = join {a, c} = join {a, d}$. Note that there may be more than one way to obtain an element by joining a subset of a basis, as shown with $top$. Another basis that we will use often is the basis of a powerset lattice, which we will now define.
+
+#definition("basis of powerset", label: <powerset-basis>)[
   Given a set $X$, a basis of the poset $(2^X, subset.eq)$ is the set of singletons $B_(2^X) = { {x} | x in X }$.
 ]
+
+We now also define the concept of upward-closure and upward-closed set. This concept will become important later on.
 
 #definition("upward-closure")[
   Let $(L, sub)$ be a lattice and $l in L$. The upward-closure of $l$ is $up l = { l' in L | l sub l' }$.
