@@ -149,6 +149,8 @@ It is interesting to note that the cases for $diam(A) psi$ and $boxx(A) psi$ are
 
 The definition also did not include fixpoint formulas since those were already been removed when translating to a system of fixpoint equations.
 
+// TODO: Example of logic formulas for mucalculus?
+
 === Translating bisimilarity
 
 Likewise for bisimilarity we have seen in @bisimilarity-application that it can be translated to a fixpoint equation, which in turn can be seen as a system of a single fixpoint equation. As with $mu$-calculus formulas the domain is the powerset lattice $2^(bb(S) times bb(S))$, and thus its basis is $bb(S) times bb(S)$. Since there is just one variable and equation we will only define $F(s_1, s_2)$, representing the formula for the player 0 vertex $((s_1, s_2), 1)$:
@@ -162,7 +164,7 @@ $
     )
 $
 
-For example the formulas for the pair of states in the labelled transition systems shown in @bisimilarity-example are:
+For example the formulas for the pair of states in the labelled transition systems shown in @bisimilarity-example are the following:
 
 $
   F(v_0, u_0) &= ([(v_1, u_1), 1] and [(v_2, u_1), 1]) and ([(v_1, u_1), 1] or [(v_2, u_1), 1]) \
