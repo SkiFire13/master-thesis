@@ -137,7 +137,7 @@ We can then define the logic formula for the vertex $(s, i)$ as $F(s, phi_i (x_1
     F(s, psi_1 or psi_2) &= F(s, psi_1) or F(s, psi_2) \
   $,
   $
-    F(s, x_i) &= F(s, phi_i(tup(x^*))) \
+    F(s, x_i) &= [b, i] \
     F(s, diam(A) psi) &= and.big_(a in sem(A)) and.big_(s ->^a t) F(t, psi) \
     F(s, boxx(A) psi) &= or.big_(a in sem(A)) or.big_(s ->^a t) F(t, psi) \
     F(s, psi_1 and psi_2) &= F(s, psi_1) and F(s, psi_2) \
@@ -155,11 +155,30 @@ Likewise for bisimilarity we have seen in @bisimilarity-application that it can 
 
 $
   F(s_1, s_2) =
-    and.big_(a in Act) (
-      (and.big_(s_1 ->^a t_1) or.big_(s_2 ->^a t_2) F(t_1, t_2))
+    (
+      (and.big_(a in Act) and.big_(s_1 ->^a t_1) or.big_(s_2 ->^a t_2) [(t_1, t_2), 1])
       and
-      (and.big_(s_2 ->^a t_2) or.big_(s_1 ->^a t_1) F(t_1, t_2))
+      (and.big_(a in Act) and.big_(s_2 ->^a t_2) or.big_(s_1 ->^a t_1) [(t_1, t_2), 1])
     )
 $
 
-TODO: Example formulas for the bisimulation example given earlier
+For example the formulas for the pair of states in the labelled transition systems shown in @bisimilarity-example are:
+
+$
+  F(v_0, u_0) &= ([(v_1, u_1), 1] and [(v_2, u_1), 1]) and ([(v_1, u_1), 1] or [(v_2, u_1), 1]) \
+    &= [(v_1, u_1), 1] and [(v_2, u_1), 1] \
+  F(v_0, u_1) &= ff and ff = ff \
+  F(v_0, u_2) &= ff and tt = ff \
+  #v(0em) \
+  F(v_1, u_0) &= ff and ff = ff \
+  F(v_1, u_1) &= [(v_3, u_2), 1] and [(v_3, u_2), 1] = [(v_3, u_2), 1] \
+  F(v_1, u_2) &= ff and tt = ff \
+  #v(0em) \
+  F(v_2, u_0) &= ff and ff = ff \
+  F(v_2, u_1) &= [(v_3, u_2), 1] and [(v_3, u_2), 1] = [(v_3, u_2), 1] \
+  F(v_2, u_2) &= ff and tt = ff \
+  #v(0em) \
+  F(v_3, u_0) &= tt and ff = ff \
+  F(v_3, u_1) &= tt and ff = ff \
+  F(v_3, u_2) &= tt and tt = tt
+$

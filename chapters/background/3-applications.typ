@@ -124,7 +124,7 @@ Bisimilarity is then defined to be the biggest bisimulation, that is the bisimul
   caption: [Example of a strong bisimilarity problem],
 ) <bisimilarity-example>
 
-Consider for example the two given labelled transition systems. They are obviously different, but by only looking at the possible transitions it is impossible to distinguish $v_0$ from $u_0$. It is however possible to distinguish for example $v_1$ from $u_0$, because the former can perform one transition with action $b$ while the latter can only perform a transition with action $a$.
+Consider for example the two given labelled transition systems given above. They are obviously different, but by only looking at the possible transitions it is impossible to distinguish $v_0$ from $u_0$, hence they are bisimilar. It is instead possible to distinguish $v_1$ from $u_0$, because the former can perform one transition with action $b$ while the latter can only perform a transition with action $a$, and thus they are not bisimilar.
 
 For our purposes however there is an alternative formulation based on a greatest fixpoint:
 
