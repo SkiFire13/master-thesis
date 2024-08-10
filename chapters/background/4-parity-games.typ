@@ -7,7 +7,7 @@ Parity games @pg_ermeson @pg_zielonka are games with two players, 0 and 1, perfo
 
 In @parity-example we can see an example of a parity game with 5 vertices. Circles represent vertices controlled by player 0 while squares represent vertices controlled by player 1. Each vertex is shown with its name and its priority. The vertices have been divided in two groups based on the winner on the vertices in them. The left one is winning for player 0 because from $v_0$ it can always go downwards to $v_1$, from which the only possible response possible for player 1 is to go back to $v_0$. Player 0 can thus force such play in which the higher infinitely visited priority is 2, hence the vertices are winning for player 0. In the right group a similar situation happens where player 1 can force any play to go through vertex $v_3$ infinitely often and thus winning the game. Notice that the edges from $v_0$ to $v_2$ and from $v_2$ to $v_1$ are never a good choice for the players, since they lead from a vertex that is winning for the player to one that is losing.
 
-#let parity_game_example = canvas({
+#let parity_game_example(withstrategy) = canvas({
   import draw: *
 
   set-style(content: (padding: .2), stroke: black)
@@ -28,27 +28,28 @@ In @parity-example we can see an example of a parity game with 5 vertices. Circl
   node((3.5, -3.5), "v3", 0, $v_3: 5$)
   node((6.5, -1.75), "v4", 0, $v_4: 4$)
 
-  let edge(ni, ai, nf, af, a) = {
+  let edge(ni, ai, nf, af, a, w) = {
     let pi = (name: ni, anchor: ai)
     let pf = (name: nf, anchor: af)
-    bezier(pi, pf, (pi, 50%, a, pf), fill: none, mark: (end: ">"))
+    let c = if withstrategy and w { red } else { black }
+    bezier(pi, pf, (pi, 50%, a, pf), fill: none, stroke: c, mark: (end: ">"))
   }
 
-  edge("v0", 235deg, "v1", 125deg, -20deg)
-  edge("v1", 55deg, "v0", 305deg, -20deg)
-  edge("v0", 0deg, "v2", 180deg, 0deg)
-  edge("v2", 230deg, "v1", 20deg, 10deg)
-  edge("v2", 270deg, "v3", 90deg, 0deg)
-  edge("v3", -10deg, "v4", 260deg, -20deg)
-  edge("v4", 190deg, "v3", 55deg, -20deg)
-  edge("v4", 140deg, "v2", -20deg, -20deg)
+  edge("v0", 235deg, "v1", 125deg, -20deg, true)
+  edge("v1", 55deg, "v0", 305deg, -20deg, false)
+  edge("v0", 0deg, "v2", 180deg, 0deg, false)
+  edge("v2", 230deg, "v1", 20deg, 10deg, false)
+  edge("v2", 270deg, "v3", 90deg, 0deg, true)
+  edge("v3", -10deg, "v4", 260deg, -20deg, false)
+  edge("v4", 190deg, "v3", 55deg, -20deg, false)
+  edge("v4", 120deg, "v2", -5deg, -20deg, false)
 
   rect((-1, 1), (1, -4.5), radius: .5, stroke: .5pt)
   rect((2.5, 1), (7.5, -4.5), radius: .5, stroke: .5pt)
 })
 
 #figure(
-  parity_game_example,
+  parity_game_example(false),
   caption: [Example of a parity game],
 ) <parity-example>
 
@@ -118,3 +119,10 @@ It can be proven that if such play is infinite then it will eventually reach a c
 #lemma("determinacy of parity games")[
   Given a parity game $G = (V_0, V_1, E, p)$, for every vertex $v in V_0 union V_1$ one and only one of the players can force a winning play from $v$. The set of vertices $V$ can thus be partitioned in two *winning sets* $W_0$ and $W_1$ of the vertices where player 0 (resp. player 1) has a winning strategy starting from vertices in that set.
 ]
+
+For example in the parity game in @parity-strategy-example the winning strategy for player 0 on vertex $v_0$ would be going to the vertex $v_1$, while for player 1 on vertex $v_2$ it would be going to the vertex $v_3$. For all the other vertices the strategy is not relevant, since it will always be losing for them.
+
+#figure(
+  parity_game_example(true),
+  caption: [Example of a parity game along with its winning strategies],
+) <parity-strategy-example>
