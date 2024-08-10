@@ -120,7 +120,7 @@ It can be proven that if such play is infinite then it will eventually reach a c
   Given a parity game $G = (V_0, V_1, E, p)$, for every vertex $v in V_0 union V_1$ one and only one of the players can force a winning play from $v$. The set of vertices $V$ can thus be partitioned in two *winning sets* $W_0$ and $W_1$ of the vertices where player 0 (resp. player 1) has a winning strategy starting from vertices in that set.
 ]
 
-For example in the parity game in @parity-strategy-example the winning strategy for player 0 on vertex $v_0$ would be going to the vertex $v_1$, while for player 1 on vertex $v_2$ it would be going to the vertex $v_3$. For all the other vertices the strategy is not relevant, since it will always be losing for them.
+For example in the parity game in @parity-strategy-example the winning strategy for player 0 on vertex $v_0$ would be going to the vertex $v_1$, while for player 1 on vertex $v_2$ it would be going to the vertex $v_3$. For all the other vertices the strategy is not relevant, since it will always be losing for their controlling player.
 
 #figure(
   parity_game_example(true),
