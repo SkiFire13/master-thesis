@@ -42,6 +42,8 @@ It has been proven in @baldan_games that such characterization is both correct a
   Let $E$ be a system of $n$ fixpoint equations over a complete lattice $L$ with solution $s$. For all $b in B_L$ and $i in range(n)$, we have $b sub s_i$ if and only if the player 0 has a winning strategy on the powerset game associated to $E$ starting from the vertex $(b, i)$.
 ]
 
+// TODO: Example of (small) powerset game?
+
 === Selections
 
 // TODO: Better examples
