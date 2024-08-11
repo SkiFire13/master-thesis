@@ -39,7 +39,7 @@ From now on we will work with complete lattices. For most examples we will howev
   Let $(L, sub)$ be a finite lattice, that is a lattice where $L$ is a finite set. Then it is also a complete lattice.
 ]
 
-Lattices can conveniently be visualized using _Hasse diagrams_, like the ones in @lattice-example. On the left there is a simple complete lattice, with a maximum element $top$ and a minimum element $bot$. Lines connect elements that are in the $sub$, with the lower element being the one on the left, omitting however those pairs that can be obtained by transitivity. For example $bot sub a sub top$ and hence $bot sub top$, but this is left implicit. The right diagram shows an infinite complete lattice, in this case the set $bb(N)$ of natural numbers equipped with a top element $omega$. Note that the plain set of natural numbers is not a complete lattice because $join bb(N)$ is not defined, it is however a lattice because given any two number we can compute meet and join respectively with the $max$ and $min$ functions.
+Lattices can conveniently be visualized using _Hasse diagrams_, like the ones in @lattice-example. On the left there is a simple complete lattice, with a maximum element $top$ and a minimum element $bot$. Lines connect elements that are in the $sub$, with the lower element being the one on the left, omitting however those pairs that can be obtained by transitivity. For example $bot sub a sub top$ and hence $bot sub top$, but this is left implicit. The center diagram shows an infinite complete lattice, in this case the set $bb(N)$ of natural numbers equipped with a top element $omega$. Note that the plain set of natural numbers is not a complete lattice because $join bb(N)$ is not defined, it is however a lattice because given any two number we can compute meet and join respectively with the $max$ and $min$ functions. Finally, the right diagram shows the _boolean lattice_, made of the two boolean literals $tt$ and $ff$, where the join operation is $or$ and the meet operation is $and$.
 
 #let lattice_example = canvas({
   import draw: *
@@ -71,11 +71,16 @@ Lattices can conveniently be visualized using _Hasse diagrams_, like the ones in
   line("omega", "2", stroke: (dash: "densely-dotted"))
   line("2", "1")
   line("1", "0")
+
+  node((9, -1), "tt", $tt$)
+  node((9, -3), "ff", $ff$)
+
+  line("tt", "ff")
 })
 
 #figure(
   lattice_example,
-  caption: [Hasse diagram of two complete lattices],
+  caption: [Hasse diagram of three complete lattices],
 ) <lattice-example>
 
 #definition("powerset")[
@@ -96,7 +101,7 @@ When we will later characterize the solutions of a system of fixpoint equations 
 
 // TODO: Image example of basis of non-powerset
 
-To give an example of a basis, consider the left lattice in @lattice-example. A basis for it is the set ${a, c, d}$, where we can express the other elements with $bot = join varempty$, $b = join {c, d}$ and $top = join {a, c, d} = join {a, c} = join {a, d}$. Note that there may be more than one way to obtain an element by joining a subset of a basis, as shown with $top$. Another basis that we will use often is the basis of a powerset lattice, which we will now define.
+To give an example of a basis, consider the left lattice in @lattice-example. A basis for it is the set ${a, c, d}$, where we can express the other elements with $bot = join varempty$, $b = join {c, d}$ and $top = join {a, c, d} = join {a, c} = join {a, d}$. Note that there may be more than one way to obtain an element by joining a subset of a basis, as shown with $top$. The boolean lattice instead admits the simple basis ${ tt }$, since $ff = join varempty$ and $tt = join { tt }$. Another basis that we will use often is the basis of a powerset lattice, which we will now define.
 
 #definition("basis of powerset", label: <powerset-basis>)[
   Given a set $X$, a basis of the poset $(2^X, subset.eq)$ is the set of singletons $B_(2^X) = { {x} | x in X }$.
