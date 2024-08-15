@@ -4,8 +4,7 @@
 
 === Game definition
 
-// TODO: Cite Venema. 2008 ?
-Systems of fixpoint equations can be characterized using a parity game @baldan_games, also called a powerset game. This characterization in particular allows to determine whether some element of a basis is under the solution for one of the variables of the system. This makes sense because in practice the actual solution of the system may include lot of informations we are not interested about, for example for the $mu$-calculus it would include all the states that satisfy the given formula, while we are only interested in knowing whether one particular state is included, or for bisimilarity it would include all pairs of processes that are bisimilar, but again we are only interested in a single pair.
+The solution of systems of fixpoint equations can be characterized using a parity game @baldan_games, also called a powerset game. This characterization in particular allows to determine whether some element of a basis is under the solution for one of the variables of the system. This makes sense because in practice the actual solution of the system may include lot of informations we are not interested about, for example for the $mu$-calculus it would include all the states that satisfy the given formula, while we might be only interested in knowing whether one particular state is included, or for bisimilarity it would include all pairs of processes that are bisimilar, when again we are only interested in a single pair.
 
 // TODO: Intuition on the definition?
 
@@ -31,9 +30,9 @@ Systems of fixpoint equations can be characterized using a parity game @baldan_g
     - $p((b, i)) < p((b', j))$ if $i < j$.
 ]
 
-Intuitively each player 0 vertex $(b, i)$ represents the fact that the basis element $b$ is under the final solution for the variable $x_i$. Its moves then are all the possible assignments to the tuple of variables $tup(x)$, expressed however as tuples of subsets of the basis, such that $b$ is under the result of $f_i (tup(x))$. Player 1 then can challenge player 0 by claiming that one of those subsets contains an element of the basis that is not actually under the solution, and this continues either infinitely or until one of the two players has no move possible.
+Intuitively each player 0 vertex $(b, i)$ represents the fact that the basis element $b$ is under the $i$-th component of the solution. Its moves then are all the possible assignments to the tuple of variables $tup(x)$, expressed however as tuples of subsets of the basis, such that $b$ is under the result of $f_i (tup(x))$. Player 1 then can challenge player 0 by claiming that one of those subsets contains an element of the basis that is not actually under the solution, and this continues either infinitely or until one of the two players has no move possible.
 
-The given priority function is not fully specified, but it can be shown that there exist a mapping to $bb(N)$ that satisfies the given order and partition into even/odd. An intuitive way would be to just list the priorities in order and give to map each of them to the next available even or odd natural number.
+The priority function is not fully specified, but it can be shown that there exist a mapping to $bb(N)$ that satisfies the given order and partition into even/odd. An intuitive way would be to just list the priorities in order and give to map each of them to the next available even or odd natural number.
 
 // TODO: Cite Venema. 2008 ?
 It has been proven in @baldan_games that such characterization is both correct and complete, allowing us to solve generic systems of fixpoint equations with it.
@@ -51,7 +50,7 @@ It has been proven in @baldan_games that such characterization is both correct a
 In practice it is not convenient to consider all the possible moves for player 0. Consider for example two moves for player 0 that lead to the positions $tup(X)$ and $tup(Y)$ for player 1. If $A(tup(X)) subset A(tup(Y))$ then intuitively $tup(Y)$ is not convenient for player 0, as it will give player 1 strictly more moves to play and thus more chances to win. We will now see a formalization of this idea.
 
 // TODO: Cite where this was first defined
-To start we will need to define a new order, called _Hoare preorder_:
+To start we will need to consider a new order, called _Hoare preorder_:
 
 #definition("Hoare preorder")[
   Let $(P, sub)$ be a poset. The Hoare preorder, written $hsub$, is a preorder on the set $2^P$ such that, $forall X, Y subset.eq P. X hsub Y <=> forall x in X. exists y in Y. x sub y$.
@@ -74,7 +73,7 @@ Ideally we would be interested in the least selection; this can be shown to alwa
 
 Moreover the least selection can be exponential with respect to the number of variables and basis size. Take for example the function $f(x_1, ..., x_(2n)) = (x_1 or x_2) and (x_3 or x_4) and ... and (x_(2n-1) or x_(2n))$ over the boolean lattice. The corresponding minimal selection would be ${ ({tt}, varempty, {tt}, varempty, ...), ..., (varempty, {tt}, varempty, {tt}, ...) }$, which lists all the ways to satisfy each $x_(2i-1) or x_(2i)$ without making them both $tt$, which is $2^n$ and thus exponential in the number of variables. A similar construction can be made for the basis size, by taking as domain the set of $n$-tuples over the boolean lattice.
 
-For these reasons a logic for upward-closed sets is used to represent the $E(b, i)$ set in a compact way. Additionally this allows us to generate sets of moves which are typically small, even if they are not the least ones. From now on we will refer to formulas in such logic with "logic formulas".
+For these reasons a logic for upward-closed sets is used to represent the $E(b, i)$ set in a more compact way. Additionally this allows us to generate sets of moves which are typically small, even if they are not the least ones. From now on we will refer to formulas in such logic with "logic formulas".
 // TODO(Prof): "since not compositional"?
 
 // TODO: Example least selection is exponential
@@ -88,6 +87,8 @@ For these reasons a logic for upward-closed sets is used to represent the $E(b, 
 ]
 
 The $tt$ and $ff$ formula are then implicitly defined as $and_(k in varempty) phi_k$ and $or_(k in varempty) phi_k$.
+
+// TODO: Why do we work on upward closed sets?
 
 #definition("logic formulas semantics")[
   Let $(L, sub)$ be a complete lattice, $B_L$ a basis of $L$, $n in bb(N)$, $i in range(n)$ and $phi$ a logic formula. The semantics of $phi$, that is the set of player 1 vertices is represents, is a upward-closed set $sem(phi) subset.eq (2^(B_L))^n$ with respect to $phsub$, define as follows:
@@ -110,6 +111,7 @@ The $tt$ and $ff$ formula are then implicitly defined as $and_(k in varempty) ph
   $
 ]
 
+// TODO: this is kinda out of context. Explain more
 Another advantage of representing selections using such formulas is that they can be simplified when it becomes known that some position for player 0 is winning or losing. Such simplification would be done by replacing the corresponding $[b, i]$ atom in the formula to respectively true or false. In the parity game this would then translate to either removing a set of moves for player 0, corresponding to those that allow player 1 to reach a winning position for them, or replacing moves for player 0 with ones without moves that are immediately losing for player 1.
 
 It should be noted however that we cannot automatically get such formulas from any opaque function that could appear in a system of fixpoint equations. Instead, this will need to be done separately for each function, or class of functions.
@@ -172,7 +174,8 @@ $
 
 For example the formulas for the pair of states in the labelled transition systems shown in @bisimilarity-example are the following:
 
-$
+#import "@preview/equate:0.2.0": equate
+#equate($
   F(v_0, u_0) &= ([(v_1, u_1), 1] and [(v_2, u_1), 1]) and ([(v_1, u_1), 1] or [(v_2, u_1), 1]) \
     &= [(v_1, u_1), 1] and [(v_2, u_1), 1] \
   F(v_0, u_1) &= ff and ff = ff \
@@ -189,4 +192,4 @@ $
   F(v_3, u_0) &= tt and ff = ff \
   F(v_3, u_1) &= tt and ff = ff \
   F(v_3, u_2) &= tt and tt = tt
-$
+$)
