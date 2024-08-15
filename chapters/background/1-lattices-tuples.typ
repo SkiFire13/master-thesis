@@ -3,7 +3,7 @@
 
 == Partial orders, lattices and monotone functions
 
-We start by defining what is a lattice and introducing some related concepts. This will be fundamental for defining systems of fixpoint equations, as their domain and codomain will be lattices. Moreover we are interested in least and greatest fixpoints, which intristically require a concept of order.
+We start by defining what is a (complete) lattice and introducing some related concepts. This will be fundamental for defining systems of fixpoint equations, as their domain and codomain will be lattices. Moreover we are interested in least and greatest fixpoints, which intristically require a concept of order.
 
 #definition("partial order, poset")[
   Let $X$ a set. A partial order $sub$ is a binary relation on $X$ which satisfies the following properties for all $x, y, z in X$:
@@ -89,17 +89,58 @@ Lattices can conveniently be visualized using _Hasse diagrams_, like the ones in
 
 #example("powerset lattice")[
   Given a set $X$, the pair $(2^X, subset.eq)$ is a complete lattice.
+  
+  The $join$ and $meet$ operations are respectively the union $union$ and intersection $sect$ operations on sets, while the $top$ and $bot$ elements are respectively $X$ and $varempty$.
 ]
 
-// TODO: Image example of powerset lattice
 
-When we will later characterize the solutions of a system of fixpoint equations it will be convenient to consider a basis of the lattice involved. Intuitively a basis is a subset of elements which allows to express any other element of as a join.
+#let powerset_example = canvas({
+  import draw: *
+
+  set-style(content: (padding: .2), stroke: black)
+
+  let node(pos, name, label) = content(pos, label, name: name)
+
+  node((2, 0), "top", ${a, b, c}$)
+
+  node((0, -1.5), "ab", ${a, b}$)
+  node((2, -1.5), "ac", ${a, c}$)
+  node((4, -1.5), "bc", ${b, c}$)
+  
+  node((0, -3), "a", ${a}$)
+  node((2, -3), "b", ${b}$)
+  node((4, -3), "c", ${c}$)
+
+  node((2, -4.5), "bot", $varempty$)
+
+  line("ab", "top")
+  line("ac", "top")
+  line("bc", "top")
+
+  line("a", "ab")
+  line("a", "ac")
+
+  line("b", "ab")
+  line("b", "bc")
+
+  line("c", "ac")
+  line("c", "bc")
+
+  line("bot", "a")
+  line("bot", "b")
+  line("bot", "c")
+})
+
+#figure(
+  powerset_example,
+  caption: [Hasse diagram of a powerset lattice],
+) <powerset-example>
+
+When we will later characterize the solutions of a system of fixpoint equations it will be convenient to consider a basis of the lattice involved. Intuitively a basis is a subset of elements which allows to express any other element as a join of a subset of such basis.
 
 #definition("basis")[
   Let $(L, sub)$ be a lattice. A basis is a subset $B_L subset.eq L$ such that all elements of $L$ can be defined by joining subsets of the basis, that is $forall l in L. l = join { b in B_L | b sub l }$.
 ]
-
-// TODO: Image example of basis of non-powerset
 
 To give an example of a basis, consider the left lattice in @lattice-example. A basis for it is the set ${a, c, d}$, where we can express the other elements with $bot = join varempty$, $b = join {c, d}$ and $top = join {a, c, d} = join {a, c} = join {a, d}$. Note that there may be more than one way to obtain an element by joining a subset of a basis, as shown with $top$. The boolean lattice instead admits the simple basis ${ tt }$, since $ff = join varempty$ and $tt = join { tt }$. Another basis that we will use often is the basis of a powerset lattice, which we will now define.
 
@@ -124,27 +165,27 @@ Given a function $f : L -> L$ where $(L, sub)$ is a complete lattice, it is not 
 ]
 
 #definition("fixpoint")[
-  Let $(X, sub)$ be a complete lattice and $f: X -> X$ a monotone function. Any element $x in X$ such that $f(x) = x$ is a fixpoint of $f$. \
-  The least fixpoint of $f$, written $lfp f$, is the smallest of such elements, while the greatest fixpoint of $f$, written $gfp f$, is the biggest.
+  Let $(X, sub)$ be a complete lattice and $f: X -> X$ a function. Any element $x in X$ such that $f(x) = x$ is a fixpoint of $f$.
 ]
 
 #theorem[Knaster-Tarski @tarski][
-  Let $(X, sub)$ be a complete lattice and $f: X -> X$ a monotone function. The set of fixpoint of $f$ forms a complete lattice with respect to $sub$.
+  Let $(X, sub)$ be a complete lattice and $f: X -> X$ a monotone function. The set of fixpoint of $f$ forms a complete lattice with respect to $sub$. \
+  The least fixpoint of $f$, written $lfp f$, is the bottom element of such lattice, while the greatest fixpoint of $f$, written $gfp f$, is the top element.
 ]
 
-Kleene iteration @kleene also gives us a constructive way to obtain a least or greatest fixpoint by repeatedly iterating a function starting from the least or greatest element of the lattice. However it should be noted that it may not be efficient enough or even possible to compute a fixpoint is such a way, be it because it requires too many iterations (potentially an infinite amount in case of non-finite lattices) or because representing the actual solution takes too much space, and we are interested only in some specific characteristics of it.
+Kleene iteration @kleene also gives us a constructive way to obtain a least or greatest fixpoint by repeatedly iterating a function starting from the least or greatest element of the lattice. However it should be noted that it may not be efficient enough or even possible to compute a fixpoint in such a way, because it may require too many iterations (potentially an infinite amount in case of non-finite lattices) or because representing the actual solution may take too much space, and we are interested only in some specific characteristics of it.
 
-// TODO: Ok simplified version?
+// TODO: Continuous function, catena, iterazione transfinita.
 #theorem[Kleene iteration @kleene][
-  Let $(X, sub)$ be a complete lattice and $f: X -> X$ a monotone function. Consider the ascending chain $bot sub f(bot) sub f(f(bot)) sub dots.h.c sub f^n(bot) sub dots.h.c$, it converges to $lfp f$. In other words, $lfp f = join { f^n (bot) | n in bb(N) }$. Similarly $gfp f = meet { f^n (top) | n in bb(N) }$.
+  Let $(X, sub)$ be a complete lattice and $f: X -> X$ a monotone function. Consider the ascending chain $bot sub f(bot) sub f(f(bot)) sub dots.h.c sub f^n (bot) sub dots.h.c$, it converges to $lfp f$. In other words, $lfp f = join { f^n (bot) | n in bb(N) }$. Similarly $gfp f = meet { f^n (top) | n in bb(N) }$.
 ]
 
 == Tuples
 
-In order to define systems of fixpoint equations we will need to refer to multiple equations/variables/values together, and to do that we will use $n$-tuples. We now give a small introduction to them, along with some convenient notation for referring to them or their elements and constructing new ones.
+In order to define systems of fixpoint equations we will need to refer to multiple equations/variables/values together, and to do that we will use $n$-tuples. We now introduce some basic notions regarding tuples, along with some convenient notation for referring to them or their elements and constructing new ones.
 
 #definition([set of $n$-tuples])[
-  Let $A$ be a set. The set of $n$-tuples of $A$ is $A^n$.
+  Let $A$ be a set. Given $n >= 1$ the set of $n$-tuples of $A$, written $A^n$, is inductively defined as $A^0 = { () }$, $A^1 = A$ and $A^(n+1) = A times A^n$.
 ]
 
 #notation([$n$-tuple])[
@@ -152,17 +193,19 @@ In order to define systems of fixpoint equations we will need to refer to multip
 ]
 
 #notation("concatenation")[
-  Let $tup(a_1), ..., tup(a_k)$ be either $n$-tuples or single elements of $A$. The notation $(tup(a_1), ..., tup(a_k))$ represents a $n$-tuple made by concatenating the elements in the tuples $tup(a_1), ..., tup(a_k)$. Single elements are considered as $1$-tuples for this purpose.
+  Let $tup(a_1), ..., tup(a_k)$ be either $n$-tuples or single elements of $A$. The notation $(tup(a_1), ..., tup(a_k))$ represents a $n$-tuple obtained by concatenating the elements in the tuples $tup(a_1), ..., tup(a_k)$. Single elements are considered as $1$-tuples for this purpose.
 ]
 
-We will also often use ranges over natural numbers, typically in order to index each element of a tuple.
+We will also often refer to intervals over natural numbers, typically in order to index the elements of a tuple.
 
 #notation("range")[
   We will refer to the set ${ 1, ..., n }$ with the shorthand $range(n)$.
 ]
 
+// TODO: Informal description?
+
 #definition("pointwise order")[
-  Let $(X, sub)$ be a poset. We can then define the pointwise order $sub$ on $X^n$ such that $tup(x) psub tup(x') <=> forall i in range(n). x_i sub x'_i$.
+  Let $(X, sub)$ be a poset. The pointwise order $psub$ on $X^n$ is defined, for $tup(x), tup(x') in X^n$, by $tup(x) psub tup(x')$ if $forall i in range(n). x_i sub x'_i$.
 
   It can be proven that $(X^n, psub)$ is also a poset. Moreover if $(X, sub)$ is a (complete) lattice then $(X^n, psub)$ is also a (complete) lattice, where $join tup(X) = (join X_1, join X_2, ..., join X_n)$ and similarly for $meet tup(X)$.
 ]
