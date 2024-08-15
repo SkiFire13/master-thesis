@@ -111,7 +111,7 @@ Given a partially expanded game, two optimal strategies and its winning sets, th
 
 // TODO: optimal instance?
 #definition("definitive winning set")[
-  Let $G = (V_0, V_1, E, p)$ be a parity game and $G|_U$ a subgame of $G$. Let $L = (G|_U, sigma, tau)$ be an optimal instance of the subgame and let $phi$ be the valuation for this instance. The definitive winning sets $W'_0$ and $W'_1$ are defined as:
+  Let $G = (V_0, V_1, E, p)$ be a parity game and $G|_U$ a subgame of $G$. Let $L = (G|_U, sigma, tau)$ be an optimal instance of the subgame and let $phi$ be the valuation for this instance. The definitive winning sets $W'_0$ and $W'_1$ are defined as follows:
   $
     W'_0 &= { v in U | E_L^0 (v) = varempty and (phi(v))_1 in V_+ } \
     W'_1 &= { v in U | E_L^1 (v) = varempty and (phi(v))_1 in V_- }

@@ -12,7 +12,7 @@ Systems of fixpoint equations can be characterized using a parity game @baldan_g
 #definition("powerset game")[
   Let $(L, sub)$ be a complete lattice and $B_L$ a basis of $L$. Let $E = tup(x) feq_tup(eta) tup(f) (tup(x))$ be a system of $n$ fixpoint equations.
 
-  The powerset game is a parity game associated with $E$ defined as:
+  The powerset game is a parity game associated with $E$ defined as follows:
 
   - the vertices for player 0 are $V_0 = B_L times range(n) = { (b, i) | b in B_L and i in range(n) }$
   
@@ -90,7 +90,7 @@ For these reasons a logic for upward-closed sets is used to represent the $E(b, 
 The $tt$ and $ff$ formula are then implicitly defined as $and_(k in varempty) phi_k$ and $or_(k in varempty) phi_k$.
 
 #definition("logic formulas semantics")[
-  Let $(L, sub)$ be a complete lattice, $B_L$ a basis of $L$, $n in bb(N)$, $i in range(n)$ and $phi$ a logic formula. The semantics of $phi$, that is the set of player 1 vertices is represents, is a upward-closed set $sem(phi) subset.eq (2^(B_L))^n$ with respect to $phsub$, define as:
+  Let $(L, sub)$ be a complete lattice, $B_L$ a basis of $L$, $n in bb(N)$, $i in range(n)$ and $phi$ a logic formula. The semantics of $phi$, that is the set of player 1 vertices is represents, is a upward-closed set $sem(phi) subset.eq (2^(B_L))^n$ with respect to $phsub$, define as follows:
   $
     sem([b, i]) &= { tup(X) | b in tup(X)_i } \
     sem(and.big_(k in K) phi_k) &= sect.big_(k in K) sem(phi_k) \
