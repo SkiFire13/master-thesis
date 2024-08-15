@@ -30,4 +30,4 @@
 #include "chapters/5-conclusion.typ"
 
 // TODO: Move to template/a more organized place
-#bibliography("sources.bib")
+#bibliography("sources.bib", style: "ieee-merged.csl")
