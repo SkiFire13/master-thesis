@@ -2,7 +2,7 @@
 
 = Background
 
-In this chapter we give an overview of the theoretical background used in the rest of this thesis. We will first recap some basic notions on order theory with special focus on (complete) lattices. Then we will define what is a system of fixpoint equations over complete lattices and what is its solution, along with any concept needed for this. We will then give a brief introduction to parity games and how to efficiently characterize the solution of a system of fixpoint equations using a parity game. Finally we will introduce two algorithms used to solve parity games which we will be using later on.
+In this chapter we give an overview of the theoretical background used in the rest of this thesis. We will first recap some basic notions on order theory with special focus on (complete) lattices. Then we will define what is a system of fixpoint equations over complete lattices and what is its solution, along with a number of related concepts in order theory. We will then give a brief introduction to parity games and describe how to characterize the solution of a system of fixpoint equations using a parity game, with some care for efficiency issues. Finally we will introduce two algorithms used to solve parity games which we will be using later on.
 
 #include "./background/1-lattices-tuples.typ"
 #include "./background/2-fixpoint-system.typ"
