@@ -9,10 +9,11 @@ Our goal will be to adapt and improve the local strategy iteration algorithm to 
 
 === Handling finite plays
 
-The parity game formulation of a system of fixpoint equations admits positions where a player has no available moves, meaning it is not a total parity game. However the strategy improvement algorithm requires a total parity game, so we need to convert a generic parity game into a "compatible" total parity game that can be handled by it, for some definition of "compatible.
+The parity game formulation of a system of fixpoint equations admits positions where a player has no available moves, namely it is not a total parity game. However the strategy improvement algorithm requires a total parity game, so we need to convert a generic parity game into a "compatible" total parity game that can be handled by it, for some definition of "compatible.
 
-The way we do this transformation is by providing auxiliary vertices that will be used as successors for those vertices that do not have one, in particular we will add two vertices $w0$ and $w1$ representing vertices that are both controlled by and winning for respectively player 0 and 1. These will be used for vertices that have no successors, meaning they are losing for the player controlling them and thus need a successor that is controlled by and winning for the opposite player. $w0$ and $w1$ will in turn also need successors, and these will be respectively $l1$ and $l0$, representing vertices that are controlled by and losing for respectively player 1 and 0. The vertices $w0$ and $l1$ will thus form a forced cycle, as well as $w1$ and $l0$. This, along with priorities choosen as favourable for the player that should win these cycles, will guarantee that the winner will actually be the expected one.
+The way we do this transformation is by inserting auxiliary vertices that will be used as successors for those vertices that do not have one. In particular we will add two vertices $w0$ and $w1$ representing vertices that are both controlled by and winning for respectively player 0 and 1. The vertices $w0$ and $w1$ will in turn also need successors, and these will be respectively $l1$ and $l0$, representing vertices that are controlled by and losing for respectively player 1 and 0. Likewise, the vertices $l0$ and $l1$ will need at least one successor, at that will be respectively $w1$ and $w0$. The vertices $w0$ and $l1$ will thus form a forced cycle, as well as $w1$ and $l0$. This, along with priorities choosen as favourable for the player that should win these cycles, will guarantee that the winner will actually be the expected one. Then, vertices that have no successors in the general game, meaning they are losing for the player controlling them, in the game will have as successor $w0$ or $w1$, that is controlled by and winning for the opposing player.
 
+// TODO: Better term than induced, which is already used?
 #definition("induced total parity game")[
   Let $G = (V_0, V_1, E, p)$ be a parity game. The induced total parity game of $G$ is the parity game $G' = (V'_0, V'_1, E', p')$ where:
   
@@ -33,10 +34,10 @@ The way we do this transformation is by providing auxiliary vertices that will b
   ]
 ]
 
-We now want to prove that this new parity game is "compatible" with the original one, for some definition of "compatible". In particular for our purposes we are interested in the new game preserving the winners for the vertices in the old game.
+We now want to prove that this new parity game is "compatible" with the original one, for a suitable definition of "compatible". In particular for our purposes we are interested that in the new game the winner for vertices which were already in the old game remains unchanged.
 
 #definition("compatible parity games")[
-  Let $G = (V_0, V_1, E, p)$ and $G' = (V'_0, V'_1, E', p')$ be two parity games. Let $W_0$ and $W_1$ be the winning sets for $G$ and $W'_0$ and $W'_1$ the winning sets for $G'$. We say that $G'$ is compatible with $G$ if $W_0 subset.eq W'_0$ and $W_1 subset.eq W'_1$.
+  Let $G = (V_0, V_1, E, p)$ and $G' = (V'_0, V'_1, E', p')$ be two parity games with $V_i subset.eq V'_i$. Let $W_0$ and $W_1$ be the winning sets for $G$ and $W'_0$ and $W'_1$ the winning sets for $G'$. We say that $G'$ is compatible with $G$ if $W_0 subset.eq W'_0$ and $W_1 subset.eq W'_1$.
 ]
 
 #definition("strategy on induced total parity game")[
@@ -53,15 +54,15 @@ We now want to prove that this new parity game is "compatible" with the original
 
 It can be observed that strategies on a parity game and those on its induced total game create a bijection. In fact notice that the condition $v in V_i and v E != varempty$ in the first case of $sigma'$ is equivalent to requiring $v in dom(sigma)$, meaning that restricting $sigma'$ to $dom(sigma)$ will result in $sigma$ itself.
 
-The bijection is not only limited to this. It can be showed that strategies that are correlated in this bijection will also induce plays with the same winner.
+The bijection is not only limited to this. It can be showed that strategies that are related by this bijection will also induce plays with the same winner.
 
 #theorem("plays on induced strategies")[
   Let $G = (V_0, V_1, E, p)$ be a parity game and $G' = (V'_0, V'_1, E', p')$ be the induced total parity game from $G$. Let $sigma_0$ and $sigma_1$ be two strategies on $G$ and $sigma'_0$ and $sigma'_1$ the unique corresponding strategies on $G'$. Let $v in V_0 union V_1$ and consider the plays starting from $v_0$ on the instances $I = (G, sigma_0, sigma_1)$ and $I' = (G', sigma'_0, sigma'_1)$. The two plays have the same winner.
 
   // TODO: Better "Proof" label
-  Proof. \
+  Proof.\
   We will prove that for all $i$ the play induced by $I$ is won by player $i$ if and only if the induced play by $I'$ is also won by player $i$:
-  - $=>)$: We distinguish two cases on the play induced by $I$:
+  - $=> \)$: We distinguish two cases on the play induced by $I$:
     - the play is infinite: $v_0 v_1 v_2 ... $, then every vertex is in $dom(sigma_i)$ for some $i$ and thus $sigma'_i$ are defined to be equal to $sigma_i$ and will induce the same play, which is won by player $i$;
     - the play is finite: $v_0 v_1 ... v_n$, with $v_n in V_(1-i)$ because the play is won by player $i$. For the same reason as the previous point the two induced plays are the same until $v_n$, which is not in $dom(sigma_(1-i))$ but is in $dom(sigma'_(1-i))$. The play induced by $I'$ is $v_0 v_1 ... v_n w_i l_(1-i) w_i ...$ which is also won by player $i$ because only the vertices $w_i$ and $l_(1-i)$ repeat infinitely often, and they have both priority favourable to player $i$.
   - $arrow.l.double \)$: We distinguish the following cases on the play induced by $I'$:
@@ -69,6 +70,7 @@ The bijection is not only limited to this. It can be showed that strategies that
     - the play reaches $w_i$: $v_0 v_1 ... v_n w_i l_(1-i) w_i ...$, then $v_n$ is not in $dom(sigma_(1-i))$ and $I$ induces the finite play $v_0 v_1 ... v_n$ which is won by player $i$ because $v_n in V_(1-i)$ due to its successor being controlled by player $i$;
     - the play reaches $w_(1-i)$: this is impossible because it would be winning for player $1-i$, which contradicts the hypothesis;
     - the play reaches $l_i$ or $l_(1-i)$ before $w_i$ or $w_(1-i)$: this is impossible because the only edges leading to $l_i$ or $l_(1-i)$ start from $w_(1-i)$ and $w_i$.
+  #align(right, sym.square.stroked.medium)
 ]
 
 #theorem("compatibility of induced total parity games")[
@@ -77,11 +79,12 @@ The bijection is not only limited to this. It can be showed that strategies that
   // TODO: Better "Proof" label
   Proof.\
   Let $v in W_i$, then there exist a winning strategy $sigma_i$ for player $i$. We claim that the induced strategy $sigma'_i$ for player $i$ on $G'$ is also winning. In fact consider any strategy $sigma'_(1-i)$ for player $1-i$ on $G'$, then it is induced by a strategy $sigma_(1-i)$ on $G$. We know that the play starting from $v$ on the instance $(G', sigma'_0, sigma'_1)$ is won by the same player as the play starting from $v$ on the instance $(G, sigma_0, sigma_1)$. Moreover since $sigma_i$ is a winning strategy for player $i$ we know that these plays are won by player $i$, thus $v in W'_i$ and so $W_i subset.eq W'_i$.
+  #align(right, sym.square.stroked.medium)
 ]
 
 === Generalizing subgames with subset of edges
 
-The local strategy improvement algorithm gives a way to consider only a subset of the vertices, but still assumes all edges between such vertices to be known. However this is not true in the symbolic formulation, as the list of successors of vertices in $V_0$ is computed lazily, and this might include vertices already in the subgame. We thus have to update the local algorithm to handle this case by extending the idea of escape set. Instead of identifying those vertices that can reach the $U$-exterior we will instead identify those vertices that can reach an "unexplored" edge, that is an edge present in the full game but not in the subgame. We will call the vertices directly connected to such edges _incomplete vertices_. Note that the resulting set will be a superset of the $U$-exterior, since edges that lead outside $U$ cannot be part of the subgame.
+The local strategy improvement algorithm gives a way to consider only a subset of the vertices, but still assumes all edges between such vertices to be known. However this is not necessarily true in the symbolic formulation, as the list of successors of vertices in $V_0$ is computed lazily, and this might include vertices already in the subgame. We thus have to update the local algorithm to handle this case by extending the idea of escape set. Instead of identifying those vertices that can reach the $U$-exterior we will identify those vertices that can reach an "unexplored" edge, that is an edge present in the full game but not in the subgame. We will call the vertices directly connected to such edges _incomplete vertices_. Note that the resulting set will be a superset of the $U$-exterior, since edges that lead outside $U$ cannot be part of the subgame.
 
 // TODO: Make this fit
 #definition("subgame")[
@@ -92,22 +95,23 @@ The local strategy improvement algorithm gives a way to consider only a subset o
   Let $G = (V_0, V_1, E, p)$ be a parity game and $G' = (G, U, E')$ a subgame of $G$. Let $L = (G|_U, sigma, tau)$ be an instance of the subgame. Let $E_sigma^*$ (resp. $E_tau^*$) be the transitive-reflexive closure of $E_sigma$ (resp. $E_tau$) and $I_G = {v | v E != v E'}$ the set of vertices that can reach unexplored vertices. The updated escape set for player 0 (resp. 1) from vertex $v in U$ is the set $E_L^0 (v) = v E_sigma^* sect I_G$ (resp. $E_L^1 (v) = v E_tau^* sect I_G$).
 ]
 
-#theorem("definitive winning set sound")[
+#theorem("definitive winning set is sound")[
   Let $G = (V_0, V_1, E, p)$ be a parity game and $G' = (G, U, E')$ a subgame of $G$. Let $G = (V_0, V_1, E, p)$ be a parity game and $U subset.eq V$. Let $L = (G|_U, sigma, tau)$ be an optimal instance of the subgame. Then $W'_0 subset.eq W_0$ and $W'_1 subset.eq W_1$.
 
   // TODO: Better "Proof" label
   Proof.\
   Let $v in W'_i$, then there exist a strategy $sigma_i$ on $G'$ the for player $i$ such that for any strategy $sigma_(1-i)$ for player $1-i$ on $G'$ the resulting play is winning for player $i$. Moreover after fixing the strategy $sigma_i$ the player $1-i$ has no way make the play to reach a vertex connected to an edge that is not included in the subgame, by definition of $W'_i$. Thus given any strategy for player $1-i$ in the full game, the resulting play will still be limited to the subgame, and will be won by player $i$. Hence $v in W_i$ and thus $W'_i subset.eq W_i$.
+  #align(right, sym.square.stroked.medium)
 ]
 
 === Expansion scheme
 
 // TODO(prof): Cito testualmente Friedmann o inserisco riferimenti al paper?
-In the local strategy iteration the expansion scheme is tasked with expanding the subgame by adding new nodes to it, in our adaptation it will instead add new edges to it. This does not however change much the logic behind it, since the expansion schemes defined in @friedmann_local are all based on picking vertices in the $U$-exterior or unexplored successors, which can be trivially replaced with picking incomplete vertices and unexplored edges.
+In the local strategy iteration the expansion scheme is obsed on the idea of expanding the subgame by adding new nodes. In our adaptation it will instead add new edges. This does not however change much of the logic behind it, since the expansion schemes defined in @friedmann_local are all based on picking vertices in the $U$-exterior or unexplored successors, which can be trivially replaced with picking incomplete vertices and unexplored edges.
 
 However the resulting properties of the expansion scheme are not guaranteed to stay the same. For example the upper bound on the number of expansions grows from $O(|V|)$ to $O(|E|)$, since in the worse case each expansion adds one edge and they may all be necessary to determine the actual winner on the initial vertex. As shown in @friedmann_local, a big number of expansions might not be ideal because each will require at least one strategy iteration, which in the long run can end up being slower than directly running the global algorithm.
 
-On the other hand a lazier expansion scheme can take better advantage of the ability to perform simplifications on symbolic moves, which allows to remove lot of edges in bulk. A more eager expansion scheme may instead visit all those edges, just to ultimately find out that they were all losing for the same reason. There is thus a tradeoff involved between expanding too much at once, which loses some of the benefits of using symbolic moves, and too little, which instead leads to too many strategy iterations.
+On the other hand a lazier expansion scheme can take better advantage of the ability to perform simplifications on symbolic moves, which allows to remove lot of edges with little work. A eager expansion scheme may instead visit all those edges, just to ultimately find out that they were all losing for the same reason. There is thus a tradeoff between expanding too much in a single step, which loses some of the benefits of using symbolic moves, and expanding too little, which instead leads to too many strategy iterations.
 
 In practice we will test our adaptation using a modified version of the symmetric expansion scheme from @friedmann_local. This scheme will pick an incomplete vertex and add one its unexplored edges to the subgame. If such edge leads to an unexplored vertex the expansion scheme will continue by picking an edge from such vertex and so on until an existing vertex is reached, re-establishing the total property of the graph.
 
