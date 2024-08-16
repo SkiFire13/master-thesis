@@ -14,47 +14,35 @@ We start by defining what is a (complete) lattice and introducing some related c
   A partially ordered set (poset, for short) is a pair $(X, sub)$.
 ]
 
-A common example of poset is $bb(N)$, the set of natural numbers, equipped with the $<=$ relation.
+A common example of poset is $(bb(N), <=)$, the set of natural numbers, and $<=$ is the standard order relation.
 
 // TODO: Preorder?
 
-#definition("join and meet")[
-  Let $(X, sub)$ be a poset and $S subset.eq X$. The meet (respectively join) of $S$, written $meet S$ (resp. $join S$), is the smallest (resp. greatest) element of $X$ that is bigger (resp. smaller) or equal to every element in $S$. Formally:
-  - (Meet): $forall s in S. s sub meet S$ and $forall t in X. forall s in S. s sub t => meet S sub t$
-  - (Join): $forall s in S. join S sub s$ and $forall t in X. forall s in S. t sub s => t sub join S$
-]
+Posets can conveniently be visualized using _Hasse diagrams_, like the ones in @poset-example. In such diagrams lines connecting two elements represent the one on top being greater than the one on the bottom. Lines that could be obtained by transitivity are instead left implicit due to the fact that the diagram represents a valid poset.
 
-Meet and join do not always exist, but when they do it can be proven that they are unique. For our purposes we will however be interested in posets where meet and join always exists, also commonly called _lattices_. 
-
-#definition("complete lattice")[
-  Let $(L, sub)$ be a poset. It is also a lattice if meet and join exist for every pair of elements, that is given $x, y in L$ both $meet {x, y}$ and $join {x, y}$ are defined.
-  It is a complete lattice if meet and join exist for every subset, that is given $S subset.eq L$ both $meet S$ and $join S$ are defined.
-]
-
-Two interesting elements of every complete lattice $L$ are the _bottom_ element $bot = meet varempty$ and the _top_ element $top = join L$.
-
-From now on we will work with complete lattices. For most examples we will however use finite lattices, which can be proved to also be complete lattices.
-
-#lemma("finite complete lattices")[
-  Let $(L, sub)$ be a finite lattice, that is a lattice where $L$ is a finite set. Then it is also a complete lattice.
-]
-
-Lattices can conveniently be visualized using _Hasse diagrams_, like the ones in @lattice-example. On the left there is a simple complete lattice, with a maximum element $top$ and a minimum element $bot$. Lines connect elements that are in the $sub$, with the lower element being the one on the left, omitting however those pairs that can be obtained by transitivity. For example $bot sub a sub top$ and hence $bot sub top$, but this is left implicit. The center diagram shows an infinite complete lattice, in this case the set $bb(N)$ of natural numbers equipped with a top element $omega$. Note that the plain set of natural numbers is not a complete lattice because $join bb(N)$ is not defined, it is however a lattice because given any two number we can compute meet and join respectively with the $max$ and $min$ functions. Finally, the right diagram shows the _boolean lattice_, made of the two boolean literals $tt$ and $ff$, where the join operation is $or$ and the meet operation is $and$.
-
-#let lattice_example = canvas({
+#let poset_example = canvas({
   import draw: *
 
   set-style(content: (padding: .2), stroke: black)
 
   let node(pos, name, label) = content(pos, label, name: name)
 
+  content((-2, -4), $P$)
+  node((-4, 0), "x", $x$)
+  node((-2, 0), "y", $y$)
+  node((-3, -2), "w", $w$)
+  node((-3, -4), "z", $z$)
+  line("x", "w")
+  line("y", "w")
+  line("z", "w")
+
+  content((3, -4), $L$)
   node((1.5, 0), "top", $top$)
   node((0, -2), "a", $a$)
   node((2.25, -1.25), "b", $b$)
   node((1.5, -2.5), "c", $c$)
   node((3, -2.5), "d", $d$)
   node((1.5, -4), "bot", $bot$)
-
   line("top", "a")
   line("top", "b")
   line("a", "bot")
@@ -63,25 +51,50 @@ Lattices can conveniently be visualized using _Hasse diagrams_, like the ones in
   line("c", "bot")
   line("d", "bot")
 
+  content((7, -4), $bb(N)_omega$)
   node((6, 0), "omega", $omega$)
   node((6, -1.6), "2", $2$)
   node((6, -2.8), "1", $1$)
   node((6, -4), "0", $0$)
-
   line("omega", "2", stroke: (dash: "densely-dotted"))
   line("2", "1")
   line("1", "0")
 
+  content((9, -4), $bb(B)$)
   node((9, -1), "tt", $tt$)
   node((9, -3), "ff", $ff$)
-
   line("tt", "ff")
 })
 
 #figure(
-  lattice_example,
-  caption: [Hasse diagram of three complete lattices],
-) <lattice-example>
+  poset_example,
+  caption: [Hasse diagrams of four posets],
+) <poset-example>
+
+#definition("join and meet")[
+  Let $(X, sub)$ be a poset and $S subset.eq X$. The meet (respectively join) of $S$, written $meet S$ (resp. $join S$), is the smallest (resp. greatest) element of $X$ that is bigger (resp. smaller) or equal to every element in $S$. Formally:
+  - (Meet): $forall s in S. s sub meet S$ and $forall t in X. forall s in S. s sub t => meet S sub t$
+  - (Join): $forall s in S. join S sub s$ and $forall t in X. forall s in S. t sub s => t sub join S$
+]
+
+For example in @poset-example, in the poset $L$ the join between $c$ and $d$, that is $join {c, d}$, is $b$, while the join between $a$, $c$ and $d$ is $join {a, c, d} = top$.
+
+Meet and join do not always exist, for example in the poset $P$ the join between $x$ and $y$ does not exist because there is no element that is greater than both of them. It can however be proven that when a join or meet exists it is unique. For our purposes we will however be interested in posets where meet and join always exists, also commonly called _lattices_. The poset $P$ is thus not a lattice, while $L$, $bb(N)_omega$ and $bb(B)$ are all lattices.
+
+#definition("complete lattice")[
+  Let $(L, sub)$ be a poset. It is also a lattice if meet and join exist for every pair of elements, that is given $x, y in L$ both $meet {x, y}$ and $join {x, y}$ are defined.
+  It is a complete lattice if meet and join exist for every subset, that is given $S subset.eq L$ both $meet S$ and $join S$ are defined.
+]
+
+Observe that every complete lattice $L$ has a smallest element, called the _bottom_ element $bot = meet varempty$, and a largest element, called the _top_ element $top = join L$. In particular, a complete lattice cannot be empty. For example in the three lattices in @poset-example the top elements would be $top$, $omega$ and $tt$, while the bottom elements would be $bot$, $0$ and $ff$. 
+
+From now on we will work with complete lattices. For most examples we will however use finite lattices, which can be proved to always be complete lattices.
+
+#lemma("finite complete lattices")[
+  Let $(L, sub)$ be a finite lattice, that is a lattice where $L$ is a finite set. Then it is also a complete lattice.
+]
+
+In @poset-example both $L$ and $bb(B)$ are finite complete lattices. In particular $bb(B)$ is called the _boolean lattice_, since it contains the two boolean literals $tt$ and $ff$ and its join and meet operators are respectively the $or$ and $and$ operators. The $bb(N)_omega$ lattice is instead an infinite complete lattice, since it contains all natural numbers equipped with a top element $omega$. Note that the plain set of natural numbers $bb(N)$ is not a complete lattice because $join bb(N)$ is not defined, while in $bb(N)_omega$ it would be $omega$.
 
 #definition("powerset")[
   Let $X$ be a set. Its powerset, written $2^X$, is the set of all subsets of $X$, that is $2^X = {S | S subset.eq X}$.
@@ -142,7 +155,7 @@ When we will later characterize the solutions of a system of fixpoint equations 
   Let $(L, sub)$ be a lattice. A basis is a subset $B_L subset.eq L$ such that all elements of $L$ can be defined by joining subsets of the basis, that is $forall l in L. l = join { b in B_L | b sub l }$.
 ]
 
-To give an example of a basis, consider the left lattice in @lattice-example. A basis for it is the set ${a, c, d}$, where we can express the other elements with $bot = join varempty$, $b = join {c, d}$ and $top = join {a, c, d} = join {a, c} = join {a, d}$. Note that there may be more than one way to obtain an element by joining a subset of a basis, as shown with $top$. The boolean lattice instead admits the simple basis ${ tt }$, since $ff = join varempty$ and $tt = join { tt }$. Another basis that we will use often is the basis of a powerset lattice, which we will now define.
+To give an example of a basis, consider the $L$ lattice in @poset-example. A basis for it is the set $B_L = {a, c, d}$, where we can express the other elements with $bot = join varempty$, $b = join {c, d}$ and $top = join {a, c, d} = join {a, c} = join {a, d}$. Note that there may be more than one way to obtain an element by joining a subset of a basis, as shown with $top$. The boolean lattice $bb(B)$ instead admits the simple basis ${ tt }$, since $ff = join varempty$ and $tt = join { tt }$. Another basis that we will use often is the basis of a powerset lattice, which we will now define.
 
 #definition("basis of powerset", label: <powerset-basis>)[
   Given a set $X$, a basis of the poset $(2^X, subset.eq)$ is the set of singletons $B_(2^X) = { {x} | x in X }$.
