@@ -106,6 +106,8 @@ By the well-known determinacy of parity games @pg_ermeson @pg_zielonka we know t
 
 Strategies for player 0 will usually be denoted by $sigma$ while those for player 1 by $tau$.
 
+It is also worth mentioning that the domain of a strategy for player $i$ on a total parity game will be exactly $V_i$, since the set ${ v | v E = varempty }$ will be empty.
+
 #definition("strategy induced instance")[
   Let $G = (V_0, V_1, E, p)$ be a parity game, $sigma$ be a strategy for player 0 and $tau$ be a strategy for player 1. An instance of the game $G$ induced by the strategies $sigma$ and $tau$ is a tuple $(G, sigma, tau)$.
 

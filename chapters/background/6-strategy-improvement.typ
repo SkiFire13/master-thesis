@@ -26,19 +26,21 @@ We will start introducing some concepts that will help characterize how favourab
 ]
 
 #definition("reward ordering on sets")[
-  Let $G = (V_0, V_1, E, p)$ be a parity game with a relevance ordering $<$ and let $P, Q subset.eq 2^V$ be two different sets of vertices. Let $v = max_< P Delta Q$. We write $P lt.curly Q$ when $P$'s reward is less than $Q$'s, namely when $v in P$ and $v in V_-$, or when $v in Q$ and $v in V_+$.
+  Let $G = (V_0, V_1, E, p)$ be a parity game with a relevance ordering $<$ and let $P, Q subset.eq 2^V$ be two different sets of vertices. We write $P lt.curly Q$ if the following holds:
   $
-    P lt.curly Q <=> P != Q and "max"_< P Delta Q in (P sect V_-) union (Q sect V_+)
+    P != Q and "max"_< P symmdiff Q in (P sect V_-) union (Q sect V_+)
   $
 ]
 
-At the core of the algorithm there is the valuation phase computing the _play profiles_, which help understand how favourable a play is for each player. Moreover an ordering between play profiles is defined, with bigger values being more favourable to player 0 and lower ones being more favourable to player 1. In particular play profiles are based on three key values:
+Intuitively $P lt.curly Q$ represents $P$'s reward being less than $Q$'s. The way this is determined is by looking at the vertices that are in either $P$ or $Q$ but not both, namely the symmetric set difference $P symmdiff Q$. The vertices that are in both are ignored because they will equally contribute to the reward of the two sets. From the symmetric difference it is then selected $v = max_< P symmdiff Q$, the greatest remaining vertex according to the relevance ordering. Then $P lt.curly Q$ holds when $v in P$ and $v in V_-$, representing the situation where $v$ is not favourable to player 0 and thus makes the reward of the left set worse, or when $v in Q$ and $v in V_+$, representing the situation where $v$ is favourable to player 0 and thus makes the reward of the right set better.
+
+At the core of the algorithm there is the valuation phase computing the _play profiles_, which helps understanding how favourable a play is for each player. Moreover an ordering between play profiles is defined, with bigger values being more favourable to player 0 and lower ones being more favourable to player 1. In particular play profiles are based on three key values:
 
 - the most relevant vertex that is visited infinitely often, which we will refer to as $w$, which directly correlates to the winner of the play;
 - the vertices visited before $w$ that are more relevant than it;
 - the number of vertices visited before $w$.
 
-Recall that the game is total, thus every play is infinite, and plays induced by an instance that are infinite always end in a cycle. Thus in this case $w$ coincides with the most relevant vertex of the cycle that is reached in a play.
+Recall that the game is total, thus every play is infinite, and plays induced by an instance that are infinite always consists of a prefix followed by a cycle. Thus in this case $w$ coincides with the most relevant vertex of the cycle that is reached in a play.
 
 Intuitively in this context the last two values are linked to the chances that changing strategy would change either the value of $w$ or the cycle itself, thus more relevant vertices before $w$ or a longer prefix are more beneficial for the losing player.
 
@@ -48,8 +50,10 @@ Intuitively in this context the last two values are linked to the chances that c
   Given an instance $(G, sigma, tau)$ a valuation $phi$ is a function that associates to each vertex the play profile $(w, P, e)$ of the play induced by the instance.
 ]
 
+// TODO: How to compute valuation
+
 #definition("play profile ordering")[
-  Let $G = (V_0, V_1, E, p)$ be a parity game with a relevance ordering $<$, and $(u, P, e)$ and $(v, Q, f)$ be two play profiles. Then we have:
+  Let $G = (V_0, V_1, E, p)$ be a parity game with a relevance ordering $<$, and $(u, P, e)$ and $(v, Q, f)$ be two play profiles. Then we define:
   $
     (u, P, e) lt.curly (v, Q, f) <=> cases(
       & u lt.curly v \
@@ -60,7 +64,7 @@ Intuitively in this context the last two values are linked to the chances that c
   $
 ]
 
-Finally, a way to decide whether a strategy can be improved or is optimal is provided. This resolves around looking at the play profiles of the successors of each vertex: if one of them is better than the successor chosen by the current strategy then the strategy is not optimal and the better one can be chosen instead. At this point the valuation is no longer correct and must be recomputed, leading a new iteration.
+Finally, a way to decide whether a strategy can be improved or is optimal is provided. This involves looking at the play profiles of the successors of each vertex: if one of them is is greater than the successor chosen by the current strategy then the strategy is not optimal and the greater one is chosen instead. At this point the valuation is no longer correct and must be recomputed, leading a new iteration.
 
 // TODO: Further details redirect to the paper?
 // TODO: Change wording to say the paper implemented it with such complexity.
@@ -69,18 +73,19 @@ It can be proven @jurdzinski_improvement that each iteration has worst-case comp
 // TODO: does this need to explain progress relation too or can we assume
 // it from the fact a valuation is induced by a pair of strategies?
 
-#lemma("optimal strategies")[
-  Let $G = (V_0, V_1, E, p)$ be a parity game with a relevance ordering $<$, $sigma$ and $tau$ be two strategies for respectively player 0 and 1 and $phi$ a valuation function for $(G, sigma, tau)$.
-  $sigma$ is optimal against $tau$ if $forall u in V_0. forall v in u E. phi(v) lt.curly.eq phi(sigma(u))$. Dually, $tau$ is optimal against $sigma$ if $forall u in V_1. forall v in u E. phi(tau(u)) lt.curly.eq phi(v)$.
+#theorem("optimal strategies")[
+  Let $G = (V_0, V_1, E, p)$ be a parity game with a relevance ordering $<$, $sigma$ and $tau$ be two strategies for respectively player 0 and 1 and $phi$ a valuation function for $(G, sigma, tau)$. The strategy $sigma$ is optimal against $tau$ if $forall u in V_0. forall v in u E. phi(v) lt.curly.eq phi(sigma(u))$. Dually, $tau$ is optimal against $sigma$ if $forall u in V_1. forall v in u E. phi(tau(u)) lt.curly.eq phi(v)$.
 ]
+
+// TODO: What is the role of optimal strategies and tau/sigma?
 
 // TODO: Small example of strategy iteration?
 
 === Local algorithm
 
-The strategy improvement algorithm has the downside of requiring to visit the whole graph. In some cases this might be an inconvenience, as the graph could be very large but only a small portion may need to be visited to determine the winner of a specific vertex of interest. For an extreme example, consider a disconnected graph, in which case the winner of a vertex only depends on its connected component and not the whole graph.
+The strategy improvement algorithm has the downside of requiring to visit the whole graph. In some cases this might be an inconvenience, as the graph could be very large but only a small portion may need to be visited to determine the winner of a specific vertex of interest. For an extreme example, consider a disconnected graph, in which case the winner of a vertex only depends on its connected component and not on the whole graph.
 
-The local strategy iteration algorithm @friedmann_local fills this gap by performing strategy iteration on a _subgame_, a parity game performed on a subgraph of the main game, and providing a way to determine whether this is enough to infer the winner in the full game. It may happen that the winner is not immediately decidable, in which case the subgame would have to be _expanded_. To do this we will need to define what a subgame is, how to expand it and what is the condition that decides the winner on a vertex.
+The local strategy iteration algorithm @friedmann_local fills this gap by performing strategy iteration on a _subgame_, a parity game defined as a subgraph of the main game, and providing a way to determine whether this is enough to infer the winner in the full game. It may happen that the winner is not immediately decidable, in which case the subgame would have to be _expanded_. To do this we will need to define what a subgame is, how to expand it and what is the condition that decides the winner on a vertex.
 
 
 #definition([$U$-induced subgames])[
@@ -91,7 +96,7 @@ The local strategy iteration algorithm @friedmann_local fills this gap by perfor
   Let $G = (V_0, V_1, E, p)$ be a parity game and $G' = G|_U$ subgame of $G$. If $G'$ is still a total parity game it is called a partially expanded game.
 ]
 
-Given a partially expanded game, two optimal strategies and its winning sets, the local algorithm has to decide whether vertices winning for a player in this subgame are also winning in the full game. Recall that a strategy is winning for a player $i$ if any strategy for the opponent results in an induced play that is winning for $i$. However those plays being losing in the subgame do not necessarily mean that all plays in the full game will be losing too, as they might visit vertices not included in the subgame. Intuitively, the losing player might have a way to force a play to reach one of the vertices outside the subgame, called the _$U$-exterior_ of the subgame, and thus lead to a play that is not possible in the subgame. The set of vertices that can do this is called the _escape set_ of the subgame, and for such vertices no conclusions can be made. For the other vertices instead the winner in the subgame is also the winner in the full game and they constitute the definitely winning sets.
+Given a partially expanded game, two optimal strategies and its winning sets, the local algorithm has to decide whether vertices winning for a player in this subgame are also winning in the full game. Recall that a strategy is winning for a player $i$ if any strategy for the opponent results in an induced play that is winning for $i$. However those plays being losing in the subgame do not necessarily mean that all plays in the full game will be losing too, as they might visit vertices not included in the subgame. Intuitively, the losing player might have a way to force a losing play for them to reach one of the vertices outside the subgame, called the _$U$-exterior_ of the subgame, and thus lead to a play that is not possible in the subgame. The set of vertices that can do this is called the _escape set_ of the subgame, and for such vertices no conclusions can be made. For the other vertices instead the winner in the subgame is also the winner in the full game and they constitute the definitely winning sets.
 
 #definition($U$ + "-exterior")[
   Let $G = (V_0, V_1, E, p)$ be a parity game and $G|_U$ a subgame of $G$. The $U$-exterior of $G|_U$, also written $D_G (U)$, is the set of successors of vertices in $G|_U$ that are not themselves in $G|_U$. That is:
@@ -100,18 +105,21 @@ Given a partially expanded game, two optimal strategies and its winning sets, th
   $
 ]
 
-// TODO(Prof): u in dom(sigma) perchè sigma è definito su V_i
+In order to define the concept of _escape set_ we will use the notion of _strategy restricted edges_. These are needed because we are interested in plays that are losing for a player, and to do that we have to restrict the moves of the opposing player to the ones represented by its optimal strategy. 
+
 #definition("strategy restricted edges")[
-  Let $G = (V_0, V_1, E, p)$ be a parity game and $sigma$ any strategy in $G$. The set of edges restricted to the strategy $sigma$ is $E_sigma = { (u, v) | u in dom(sigma) => sigma(u) = v }$.
+  Let $G = (V_0, V_1, E, p)$ be a parity game and $sigma$ a strategy for player $i$ in $G$. The set of edges restricted to the strategy $sigma$ is $E_sigma = { (u, v) | u in V_i => sigma(u) = v }$.
 ]
 
 #definition("escape set")[
-  Let $G = (V_0, V_1, E, p)$ be a parity game and $G|_U$ a subgame of $G$. Let $L = (G|_U, sigma, tau)$ be an instance of the subgame. Let $E_sigma^*$ (resp. $E_tau^*$) be the transitive-reflexive closure of $E_sigma$ (resp. $E_tau$). The escape set for player 0 (resp. 1) from vertex $v in U$ is the set $E_L^0 (v) = v E_sigma^* sect D_G (U)$ (resp. $E_L^1 (v) = v E_tau^* sect D_G (U)$).
+  Let $G = (V_0, V_1, E, p)$ be a parity game, $U subset.eq V$ and $G|_U$ the induced subgame of $G$. Let $L = (G|_U, sigma, tau)$ be an instance of the subgame. Let $E_sigma^*$ (resp. $E_tau^*$) be the transitive-reflexive closure of $E_sigma$ (resp. $E_tau$). The escape set for player 0 (resp. 1) from vertex $v in U$ is the set $E_L^0 (v) = v E_sigma^* sect D_G (U)$ (resp. $E_L^1 (v) = v E_tau^* sect D_G (U)$).
 ]
 
+// TODO(prof): In pratica si definisce la induttivamente la chiusura
+//             e poi si calcolano i definitive winning sets in questo modo.
 // TODO: optimal instance?
 #definition("definitive winning set")[
-  Let $G = (V_0, V_1, E, p)$ be a parity game and $G|_U$ a subgame of $G$. Let $L = (G|_U, sigma, tau)$ be an optimal instance of the subgame and let $phi$ be the valuation for this instance. The definitive winning sets $W'_0$ and $W'_1$ are defined as follows:
+  Let $G = (V_0, V_1, E, p)$ be a parity game, $U subset.eq V$ and $G|_U$ the induced subgame of $G$. Let $L = (G|_U, sigma, tau)$ be an optimal instance of the subgame and let $phi$ be the valuation for this instance. The definitive winning sets $W'_0$ and $W'_1$ are defined as follows:
   $
     W'_0 &= { v in U | E_L^0 (v) = varempty and (phi(v))_1 in V_+ } \
     W'_1 &= { v in U | E_L^1 (v) = varempty and (phi(v))_1 in V_- }
@@ -123,4 +131,5 @@ Given a partially expanded game, two optimal strategies and its winning sets, th
   Let $G = (V_0, V_1, E, p)$ be a parity game and $G|_U$ a subgame of $G$. Then $W'_0 subset.eq W_0$ and $W'_1 subset.eq W_1$.
 ]
 
-Once a subgame is solved but no conclusion can be determined the subgame needs to be _expanded_, with the goal of reducing the escape sets and ultimately determing whether the vertex of interest is definitely winning or not. Two expansion schemes are provided in @friedmann_local, one called symmetric and the other asymetric. Both start by considering the player that wins the subgame from the vertex of interest and choosing one vertex in the escape set of the opponent, which cannot be empty. This vertex is then added to the subgame, and in order to keep it a total game one the expansion phase must also add at least one of its successors and so on, until the graph becomes total again. The two schemes differ in this last step, as the asymmetric scheme will add one successor for player 0 vertices and all successors for player 1 vertices, while the symmetric scheme will always add one successor. Intuitively the asymmetric scheme assumes that player 0 will win the full game, while the symmetric scheme makes no such assumption and instead tries to limit the potentially expensive expansion. It was also proven in @friedmann_local that the asymmetric scheme will require at most $O(|V|^(|V_0|))$ iterations, while the symmetric one will require at most $O(|V| dot |V|^(|V_0|))$.
+// TODO: Più dettagli
+Once a subgame is solved but no conclusion can be determined the subgame needs to be _expanded_, with the goal of reducing the escape sets and ultimately determing whether the vertex of interest is definitely winning or not. Two expansion schemes are provided in @friedmann_local, one called symmetric and the other asymetric. Both start by considering the player that wins the subgame from the vertex of interest and choosing one vertex in the escape set of the opponent, which cannot be empty. This vertex is then added to the subgame, and in order to keep it a total game the expansion phase must also add at least one of its successors and so on, until the graph becomes total again. The two schemes differ in this last step, as the asymmetric scheme will add one successor for player 0 vertices and all successors for player 1 vertices, while the symmetric scheme will always add one successor. Intuitively the asymmetric scheme assumes that player 0 will win the full game, while the symmetric scheme makes no such assumption and instead tries to limit the potentially expensive expansion. It was also proven in @friedmann_local that the asymmetric scheme will require at most $O(|V|^(|V_0|))$ iterations, while the symmetric one will require at most $O(|V| dot |V|^(|V_0|))$.

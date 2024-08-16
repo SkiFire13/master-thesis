@@ -56,7 +56,7 @@
 #let sol = math.op("sol")
 
 #let varempty = text(font: "", sym.emptyset)
-#let disjunion = math.accent(sym.union, ".")
+#let symmdiff = math.class("binary", sym.Delta)
 #let eq-columns(..cols) = box(stack(
   dir: ltr,
   h(1fr),
