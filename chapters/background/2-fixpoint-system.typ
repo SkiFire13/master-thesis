@@ -2,6 +2,8 @@
 
 == Systems of fixpoint equations
 
+// TODO: Relation to nested fixpoints?
+
 We will now define what is a system of fixpoint equations and what is its solution, following the definition given in @baldan_games. Intuitively this will be very similar to a normal system of equations, except for the fact that each equation is interpreted as a fixpoint equation. Since there can be more than one fixpoint we will also need to specify which kind of fixpoint the equation refers to, which we will do by using respectively the symbols $lfp$ and $gfp$ in subscript after the equal sign to denote the fact that we refer to the least or greatest fixpoint, respectively.
 
 #definition("system of fixpoint equation")[

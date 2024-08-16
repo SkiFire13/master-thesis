@@ -2,9 +2,9 @@
 
 = Implementation
 
-The final goal of this thesis was a concrete implementation of the algorithms explained until now, which ultimately was a rewrite and expansion of the work done in LCSFE @flori to use a different and possibly better algorithm for solving the generated parity game. The final implementation is available in the repository #underline(link("https://github.com/SkiFire13/master-thesis-code"))
+The final goal of this thesis was a concrete implementation of the algorithms explained in the previous sections. The implementation partly relies on the work done in LCSFE @flori which, as mentioned in the introduction, was based on a different algorithm for parity games. The final implementation is available in the repository #underline(link("https://github.com/SkiFire13/master-thesis-code"))
 
-In this section we will explain our design choices, what was actually implemented, and we will give a performance comparison with some existing tools.
+In this section we will explain our design choices, what was actually implemented, and we will present a performance comparison with some existing tools.
 
 == Technologies used
 
@@ -17,7 +17,7 @@ The borrowing rules however can become an obstacle when writing programs that pe
 
 == Structure of the implementation
 
-The implementation was splitted in multiple crates, just like in the original LCSFE implementation, however compared to it it was simplified a bit, with just one main _solver_ crate implementing the solving algorithm and multiple dependent crates, some that translate specific problems into systems of fixpoint equations with logic formulas ready to be solved by the solver crate, and others that offer a CLI interface for testing such functionalities. The solver crate was then splitted into three main modules:
+The implementation was splitted in multiple crates, just like in the original LCSFE implementation, however compared to it it was simplified a bit, with just one main _solver_ crate implementing the solving algorithm and multiple dependent crates, some that translate specific problems into systems of fixpoint equations with logic formulas ready to be solved by the solver crate, and others that offer a CLI interface for testing such functionalities. The solver crate is organized into three main modules:
 
 - _symbolic_, which defines the structures for systems of fixpoint equation, logic formulas, symbolic moves and other relevant methods for manipulating them;
 - _strategy_, which implements the strategy iteration algorithm;
@@ -31,20 +31,28 @@ The dependent crates are:
 
 == Testing with parity games <parity-implementation>
 
-It is known that parity games can also be translated to systems of fixpoint equations, and we used this fact to generate simple problems for testing our implementation.
+It is known that parity games can also be translated to nested fixpoints @parity_to_fixpoint, which in turn are equivalent to systems of fixpoint equations, and we used this fact to generate simple problems for testing our implementation.
 
-In particular, given a parity game $G = (V_0, V_1, E, p)$ we can define a system of fixpoint equations on the lattice ${w_1, w_0}$, with $subset.sq$ such that $w_1 subset.sq w_0$, essentially making $w_1$ the bottom element and $w_0$ the top element. Each $w_i$ represents the fact that player $i$ wins on a given vertex. The basis will be ${w_0}$, since $w_1 = join varempty$ and $w_0 = join { w_0 }$. Then for each vertex $v in V_0 union V_1$ a variable $x_v$ will defined along with one of these equations:
+In particular, given a parity game $G = (V_0, V_1, E, p)$ we can define a system of fixpoint equations on the boolean lattice $bb(B)$, where $tt$ represents a vertex being winning for player 0 and $ff$ being winning for player 1. Then for each vertex $v in V_0 union V_1$ a variable $x_v$ will defined along with the following equation:
 
 $
-  x_v feq_eta union.sq.big_(u in v E) x_u & "if " v in V_0 \
-  x_v feq_eta sect.sq.big_(u in v E) x_u & "if " v in V_1 
+  x_v feq_eta cases(,
+    union.sq.big_(u in v E) x_u & "if " v in V_0,
+    sect.sq.big_(u in v E) x_u & "if " v in V_1
+  )
+
+  #h(4em)
+  "with" eta = cases(
+    nu & "if" p(v) "even",
+    mu & "if" p(v) "odd"
+  )
 $
 
 Intuitively, a vertex in $V_0$ is winning for player 0 if any of its successors is also winning for them because they can choose to move to that successor, while a vertex in $V_1$ is winning for player 0 if all its successors are winning for them because otherwise player 1 will choose to move to any successor that is not winning for player 0.
 
-The priority of vertices must however also be taken into account in order to determine the winner of infinite plays. To do this the kind of fixpoints and the order of equations in the systems is used, in particular it is set $eta = nu$ if $p(v)$ is even and $eta = mu$ if $p(v)$ is odd. The equations then need to be sorted such that the equation for $x_v$ must appear before the one for $x_u$ if $p(v) < p(u)$. (TODO: Cite paper where this is proven to be correct?)
+The priority of vertices must however also be taken into account in order to determine the winner of infinite plays, which we can reduce to plays ending with a cycle. If one happens the last equation corresponding to a vertex of the cycle will have both $tt$ and $ff$ as fixpoint, and will thus decide the winner for the entire cycle, hence why equations corresponding with vertices with higher priorities have to be sorted last. The winner is then chosen by whether the fixpoint equation is a greatest fixpoint or a least fixpoint: if it is a greatest fixpoint the solution will be $tt$ and player 0 will win, otherwise it will be $ff$ and player 1 will win. This is the reason why the fixpoint type was chosen according to the priority of the vertex: if it is even then player 0 wins the cycle in the parity game and hence the equation must be a greatest fixpoint, otherwise player 1 wins and the equation must be a least fixpoint.
 
-These functions can be trivially converted to logic formulas. Notice that the atom $(w_0, i)$, where $i$ is the index of the equation with variable $x_u$, is true if and only if the solution for $x_u$ is $w_0$, otherwise if the atom is false then the solution is $w_1$. As such the equations of the system can be converted to logic formulas by replacing each variable $x_u$ with the atom $(w_0, i)$, where $i$ is the index of variable the $x_u$, each $join$ with $or$ and each $meet$ with $and$.
+These functions can be trivially converted to logic formulas. Notice that the atom $(tt, i)$, where $i$ is the index of the equation with variable $x_u$, is true if and only if the solution for $x_u$ is $tt$, otherwise if the atom is false then the solution is $ff$. As such the equations of the system can be converted to logic formulas by replacing each variable $x_u$ with the atom $(tt, i)$, where $i$ is the index of variable the $x_u$, each $join$ with $or$ and each $meet$ with $and$.
 
 The _parity_ crate implements this conversion from parity games to systems of fixpoint equations and then logic formulas, along with a parser for parity games specified in the pgsolver @pgsolver format, according to the following grammar:
 
@@ -98,7 +106,7 @@ $
   )
 $
 
-We used some of the parity game instances included in the Oink @oink collection of parity game solvers to test our implementation with positive results.
+We used some of the parity game instances included in the Oink @oink collection of parity game solvers to test our implementation, getting empiric evidence of the correctness of our implementation.
 
 == Testing with $mu$-calculus
 
@@ -139,9 +147,9 @@ The labelled transition system is expected to be in the AUT (Aldebaran) format, 
   $
 ]
 
-The grammar consists of a header containing the literal "des" followed by the initial state number, the number of transitions and the number of states. Following that are all the transitions, encoded as a triple with the starting state, the label, which can be quoted or not, and the ending state. Differently from the specification at @aut_spec, we have preferred a slightly different definition for the quoted and unquoted labels to simplify the implementation. We have not observed inputs for which this makes a difference.
+The grammar consists of a header containing the literal "des" followed by the initial state number, the number of transitions and the number of states. Following that are all the transitions, encoded as a triple $(s, l a b e l, t)$, where the first and last components $s$ and $t$ are the source and target state of the transition, while the second component is the label, which can be quoted or not. For the sake of simplicity we have diverged from the specification at @aut_spec by considering labels as either a sequence of characters until the first comma or as sequence of characters delimited by quotes. In particular we have ignored character escaping and any restrictions on which characters are allowed to be used.
 
-The $mu$-calculus formula is expected to follow the more expressive definition described in @mucalculus-application, except we omitted propositions for simplify. The gramma is the following:
+The given grammar for a $mu$-calculus formula mostly follows the definition previously given in @mucalculus-application:
 
 #[
   #show "<": sym.angle.l
@@ -168,21 +176,23 @@ The $mu$-calculus formula is expected to follow the more expressive definition d
     <modalexpr> &::= (sans("＜") #s <action> #s sans("＞") #s <atom>)
       | ( #s sans("[") #s <action> #s sans("]") #s <atom> )
       | atom \
-    <action> &::= sans("true") | <label> | sans("not") #s <label> \
+    <action> &::= sans("true") | <label> | sans("!") #s <label> \
     <label> &::= ("any character except ＞ and ]" #h(0.3em)) \
     <atom> &::= sans("true") | sans("false") | <var> | sans("(") #s <expr> #s sans(")") 
   $
 ]
 
-This follows the formal definition of a $mu$-calculus formula given previously, with the main changes being the replacement of mathematical symbols in favour of ASCII characters and a more explicit definition of the precedence rules.
+Compared to the formal definition given in @mucalculus-application we have omitted support for arbitrary propositions. Arbitrary subsets of labels are also not supported, but are instead limited to singleton sets containing a label, their complement, signaled by a ! character preceding a label, or the set of all labels, represented by the $sans("true")$ action. Several mathematical symbols have also been replaced with similar ASCII characters, and precedence rules have been encoded in the grammar.
 
-The two grammars for labelled transition systems and $mu$-calculus formulas have been chosen to be compatible with the ones used in LCSFE, in order to simplify a comparison between the two. However they have also been extended in order to allow for quoted labels in the labelled transition system grammar, which appeared in some instances used for testing, and more convenient precedence rules for the $mu$-calculus grammar, which helped when writing some more complex formulas.
+The two grammars for labelled transition systems and $mu$-calculus formulas have been chosen to be compatible with the ones used in LCSFE, in order to simplify a comparison between the two implementation. However they have also been extended in order to allow for quoted labels in the labelled transition system grammar, which appeared in some instances used for testing, and more convenient precedence rules for the $mu$-calculus grammar, which helped when writing some more complex formulas.
 
 === Performance comparison
 
-We compared the performance with LCSFE and mCRL2 on the mCRL2 examples used originally in @flori. All the tests were performed on a computer equipped with an AMD Ryzen 3700x and 32GB of DDR4 RAM running Windows 10. LCSFE and our implementation were compiled using the Rust release profile, which applies optimizations to the code produced.
+We compared the performance of our implementation with respect to LCSFE and mCRL2 on the mCRL2 examples used originally in @flori. All the tests were performed on a computer equipped with an AMD Ryzen 3700x and 32GB of DDR4 RAM running Windows 10. LCSFE and our implementation were compiled using the Rust release profile, which applies optimizations to the code produced.
 
-We started with the "bridge referee" example from mCRL2, a labelled transition system with 102 states and 177 transitions, checking the formula $mu x. diam(#h(0em)"report"(17)) #h(0.3em) tt or diam(tt) #h(0.3em) x$, corresponding to the fact that from the initial state the system can reach a state where a transition with label "report(17)" can be performed. Using the workflow suggested by mCRL2 we first converted the mCRL2 specification into its internal lps format using the `mcrl22lps` utility:
+We started with the "bridge referee" example from mCRL2, modeling the crossing of a bridge by a group of 4 adventurers with different speeds, with the additional restrictions that only 2 explorers can cross the bridge at a time and that they have to carry their only flashlight at every crossing. This leads to a labelled transition system with 102 states and 177 transitions, representing all the possible ways they can try crossing such bridge. The formula to check is $mu x. diam(#h(0em)"report"(17)) #h(0.3em) tt or diam(tt) #h(0.3em) x$, representing the fact that all 4 adventurers reach the other side in 17 minutes, which is signaled by the transition $"report(17)"$. The formula thus checks if it is possible to ever execute such transition.
+
+Using the workflow suggested by mCRL2 we first converted the mCRL2 specification into its internal lps format using the `mcrl22lps` utility:
 
 ```cmd
 > mcrl22lps bridge-referee.mcrl2 bridge.lps --timings
@@ -262,10 +272,14 @@ Solve took 1.1076ms
 The formula is satisfied
 ```
 
+// TODO: Don't compare performance but rather correctness
 In this very small example we can see that our implementation is slightly slower. However it should be noted that it is also doing slightly more work by bridging the symbolic formulation and the strategy iteration solver, thus masking any potential difference in complexity.
 
-We then tested the second formula that was used in @flori, which uses the bigger "gossip" labelled transition system, also an example from mCRL2, with 9152 states and 183041 transitions. The formula tested was $nu x. diam(tt) tt and boxx(tt) x$, which represents the lack of deadlocks. It should be noted that formulas checking for absence of deadlock that are satisfied, like this one, are a worst case for local algorithms because they require visiting the whole graph, thus negating the advantage of local algorithms to visit only the states that are relevant.
+// TODO: Explain gossip
+We then tested the second formula that was used in @flori, which uses the bigger "gossip" labelled transition system, also an example from mCRL2, with 9152 states and 183041 transitions. The formula tested was $nu x. diam(tt) tt and boxx(tt) x$, which represents the lack of deadlocks. It should be noted that formulas checking for absence of deadlock that are satisfied, like this one, are a worst case for local algorithms because they require visiting the whole graph, thus vanishing the advantage of local algorithms which consists in the possibility of visiting only the states that are relevant.
 
+// TODO: Mostra in forma tabellare
+// TODO: Fai più test variando il parametro N di gossips?
 Just like before we first checked it using mCRL2:
 
 ```cmd
@@ -340,7 +354,7 @@ The formula is satisfied
 
 Our implementation is an order of magnitude faster than LCSFE, confirming that the better parity game solving algorithm does make a difference, to the point where the bottleneck becomes the generation of the AUT file. Compared with mCRL2 our implementation overall takes a similar amount of time, most of which is spent doing conversions with mCRL2. Overall however the pure mCRL2 approach is slightly faster, probably due to the costs of the intermediate conversions to produce the AUT file or the overhead of using a local algorithm in a case where all states must be explored regardless.
 
-We also ran our solver on some of the instances in the VLTS benchmark suite to understand the limitations and the strengths of our implementation. For each chosen instance we verified the $mu$-calculus formulas $nu x. diam(tt) tt and boxx(tt) x$, which checks for absence of deadlocks, and $mu x. diam(tt) x or (mu y. diam(#h(0em)"tau"#h(0em)) y)$, which checks for the presence of livelocks, which are of only tau transitions. This time we considered the total time including preprocessing, which eventually becomes negligible. For each instance we ran the solver 5 times, ignored the slowest and quickest ones and reported a mean of the remaining 3.
+We also ran our solver on some of the instances in the VLTS benchmark suite to understand the limitations and the strengths of our implementation. For each chosen instance we verified the $mu$-calculus formulas $nu x. diam(tt) tt and boxx(tt) x$, which checks for absence of deadlocks, and $mu x. diam(tt) x or (mu y. diam(#h(0em)"tau"#h(0em)) y)$, which checks for the presence of livelocks, which are cycles consisting of only tau transitions. This time we considered the total time including preprocessing, which eventually becomes negligible. For each instance we ran the solver 5 times, ignored the slowest and quickest ones and reported a mean of the remaining 3.
 
 #[
   #set text(size: 10pt)
@@ -357,10 +371,10 @@ We also ran our solver on some of the instances in the VLTS benchmark suite to u
       `vasy_720_390`, [720247], [390999], [yes], [82 ms], [no], [3.40 s],
     ),
     caption: [VLTS benchmark results]
-  )
+  ) <table-vlts-benchmarks>
 ]
 
-The various labelled transition systems have different sizes, and some have deadlocks and livelocks while others do not, which greately influences the results and makes the various results not directly comparable to one another. We can for example see that checking for the absense of deadlocks when they are not present quickly becomes very slow, like in `vasy_52_318` where in particular we observed that even single iterations of the strategy iteration algorithm become quite slow. Checking for livelocks instead appears to be generally slower when the answer is negative, because in those cases it does not suffice to find the cycle with tau transitions but instead all the graph needs to be considered.
+The various labelled transition systems reported in @table-vlts-benchmarks have different sizes, and some have deadlocks and livelocks while others do not, which greately influences the results and makes the various results not directly comparable to one another. We can for example see that checking for the absense of deadlocks when they are not present quickly becomes very slow, like in `vasy_52_318` where in particular we observed that even single iterations of the strategy iteration algorithm become quite slow. Checking for livelocks instead appears to be generally slower when the answer is negative, because in those cases it does not suffice to find the cycle with tau transitions but instead all the graph needs to be considered.
 
 In the `cwi_1_2` we observed the computation of play profiles for newly expanded vertices to be especially effective, allowing the valuation step to be performed only once.
 
