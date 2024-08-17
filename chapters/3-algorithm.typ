@@ -23,7 +23,7 @@ The way we do this transformation is by inserting auxiliary vertices that will b
     - $V'_1 = V_1 union { w1, l1 }$
 
     - #box(baseline: 2em, $
-    E' = E &union { (v, w_i) | i in {0,1} and v in V_(1-i) and v E = varempty } \ &union { (w0, l1), (l1, w0), (w1, l0), (l0, w1) }
+    E' = E &union { (v, w_i) | i in {0,1} and v in V_(1-i) and v in S_G } \ &union { (w0, l1), (l1, w0), (w1, l0), (l0, w1) }
     $)
 
     - #box(baseline: 2em, math.equation(block: true, $p'(v) = cases(
@@ -44,15 +44,15 @@ We now want to prove that this new parity game is "compatible" with the original
   Let $G = (V_0, V_1, E, p)$ be a parity game and $G' = (V'_0, V'_1, E', p')$ be the induced total parity game from $G$. Let $sigma$ a strategy on $G$ for player $i$. $sigma$ induces the following $sigma'$ strategy on $G'$:
   $
     sigma'(v) = cases(
-      sigma (v) & "if" v in V_i and v E != varempty \
-      W_(1-i) & "if" v in V_i and v E = varempty \
+      sigma (v) & "if" v in V_i and v in.not S_G \
+      W_(1-i) & "if" v in V_i and v in S_G \
       W_(1-i) & "if" v = L_i \
       L_(1-i) & "if" v = W_i
     )
   $
 ]
 
-It can be observed that strategies on a parity game and those on its induced total game create a bijection. In fact notice that the condition $v in V_i and v E != varempty$ in the first case of $sigma'$ is equivalent to requiring $v in dom(sigma)$, meaning that restricting $sigma'$ to $dom(sigma)$ will result in $sigma$ itself.
+It can be observed that strategies on a parity game and those on its induced total game create a bijection. In fact notice that the condition $v in V_i and v in.not S_G$ in the first case of $sigma'$ is equivalent to requiring $v in dom(sigma)$, meaning that restricting $sigma'$ to $dom(sigma)$ will result in $sigma$ itself.
 
 The bijection is not only limited to this. It can be showed that strategies that are related by this bijection will also induce plays with the same winner.
 

@@ -62,17 +62,23 @@ We will first introduce graphs and some convenient notation for them. Moreover w
   We also write $u E$ to denote the set of successors of $v$ in $G$, i.e. ${ v in V | u E v }$, and $E v$ to denote the set of predecessors of $v$, i.e. ${ u in V | u E v }$.
 ]
 
+#definition("sink vertices")[
+  Let $G = (V, E)$ be a graph. The set of sink vertices is $S_G = {v E = varempty}$, that is the set of vertices without successors.
+]
+
 #definition("infinitely recurring elements")[
   Let $pi = v_0 v_1 v_2 ...$ an infinite sequence of elements. We define $inf(pi)$ as the set of infinitely recurring elements of $pi$, that is $inf(pi) = { v | forall n. exists i >= n. v_i = v }$.
 ]
 
+// TODO: Context
 #definition("parity graph, parity game")[
   A parity graph is a triple $G = (V, E, p)$ where $(V, E)$ is a finite graph and $p: V -> bb(N)$ is a so called priority function. A parity graph is a triple $G = (V, E, p)$.
   Let $V$ be partitioned into two sets $V_0$ and $V_1$. The tuple $G = (V_0, V_1, E, p)$ is a parity game.
 ]
 
+// TODO: Context
 #definition("play")[
-  Let $G = (V_0, V_1, E, p)$ be a parity game. A play in $G$ from a vertex $v_0 in V_0 union V_1$ is a potentially infinite sequence $pi = v_0 v_1 ...$ such that $forall i. v_i E v_(i+1)$. If the play is finite, that is $pi = v_0 v_1 ... v_n$, then $v_n E = varempty$ is required.
+  Let $G = (V_0, V_1, E, p)$ be a parity game. A play in $G$ from a vertex $v_0 in V_0 union V_1$ is a potentially infinite sequence $pi = v_0 v_1 ...$ such that $forall i. v_i E v_(i+1)$. If the play is finite, that is $pi = v_0 v_1 ... v_n$, then $v_n in S_G$ is required.
 ]
 
 #definition("winner of a play")[
@@ -92,26 +98,25 @@ We will mostly deal with bipartite parity games. This can be done without loss o
 ]
 
 #definition("total parity game")[
-  Let $G = (V_0, V_1, E, p)$ be a parity game. It is called total if every vertex has at least one successor, that if $forall v in V_0 union V_1. v E != varempty$.
+  Let $G = (V_0, V_1, E, p)$ be a parity game. It is called total if $forall v in V_0 union V_1. v in.not S_G$, that is there is no sink vertex.
 ]
 
 === Strategies
 
 By the well-known determinacy of parity games @pg_ermeson @pg_zielonka we know that each vertex is winning for exactly one of the two players, that is that player can force every play to be winning for them. Moreover it is known that the winning player also has a so-called memoryless winning strategy, that is a way to choose the next vertex in the play without considering the previous ones such that any resulting play is winning for them. From now on we will focus only on strategies and plays induced by strategies, as they are finite and easier to reason about.
 
-// TODO: Nome a { v | v E = varempty }
 #definition("strategy")[
-  Let $G = (V_0, V_1, E, p)$ be a parity game. A (memoryless) strategy for player $i$ is a function $sigma : V_i without { v | v E = varempty } -> V$ such that $forall v. sigma(v) in v E$.
+  Let $G = (V_0, V_1, E, p)$ be a parity game. A (memoryless) strategy for player $i$ is a function $sigma : V_i without S_G -> V$ such that $forall v. sigma(v) in v E$.
 ]
 
 Strategies for player 0 will usually be denoted by $sigma$ while those for player 1 by $tau$.
 
-It is also worth mentioning that the domain of a strategy for player $i$ on a total parity game will be exactly $V_i$, since the set ${ v | v E = varempty }$ will be empty.
+It is also worth mentioning that the domain of a strategy for player $i$ on a total parity game will be exactly $V_i$, since the set of sink vertices $S_G$ will be empty.
 
 #definition("strategy induced instance")[
   Let $G = (V_0, V_1, E, p)$ be a parity game, $sigma$ be a strategy for player 0 and $tau$ be a strategy for player 1. An instance of the game $G$ induced by the strategies $sigma$ and $tau$ is a tuple $(G, sigma, tau)$.
 
-  Given a starting vertex $v_0 in V_0 union V_1$ an instance also uniquely defines a play, called an induced play, where if $v_i E != varempty$ then $v_(i+1) = sigma(v_i)$ if $v_i in V_0$ and $v_(i+1) = tau(v_i)$ if $v_i in V_1$, otherwise the play is finite and stops at $v_i$.
+  Given a starting vertex $v_0 in V_0 union V_1$ an instance also uniquely defines a play, called an induced play, where if $v_i in S_G$ then the play is finite and stops at $v_i$, otherwise $v_(i+1) = sigma(v_i)$ if $v_i in V_0$ and $v_(i+1) = tau(v_i)$ if $v_i in V_1$.
 ]
   
 // TODO: Do we give a shorthand syntax to such plays?
