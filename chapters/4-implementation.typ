@@ -182,9 +182,9 @@ The given grammar for a $mu$-calculus formula mostly follows the definition prev
   $
 ]
 
-Compared to the formal definition given in @mucalculus-application we have omitted support for arbitrary propositions. Arbitrary subsets of labels are also not supported, but are instead limited to singleton sets containing a label, their complement, signaled by a ! character preceding a label, or the set of all labels, represented by the $sans("true")$ action. Several mathematical symbols have also been replaced with similar ASCII characters, and precedence rules have been encoded in the grammar.
+Compared to the definition given in @mucalculus-application we have omitted support for arbitrary propositions. Arbitrary subsets of labels are also not supported, but are instead limited to singleton sets containing a label, their complement, signaled by a $sans(!)$ character preceding a label, or the set of all labels, represented by the $sans("true")$ action. From now on we will use $mu$-calculus formulas that follow this syntax. Several mathematical symbols have also been replaced with similar ASCII characters, and precedence rules have been encoded in the grammar.
 
-The two grammars for labelled transition systems and $mu$-calculus formulas have been chosen to be compatible with the ones used in LCSFE, in order to simplify a comparison between the two implementation. However they have also been extended in order to allow for quoted labels in the labelled transition system grammar, which appeared in some instances used for testing, and more convenient precedence rules for the $mu$-calculus grammar, which helped when writing some more complex formulas.
+The two grammars for labelled transition systems and $mu$-calculus formulas have been chosen to be mostly compatible with the ones used in LCSFE, from which their limitations also come from, in order to simplify a comparison between the two implementation. However the grammar for labelled transition systems has also been extended in order to allow for quoted labels in the labelled transition system grammar, which appeared in some instances used for testing, and more convenient precedence rules for the $mu$-calculus grammar, which helped when writing some more complex formulas.
 
 === Performance comparison
 
