@@ -116,17 +116,22 @@ Bisimilarity is then defined to be the largest bisimulation, that is the bisimul
   caption: [Example of a strong bisimilarity problem],
 ) <bisimilarity-example>
 
-Consider for example the two given labelled transition systems given above. They are obviously different, but by only looking at the possible transitions it is impossible to distinguish $v_0$ from $u_0$, hence they are bisimilar. It is instead possible to distinguish $v_1$ from $u_0$, because the former can perform one transition with action $b$ while the latter can only perform a transition with action $a$, and thus they are not bisimilar.
+Consider for example the two labelled transition systems given above in @bisimilarity-example. They are obviously different, but by only looking at the possible transitions it is impossible to distinguish $v_0$ from $u_0$, hence they are bisimilar. It is instead possible to distinguish $v_1$ from $u_0$, because the former can perform one transition with action $b$ while the latter can only perform a transition with action $a$, and thus they are not bisimilar.
 
-For our purposes however there is an alternative formulation based on a greatest fixpoint:
-// TODO: Go through an operator F: 2^(bb(S) times bb(S)) -> 2^(bb(S) times bb(S))
+For our purposes however there is an alternative formulation based on a greatest fixpoint. We can in fact define the following function $F: 2^(bb(S) times bb(S)) -> 2^(bb(S) times bb(S))$ over the powersets of binary relations over between states:
 
 $
-  bisim #h(0.3em) = nu R. { (s, t) in R |
-  &(forall a, &&s'. s &&->^a s' &&=> exists t'. &&t &&->^a t' &&and (s', t') in R)
-  \ and
-  &(forall a, &&t'. t &&->^a t' &&=> exists s'. &&s &&->^a s' &&and (s', t') in R)
+  F(R) = { (s, t) in R |
+    &(forall a, &&s'. s &&->^a s' &&=> exists t'. &&t &&->^a t' &&and (s', t') in R)
+    \ and
+    &(forall a, &&t'. t &&->^a t' &&=> exists s'. &&s &&->^a s' &&and (s', t') in R)
   }
 $
 
-This is a single fixpoint equation over $2^(bb(S) times bb(S))$, the powerset lattice of binary relations of states, and it can be shown the associated function is monotone.
+$F$ can be thought as "refining" a relation by removing pairs to ensure that the bisimulation property holds for another step, which can be shown to be a monotonic operation.
+
+Then bisimulations can be seen as the fixpoints of $F$, since for them the bisimulation property always holds. Bisimilarity, being the greatest bisimulation, is thus the greatest fixpoint of $F$.
+
+$
+  bisim #h(0.3em) = nu R. F(R)
+$
