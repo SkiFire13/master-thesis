@@ -9,5 +9,5 @@ In this chapter we give an overview of the theoretical background used in the re
 #include "./background/3-fixpoint-system.typ"
 #include "./background/4-applications.typ"
 #include "./background/5-parity-games.typ"
-#include "./background/6-symbolic-formulation.typ"
+#include "./background/6-game-characterization.typ"
 #include "./background/7-strategy-improvement.typ"
