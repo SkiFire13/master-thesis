@@ -31,28 +31,7 @@ The dependent crates are:
 
 == Testing with parity games <parity-implementation>
 
-It is known that parity games can also be translated to nested fixpoints @parity_to_fixpoint, which in turn are equivalent to systems of fixpoint equations, and we used this fact to generate simple problems for testing our implementation.
-
-In particular, given a parity game $G = (V_0, V_1, E, p)$ we can define a system of fixpoint equations on the boolean lattice $bb(B)$, where $tt$ represents a vertex being winning for player 0 and $ff$ being winning for player 1. Then for each vertex $v in V_0 union V_1$ a variable $x_v$ will defined along with the following equation:
-
-$
-  x_v feq_eta cases(,
-    union.sq.big_(u in v E) x_u & "if " v in V_0,
-    sect.sq.big_(u in v E) x_u & "if " v in V_1
-  )
-
-  #h(4em)
-  "with" eta = cases(
-    nu & "if" p(v) "even",
-    mu & "if" p(v) "odd"
-  )
-$
-
-Intuitively, a vertex in $V_0$ is winning for player 0 if any of its successors is also winning for them because they can choose to move to that successor, while a vertex in $V_1$ is winning for player 0 if all its successors are winning for them because otherwise player 1 will choose to move to any successor that is not winning for player 0.
-
-The priority of vertices must however also be taken into account in order to determine the winner of infinite plays, which we can reduce to plays ending with a cycle. If one happens the last equation corresponding to a vertex of the cycle will have both $tt$ and $ff$ as fixpoint, and will thus decide the winner for the entire cycle, hence why equations corresponding with vertices with higher priorities have to be sorted last. The winner is then chosen by whether the fixpoint equation is a greatest fixpoint or a least fixpoint: if it is a greatest fixpoint the solution will be $tt$ and player 0 will win, otherwise it will be $ff$ and player 1 will win. This is the reason why the fixpoint type was chosen according to the priority of the vertex: if it is even then player 0 wins the cycle in the parity game and hence the equation must be a greatest fixpoint, otherwise player 1 wins and the equation must be a least fixpoint.
-
-These functions can be trivially converted to logic formulas. Notice that the atom $(tt, i)$, where $i$ is the index of the equation with variable $x_u$, is true if and only if the solution for $x_u$ is $tt$, otherwise if the atom is false then the solution is $ff$. As such the equations of the system can be converted to logic formulas by replacing each variable $x_u$ with the atom $(tt, i)$, where $i$ is the index of variable the $x_u$, each $join$ with $or$ and each $meet$ with $and$.
+As mentioned in @parity-translation parity games can be translated to systems of fixpoint equations, and we used this fact to generate simple problems for testing our implementation.
 
 The _parity_ crate implements this conversion from parity games to systems of fixpoint equations and then logic formulas, along with a parser for parity games specified in the pgsolver @pgsolver format, according to the following grammar:
 
@@ -81,8 +60,6 @@ The _parity_ crate implements this conversion from parity games to systems of fi
   $
 ]
 
-For simplicity we avoided implementing the full grammar specification, but only the useful parts for testing.
-
 For example the parity game shown in @parity-example would be specified in the following way:
 
 ```
@@ -94,17 +71,7 @@ parity 5
 4 4 0 2,3;
 ```
 
-It would then be translated to the following system of fixpoint equations:
-
-$
-  syseq(
-    v_0 &feq_nu v_1 join v_2 \
-    v_1 &feq_nu v_0 \
-    v_2 &feq_mu v_1 meet v_3 \
-    v_4 &feq_nu v_2 join v_3 \
-    v_3 &feq_mu v_4
-  )
-$
+The format consists of a header containing the identifier $sans("parity")$ followed by a number indicating how many vertices will be specified, which can be used to speed up the parsing of the file. Then each of the following lines specifies a vertex with, in order, its identifier, priority, controlling player, edges and optionally a name. For sake of simplicity we assumed the names to never be present, since they are not required for solving the game and were not present in the games we tested with.
 
 We used some of the parity game instances included in the Oink @oink collection of parity game solvers to test our implementation, getting empiric evidence of the correctness of our implementation.
 
