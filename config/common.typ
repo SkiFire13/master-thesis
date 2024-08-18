@@ -35,6 +35,14 @@
 #let notation = environment("Notation")
 #let theorem = environment("Theorem")
 
+#let proof(body) = [
+  Proof.
+
+  #body
+
+  #align(right, sym.square.stroked.medium)
+]
+
 #let sub = math.class("relation", sym.subset.eq.sq)
 #let meet = math.class("vary", sym.sect.sq)
 #let join = math.class("vary", sym.union.sq)
