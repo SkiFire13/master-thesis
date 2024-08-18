@@ -76,8 +76,6 @@ Moreover the least selection can be exponential with respect to the number of va
 For these reasons a logic for upward-closed sets is used to represent the $E(b, i)$ set in a more compact way. Additionally this allows us to generate sets of moves which are typically small, even if they are not the least ones. From now on we will refer to formulas in such logic with "logic formulas".
 // TODO(Prof): "since not compositional"?
 
-// TODO: Example least selection is exponential
-
 #definition("logic for upward-closed sets")[
   Let $(L, sub)$ be a complete lattice and $B_L$ a basis of $L$. Given $n in bb(N)$ we can define the following logic, where $b in B_L$ and $i in range(n)$:
 
