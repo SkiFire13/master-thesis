@@ -2,8 +2,6 @@
 
 == Local strategy iteration
 
-// TODO: Cite paper introducing it.
-
 === Strategy iteration
 
 Strategy iteration @jurdzinski_improvement is one of the oldest algorithms that computes the winning sets and the optimal strategies for the two players of a bipartite and total parity game. The algorithm starts with a strategy for player 0 and repeates _valuation_ phases, during which it computes a _play profile_ for each vertex, and _improvement_ phases, during which it uses such play profiles to improve the strategy. This continues until the strategy can no longer be improved, at which point it is guaranteed to be optimal.
