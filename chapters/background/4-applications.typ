@@ -11,11 +11,12 @@ of the solution of a system of fixpoint equations.
 The $mu$-calculus is a propositional modal logic extended with support for least and greatest fixpoints. It was first introduced by Dana Scott and Jaco de Bakker and later developed by Dexter Kozen in @mucalculus. Its main use is to help describing properties of (labelled) transition systems to be verified.
 
 Consider a labelled transition system over a set of states $bb(S)$, a set of actions $Act$ and a set of transitions $-> #h(0.2em) subset.eq bb(S) times Act times bb(S)$ (usually written $s ->^a t$ to mean $(s, a, t) in #h(0.2em) ->$). Also, let $Prop$ be a set of propositions and $Var$ be a set of propositional variables. A $mu$-calculus formula for such system is defined inductively in the following way, where $A subset.eq Act$, $p in Prop$, $x in Var$ and $eta$ is either $mu$ or $nu$:
-// TODO: Esempi
 
 $
   phi, psi := tt | ff | p | x | phi or psi | phi and psi | boxx(A) phi | diam(A) phi | eta x. phi
 $
+
+// TODO: Esempi
 
 The semantics of a formula are given by the set of states that satisfy the formula in an environment. Given $rho : Prop union Var -> 2^bb(S)$, we define:
 
