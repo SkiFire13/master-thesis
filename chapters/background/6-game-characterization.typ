@@ -58,14 +58,11 @@ To start we will need to consider a new order, called _Hoare preorder_:
 
 We also consider the pointwise extension $phsub$ of the Hoare preorder on the set $(2^(B_L))^n$, that is $forall X, Y in (2^(B_L))^n, tup(X) phsub tup(Y) <=> forall i in range(n). X_i hsub Y_i$, and the upward-closure with respect to it, that is given $T subset.eq (2^(B_L))^n$ then $up_H T = { tup(X) | exists tup(Y) in T and tup(Y) phsub tup(X) }$.
 
-The idea will then be for player 0 to avoid playing a move $tup(Y)$ if there exist another move $tup(X)$ such that $tup(X) phsub tup(Y)$. More formally we consider _selections_ of moves, that is subsets of moves that are equivalent to the full set for the purpose of the game.
+The idea will then be for player 0 to avoid playing a move $tup(Y)$ if there exist another move $tup(X)$ such that $tup(X) phsublt tup(Y)$. More formally, it can be proven that any set of moves whose upward-closure with respect to $phsub$ is equal to $E(b, i)$ is equivalent to it for the purpose of the game. That is, we can replace the moves for that player 0 position and it would not change the winners compared to the original game. We call such alternative sets of moves _selections_, and a point of interest will be finding small selections in order to reduce the size of the game.
 
 #definition("selection")[
   Let $(L, sub)$ be a lattice. A selection is a function $sigma : (B_L times range(n)) -> 2^((2^(B_L))^m)$ such that $forall b in B_L, i in range(n). up_H sigma(b, i) = E(b, i)$.
 ]
-
-// TODO: Cite where this was proven
-It can be proven that a selection always exists and is $E(b, i)$. Moreover it can be proven that the winner of a game where player 0 moves are replaced with a selection is the same as the winner in the original game. This allows us to soundly use a selection as an alternative set of moves for player 0, which is possibly smaller than the original one.
 
 === Logic for upward-closed sets
 
@@ -73,8 +70,7 @@ Ideally we would be interested in the least selection; this can be shown to alwa
 
 Moreover the least selection can be exponential with respect to the number of variables and basis size. Take for example the function $f(x_1, ..., x_(2n)) = (x_1 or x_2) and (x_3 or x_4) and ... and (x_(2n-1) or x_(2n))$ over the boolean lattice. The corresponding minimal selection would be ${ ({tt}, varempty, {tt}, varempty, ...), ..., (varempty, {tt}, varempty, {tt}, ...) }$, which lists all the ways to satisfy each $x_(2i-1) or x_(2i)$ without making them both $tt$, which is $2^n$ and thus exponential in the number of variables. A similar construction can be made for the basis size, by taking as domain the set of $n$-tuples over the boolean lattice.
 
-For these reasons a logic for upward-closed sets is used to represent the $E(b, i)$ set in a more compact way. Additionally this allows us to generate sets of moves which are typically small, even if they are not the least ones. From now on we will refer to formulas in such logic with "logic formulas".
-// TODO(Prof): "since not compositional"?
+For these reasons a logic for upward-closed sets is used to represent the $E(b, i)$ set in a more compact way. Additionally this allows us to generate relative selections which are typically small, even if they are not the least ones. From now on we will refer to formulas in such logic with "logic formulas".
 
 #definition("logic for upward-closed sets")[
   Let $(L, sub)$ be a complete lattice and $B_L$ a basis of $L$. Given $n in bb(N)$ we can define the following logic, where $b in B_L$ and $i in range(n)$:
@@ -86,7 +82,7 @@ For these reasons a logic for upward-closed sets is used to represent the $E(b, 
 
 The $tt$ and $ff$ formula are then implicitly defined as $and_(k in varempty) phi_k$ and $or_(k in varempty) phi_k$.
 
-// TODO: Why do we work on upward closed sets?
+We now give the semantics of a logic formula, which consist in the set of moves that the formula is representing. We will be interested in formulas whose semantics will be equal to the set $E(b, i)$.
 
 #definition("logic formulas semantics")[
   Let $(L, sub)$ be a complete lattice, $B_L$ a basis of $L$, $n in bb(N)$, $i in range(n)$ and $phi$ a logic formula. The semantics of $phi$, that is the set of player 1 vertices is represents, is a upward-closed set $sem(phi) subset.eq (2^(B_L))^n$ with respect to $phsub$, define as follows:
@@ -97,17 +93,20 @@ The $tt$ and $ff$ formula are then implicitly defined as $and_(k in varempty) ph
   $
 ]
 
+Given a logic formula we can however define a generator for symbolic moves, which is a selection for the set represented by the logic formula semantics. This will be the set of moves that we will use in practice when solving the parity game.
+
 // TODO: Composition of moves, system of equations, etc etc?
 #definition("generator for symbolic moves")[
   Let $(L, sub)$ be a complete lattice, $B_L$ a basis of $L$, $n in bb(N)$, $i in range(n)$ and $phi$ a logic formula. The moves generated by $phi$, written $M(phi)$ are:
 
   $
     M([b, i]) &= { tup(X) } "with" X_i = { b } "and" forall j != i. X_j = varempty \
-    // TODO: Is this simplified version correct?
     M\(and.big_(k in K) phi_k\) &= { union.big X | X in product_(k in K) M(phi_k) } \
     M\(or.big_(k in K) phi_k\) &= union.big_(k in K) M(phi_k)
   $
 ]
+
+Seen from another point of view, a logic formula $phi$ for $E(b, i)$ represents whether $b$ will be below the solution for $x_i$, expressed as a boolean expression in function of whether some elements of the basis will be below the solutions for some variables, represented by the atoms $[b, i]$. Then $E(b, i)$ represents all the possibly partial assignments that make the formula true, while $M(phi)$ represents only a subset of possibly partial assignments such that no valid assignment exist that is not a superset of those included.
 
 // TODO: this is kinda out of context. Explain more
 Another advantage of representing selections using such formulas is that they can be simplified when it becomes known that some position for player 0 is winning or losing. Such simplification would be done by replacing the corresponding $[b, i]$ atom in the formula to respectively true or false. In the parity game this would then translate to either removing a set of moves for player 0, corresponding to those that allow player 1 to reach a winning position for them, or replacing moves for player 0 with ones without moves that are immediately losing for player 1.

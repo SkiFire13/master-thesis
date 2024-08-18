@@ -113,8 +113,8 @@ In practice we will test our adaptation using a modified version of the symmetri
 
 // === Symbolic formulas simplification
 
+// TODO: Advantage of using formulas is simplification
 // TODO: How to remove edges lazily in formulas (set atom to T/F)
-
 
 == Improvements
 

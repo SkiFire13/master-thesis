@@ -51,6 +51,7 @@
 #let psub = math.class("binary", $scripts(sub)^and$)
 #let hsub = math.class("binary", $scripts(sub)_H$)
 #let phsub = math.class("binary", $scripts(sub)_H^and$)
+#let phsublt = math.class("binary", $scripts(subset.sq)_H^and$)
 
 #let lfp = math.class("unary", sym.mu)
 #let gfp = math.class("unary", sym.nu)

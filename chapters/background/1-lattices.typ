@@ -161,14 +161,20 @@ To give an example of a basis, consider the $L$ lattice in @poset-example. A bas
   Given a set $X$, a basis of the poset $(2^X, subset.eq)$ is the set of singletons $B_(2^X) = { {x} | x in X }$.
 ]
 
-We now also define the concept of upward-closure and upward-closed set. This concept will become important later on.
+We now also define the concept of upward-closed set and upward-closure. This concept will become important later on.
+
+#definition("upward-closed set")[
+  Let $(X, sub)$ be a poset and $U subset.eq X$. $U$ is an upward-closed set if $forall x, y in X$, if $x in U$ and $x sub y$ then $y in U$.
+]
 
 #definition("upward-closure")[
   Let $(L, sub)$ be a lattice and $l in L$. The upward-closure of $l$ is $up l = { l' in L | l sub l' }$.
 ]
 
-#definition("upward-closed set")[
-  Let $(X, sub)$ be a poset and $U subset.eq X$. $U$ is an upward-closed set if $forall x, y in X$, if $x in U$ and $x sub y$ then $y in U$.
+It can be proven that the upward-closure of a set is an upward-closed set.
+
+#definition("fixpoint")[
+  Let $(X, sub)$ be a complete lattice and $f: X -> X$ a function. Any element $x in X$ such that $f(x) = x$ is a fixpoint of $f$.
 ]
 
 Given a function $f : L -> L$ where $(L, sub)$ is a complete lattice, it is not guaranteed that a fixpoint exists. However if we restrict ourself to _monotone_ functions, then by the Knaster-Tarski theorem @tarski there exists at least one fixpoint. Moreover the set of all fixpoints is also a complete lattice, which guarantees the existence and uniqueness the least and greatest fixpoints.
@@ -177,12 +183,9 @@ Given a function $f : L -> L$ where $(L, sub)$ is a complete lattice, it is not 
   Let $(X, sub)$ be a poset and $f: X -> X$ a function. $f$ is monotone if $forall x, y in X. x sub y => f(x) sub f(y)$
 ]
 
-#definition("fixpoint")[
-  Let $(X, sub)$ be a complete lattice and $f: X -> X$ a function. Any element $x in X$ such that $f(x) = x$ is a fixpoint of $f$.
-]
-
 #theorem[Knaster-Tarski @tarski][
-  Let $(X, sub)$ be a complete lattice and $f: X -> X$ a monotone function. The set of fixpoint of $f$ forms a complete lattice with respect to $sub$. \
+  Let $(X, sub)$ be a complete lattice and $f: X -> X$ a monotone function. The set of fixpoint of $f$ forms a complete lattice with respect to $sub$.
+
   The least fixpoint of $f$, written $lfp f$, is the bottom element of such lattice, while the greatest fixpoint of $f$, written $gfp f$, is the top element.
 ]
 
