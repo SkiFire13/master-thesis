@@ -72,6 +72,7 @@ We can now define the solution for a system of fixpoint equations recursively, s
 ]
 
 Notice that the way the solution of a system of fixpoint equations is defined depends on the order of the equations. Indeed different orders can result in different solutions.
+// TODO: Connection with nested fixpoint operators?
 
 #example("different order of equations")[
   Consider a system of equations $E'$ containing the same fixpoint equations as $E$, but with their order swapped:
