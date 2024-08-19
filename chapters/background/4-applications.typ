@@ -18,6 +18,10 @@ $
 
 // TODO: Esempi
 
+#example("lack of deadlocks")[
+  For example the liveness property, or lack of deadlocks, which expresses the fact that all reachable states can make at least one transition, can be expressed with the formula $nu x. diam(Act) tt and boxx(Act) x$. This can be read as requiring a state $s$ to be able to make at least one transition, that is it satisfies $diam(Act) tt$, and that after one transition the same property should hold, that is it satisfies $boxx(Act) x$, where $x$ is equivalent to the initial formula. Intuitively the fixpoint is extending the first requirement to any state reachable after a number of transitions.
+]
+
 The semantics of a formula are given by the set of states that satisfy the formula in an environment. Given $rho : Prop union Var -> 2^bb(S)$, we define:
 
 #eq-columns(
@@ -27,7 +31,7 @@ The semantics of a formula are given by the set of states that satisfy the formu
     sem(p)_rho &= rho(p) \
     sem(x)_rho &= rho(x) \
     sem(phi or psi)_rho &= sem(phi)_rho union sem(psi)_rho \
-    sem(phi and psi)_rho &= sem(phi)_rho sect sem(psi)_rho
+    sem(phi and psi)_rho &= sem(phi)_rho sect sem(psi)_rho #h(1.5em)
   $,
   $
     sem(boxx(A) phi)_rho &= { s in bb(S) | forall a in A, t in bb(S). s ->^a t => t in sem(phi)_rho } \
@@ -37,11 +41,9 @@ The semantics of a formula are given by the set of states that satisfy the formu
   $
 )
 
-We will thus say that a state $s$ satisfies a $mu$-calculus formula $phi$ if it is contained in its semantics, that is $s in sem(phi)_rho_0$, where $rho_0$ is initially irrelevant for all $x in Var$ and with some fixed value for all $p in Prop$.
+We will thus say that a state $s$ satisfies a $mu$-calculus formula $phi$ if it is contained in its semantics, that is if $s in sem(phi)_rho_0$, where $rho_0$ is initially irrelevant for all $x in Var$ and with some fixed value for all $p in Prop$.
 
-Intuitively the $mu$ calculus enriches the common propositional logic with the modal operators $boxx(\_)$ and $diam(\_)$, which require a formula to hold for respectively all or any state reachable by the current state through a transition with one of the given actions. On top of this fixpoints then allow to express recursive properties, for example to propagate some requirements across any number of transitions.
-
-For example the liveness property, or lack of deadlocks, which expresses the fact that all reachable states can make at least one transition, can be expressed with the formula $nu x. diam(Act) tt and boxx(Act) x$. This can be read as requiring a state $s$ to be able to make at least one transition, that is it satisfies $diam(Act) tt$, and that after one transition the same property should hold, that is it satisfies $boxx(Act) x$. Intuitively the fixpoint is extending the first requirement to any state reachable after a number of transitions.
+Intuitively the $mu$ calculus enriches the common propositional logic with the modal operators $boxx(\_)$ and $diam(\_)$, often called respectively box and diamond, which require a formula to hold for respectively all or any state reachable by the current state through a transition with one of the given actions. On top of this fixpoints then allow to express recursive properties, for example to propagate some requirements across any number of transitions.
 
 It is possible to translate $mu$-calculus formulas into systems of fixpoint equations over $2^bb(S)$, the powerset lattice of its states. Such system can be obtained by extracting each fixpoint subformula into its own equation and replacing it with its variable, assuming that no variable is used in multiple fixpoints. Since the order of equations matter, outer fixpoints must appear later in the system of equations. It can be shown that each function in the system is monotone, and so it always admits a solution.
 
