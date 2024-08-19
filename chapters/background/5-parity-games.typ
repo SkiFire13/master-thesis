@@ -72,13 +72,14 @@ We will now introduce graphs and some convenient notation for them. Moreover we 
   Let $pi = v_0 v_1 v_2 ...$ an infinite sequence of elements. We define $inf(pi)$ as the set of infinitely recurring elements of $pi$, that is $inf(pi) = { v | forall n. exists i >= n. v_i = v }$.
 ]
 
-// TODO: Context
+
+We can now introduce parity games, which consist of a graph partitioned into two set of vertices, representing the positions controlled by each player, along with a priority function. We will also define what is a play and which player is its winner.
+
 #definition("parity graph, parity game")[
   A parity graph is a triple $G = (V, E, p)$ where $(V, E)$ is a finite graph and $p: V -> bb(N)$ is a so called priority function. A parity graph is a triple $G = (V, E, p)$.
   Let $V$ be partitioned into two sets $V_0$ and $V_1$. The tuple $G = (V_0, V_1, E, p)$ is a parity game.
 ]
 
-// TODO: Context
 #definition("play")[
   Let $G = (V_0, V_1, E, p)$ be a parity game. A play in $G$ from a vertex $v_0 in V_0 union V_1$ is a potentially infinite sequence $pi = v_0 v_1 ...$ such that $forall i. v_i E v_(i+1)$. If the play is finite, that is $pi = v_0 v_1 ... v_n$, then $v_n in S_G$ is required.
 ]
@@ -89,11 +90,11 @@ We will now introduce graphs and some convenient notation for them. Moreover we 
   - if $pi$ is infinite then consider $max inf(p(v_0) p(v_1) ...)$: if it is even the winner is player 0, otherwise it is player 1.
 ]
 
-We will focus on a subclass of parity games, which for convenience we will call _bipartite parity games_ and _total parity games_.
+From now on we will focus on a subclass of parity games, which for convenience we will call _bipartite parity games_ and _total parity games_.
 Bipartite parity games are games whose graph is bipartite, forcing players to perfectly alternate their moves.
 Total parity games instead require every vertex to have at least one successor, thus forcing every play to be infinite.
 
-We will mostly deal with bipartite parity games. This can be done without loss of generality since, as we will show, we can convert any parity game to a "compatible" total parity game.
+The parity games we will generate will be bipartite by construction, though not necessarily total. We will however mostly deal with total parity games since, as we will show, we can convert any parity game to a "compatible" total parity game.
 
 #definition("bipartite parity game")[
   Let $G = (V_0, V_1, E, p)$ be a parity game. It is called bipartite if the graph $(V_0, V_1, E)$ is bipartite, that is $forall v in V_i. v E sect V_i = varempty$.
