@@ -17,59 +17,60 @@ We start by defining what is a (complete) lattice and introducing some related c
 A common example of poset is $(bb(N), <=)$, the set of natural numbers, and $<=$ is the standard order relation.
 
 // TODO: Preorder?
+#example("Posets and Hasse diagrams")[
+  Posets can conveniently be visualized using _Hasse diagrams_, like the ones in @poset-example. In such diagrams lines connecting two elements represent the one on top being greater than the one on the bottom. Lines that could be obtained by transitivity are instead left implicit due to the fact that the diagram represents a valid poset.
 
-Posets can conveniently be visualized using _Hasse diagrams_, like the ones in @poset-example. In such diagrams lines connecting two elements represent the one on top being greater than the one on the bottom. Lines that could be obtained by transitivity are instead left implicit due to the fact that the diagram represents a valid poset.
+  #let poset_example = canvas({
+    import draw: *
 
-#let poset_example = canvas({
-  import draw: *
+    set-style(content: (padding: .2), stroke: black)
 
-  set-style(content: (padding: .2), stroke: black)
+    let node(pos, name, label) = content(pos, label, name: name)
 
-  let node(pos, name, label) = content(pos, label, name: name)
+    content((-2, -4), $P$)
+    node((-4, 0), "x", $x$)
+    node((-2, 0), "y", $y$)
+    node((-3, -2), "w", $w$)
+    node((-3, -4), "z", $z$)
+    line("x", "w")
+    line("y", "w")
+    line("z", "w")
 
-  content((-2, -4), $P$)
-  node((-4, 0), "x", $x$)
-  node((-2, 0), "y", $y$)
-  node((-3, -2), "w", $w$)
-  node((-3, -4), "z", $z$)
-  line("x", "w")
-  line("y", "w")
-  line("z", "w")
+    content((3, -4), $L$)
+    node((1.5, 0), "top", $top$)
+    node((0, -2), "a", $a$)
+    node((2.25, -1.25), "b", $b$)
+    node((1.5, -2.5), "c", $c$)
+    node((3, -2.5), "d", $d$)
+    node((1.5, -4), "bot", $bot$)
+    line("top", "a")
+    line("top", "b")
+    line("a", "bot")
+    line("b", "c")
+    line("b", "d")
+    line("c", "bot")
+    line("d", "bot")
 
-  content((3, -4), $L$)
-  node((1.5, 0), "top", $top$)
-  node((0, -2), "a", $a$)
-  node((2.25, -1.25), "b", $b$)
-  node((1.5, -2.5), "c", $c$)
-  node((3, -2.5), "d", $d$)
-  node((1.5, -4), "bot", $bot$)
-  line("top", "a")
-  line("top", "b")
-  line("a", "bot")
-  line("b", "c")
-  line("b", "d")
-  line("c", "bot")
-  line("d", "bot")
+    content((7, -4), $bb(N)_omega$)
+    node((6, 0), "omega", $omega$)
+    node((6, -1.6), "2", $2$)
+    node((6, -2.8), "1", $1$)
+    node((6, -4), "0", $0$)
+    line("omega", "2", stroke: (dash: "densely-dotted"))
+    line("2", "1")
+    line("1", "0")
 
-  content((7, -4), $bb(N)_omega$)
-  node((6, 0), "omega", $omega$)
-  node((6, -1.6), "2", $2$)
-  node((6, -2.8), "1", $1$)
-  node((6, -4), "0", $0$)
-  line("omega", "2", stroke: (dash: "densely-dotted"))
-  line("2", "1")
-  line("1", "0")
+    content((9, -4), $bb(B)$)
+    node((9, -1), "tt", $tt$)
+    node((9, -3), "ff", $ff$)
+    line("tt", "ff")
+  })
 
-  content((9, -4), $bb(B)$)
-  node((9, -1), "tt", $tt$)
-  node((9, -3), "ff", $ff$)
-  line("tt", "ff")
-})
-
-#figure(
-  poset_example,
-  caption: [Hasse diagrams of four posets],
-) <poset-example>
+  #figure(
+    poset_example,
+    caption: [Hasse diagrams of four posets],
+  ) <poset-example>
+]
 
 #definition("join and meet")[
   Let $(X, sub)$ be a poset and $S subset.eq X$. The meet (respectively join) of $S$, written $meet S$ (resp. $join S$), is the smallest (resp. greatest) element of $X$ that is bigger (resp. smaller) or equal to every element in $S$. Formally:
@@ -104,50 +105,49 @@ In @poset-example both $L$ and $bb(B)$ are finite complete lattices. In particul
   Given a set $X$, the pair $(2^X, subset.eq)$ is a complete lattice.
   
   The $join$ and $meet$ operations are respectively the union $union$ and intersection $sect$ operations on sets, while the $top$ and $bot$ elements are respectively $X$ and $varempty$.
-]
-
-
-#let powerset_example = canvas({
-  import draw: *
-
-  set-style(content: (padding: .2), stroke: black)
-
-  let node(pos, name, label) = content(pos, label, name: name)
-
-  node((2, 0), "top", ${a, b, c}$)
-
-  node((0, -1.5), "ab", ${a, b}$)
-  node((2, -1.5), "ac", ${a, c}$)
-  node((4, -1.5), "bc", ${b, c}$)
   
-  node((0, -3), "a", ${a}$)
-  node((2, -3), "b", ${b}$)
-  node((4, -3), "c", ${c}$)
+  #let powerset_example = canvas({
+    import draw: *
 
-  node((2, -4.5), "bot", $varempty$)
+    set-style(content: (padding: .2), stroke: black)
 
-  line("ab", "top")
-  line("ac", "top")
-  line("bc", "top")
+    let node(pos, name, label) = content(pos, label, name: name)
 
-  line("a", "ab")
-  line("a", "ac")
+    node((2, 0), "top", ${a, b, c}$)
 
-  line("b", "ab")
-  line("b", "bc")
+    node((0, -1.5), "ab", ${a, b}$)
+    node((2, -1.5), "ac", ${a, c}$)
+    node((4, -1.5), "bc", ${b, c}$)
+    
+    node((0, -3), "a", ${a}$)
+    node((2, -3), "b", ${b}$)
+    node((4, -3), "c", ${c}$)
 
-  line("c", "ac")
-  line("c", "bc")
+    node((2, -4.5), "bot", $varempty$)
 
-  line("bot", "a")
-  line("bot", "b")
-  line("bot", "c")
-})
+    line("ab", "top")
+    line("ac", "top")
+    line("bc", "top")
 
-#figure(
-  powerset_example,
-  caption: [Hasse diagram of a powerset lattice],
-) <powerset-example>
+    line("a", "ab")
+    line("a", "ac")
+
+    line("b", "ab")
+    line("b", "bc")
+
+    line("c", "ac")
+    line("c", "bc")
+
+    line("bot", "a")
+    line("bot", "b")
+    line("bot", "c")
+  })
+
+  #figure(
+    powerset_example,
+    caption: [Hasse diagram of a powerset lattice],
+  ) <powerset-example>
+]
 
 When we will later characterize the solutions of a system of fixpoint equations it will be convenient to consider a basis of the lattice involved. Intuitively a basis is a subset of elements which allows to express any other element as a join of a subset of such basis.
 

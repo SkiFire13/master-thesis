@@ -66,9 +66,15 @@ The idea will then be for player 0 to avoid playing a move $tup(Y)$ if there exi
 
 === Logic for upward-closed sets
 
-Ideally we would be interested in the least selection; this can be shown to always exist in finite lattices, but not in infinite ones. Consider for example the complete lattice $bb(N)_omega$ seen in @poset-example, and consider a system of fixpoint equations with only the equation $x feq_mu f(x)$ where $f(n) = n + 1$ if $n in bb(N)$ and $f(omega) = omega$. We will pick the lattice itself as its basis and we will want to prove $omega sub x^*$ with $x^*$ being the solution of this equation. This will generate a powerset game starting from position $omega$ with moves $E(omega)$, for which it can be shown that the move $bb(N)$ is winning for player 0. We are however interested in selections for $E(omega)$, and it can be shown that any ${ X }$ where $X subset.eq bb(N)$ and $X$ is infinite is a valid selection for $E(omega)$. In fact $omega sub f(join X)$ can only be satisfied if $f(join X) = omega$ and thus $join X = omega$, which is true for any infinite $X$. There are however infinite such sets, and there is no smallest one, since it is always possible to get a smaller one by removing one element. Thus there cannot be a smallest selection.
+Ideally we would be interested in the least selection; this can be shown to always exist in finite lattices, but not in infinite ones. Moreover when it exists it might be exponential in size.
 
-Moreover the least selection can be exponential with respect to the number of variables and basis size. Take for example the function $f(x_1, ..., x_(2n)) = (x_1 or x_2) and (x_3 or x_4) and ... and (x_(2n-1) or x_(2n))$ over the boolean lattice. The corresponding minimal selection would be ${ ({tt}, varempty, {tt}, varempty, ...), ..., (varempty, {tt}, varempty, {tt}, ...) }$, which lists all the ways to satisfy each $x_(2i-1) or x_(2i)$ without making them both $tt$, which is $2^n$ and thus exponential in the number of variables. A similar construction can be made for the basis size, by taking as domain the set of $n$-tuples over the boolean lattice.
+#example("least selection may not exist")[
+  Consider for example the complete lattice $bb(N)_omega$ seen in @poset-example, and consider a system of fixpoint equations with only the equation $x feq_mu f(x)$ where $f(n) = n + 1$ if $n in bb(N)$ and $f(omega) = omega$. We will pick the lattice itself as its basis and we will want to prove $omega sub x^*$ with $x^*$ being the solution of this equation. This will generate a powerset game starting from position $omega$ with moves $E(omega)$, for which it can be shown that the move $bb(N)$ is winning for player 0. We are however interested in selections for $E(omega)$, and it can be shown that any ${ X }$ where $X subset.eq bb(N)$ and $X$ is infinite is a valid selection for $E(omega)$. In fact $omega sub f(join X)$ can only be satisfied if $f(join X) = omega$ and thus $join X = omega$, which is true for any infinite $X$. There are however infinite such sets, and there is no smallest one, since it is always possible to get a smaller one by removing one element. Thus there cannot be a smallest selection.
+]
+
+#example("least selection can be exponential")[
+  The least selection can be exponential with respect to the number of variables and basis size. Take for example the function $f(x_1, ..., x_(2n)) = (x_1 or x_2) and (x_3 or x_4) and ... and (x_(2n-1) or x_(2n))$ over the boolean lattice. The corresponding minimal selection would be ${ ({tt}, varempty, {tt}, varempty, ...), ..., (varempty, {tt}, varempty, {tt}, ...) }$, which lists all the ways to satisfy each $x_(2i-1) or x_(2i)$ without making them both $tt$, which is $2^n$ and thus exponential in the number of variables. A similar construction can be made for the basis size, by taking as domain the set of $n$-tuples over the boolean lattice.
+]
 
 For these reasons a logic for upward-closed sets is used to represent the $E(b, i)$ set in a more compact way. Additionally this allows us to generate relative selections which are typically small, even if they are not the least ones. From now on we will refer to formulas in such logic with "logic formulas".
 
@@ -169,27 +175,30 @@ $
     )
 $
 
-For example the formulas for the pair of states in the labelled transition systems shown in @bisimilarity-example are the following:
+#example("logic formulas for bisimilarity")[
+  For example the formulas for the pair of states in the labelled transition systems shown in @bisimilarity-example are the following:
 
-#import "@preview/equate:0.2.0": equate
-#equate($
-  F(v_0, u_0) &= ([(v_1, u_1), 1] and [(v_2, u_1), 1]) and ([(v_1, u_1), 1] or [(v_2, u_1), 1]) \
-    &= [(v_1, u_1), 1] and [(v_2, u_1), 1] \
-  F(v_0, u_1) &= ff and ff = ff \
-  F(v_0, u_2) &= ff and tt = ff \
-  #v(0em) \
-  F(v_1, u_0) &= ff and ff = ff \
-  F(v_1, u_1) &= [(v_3, u_2), 1] and [(v_3, u_2), 1] = [(v_3, u_2), 1] \
-  F(v_1, u_2) &= ff and tt = ff \
-  #v(0em) \
-  F(v_2, u_0) &= ff and ff = ff \
-  F(v_2, u_1) &= [(v_3, u_2), 1] and [(v_3, u_2), 1] = [(v_3, u_2), 1] \
-  F(v_2, u_2) &= ff and tt = ff \
-  #v(0em) \
-  F(v_3, u_0) &= tt and ff = ff \
-  F(v_3, u_1) &= tt and ff = ff \
-  F(v_3, u_2) &= tt and tt = tt
-$)
+  #import "@preview/equate:0.2.0": equate
+  #equate($
+    F(v_0, u_0) &= ([(v_1, u_1), 1] and [(v_2, u_1), 1]) and ([(v_1, u_1), 1] or [(v_2, u_1), 1]) \
+      &= [(v_1, u_1), 1] and [(v_2, u_1), 1] \
+    F(v_0, u_1) &= ff and ff = ff \
+    F(v_0, u_2) &= ff and tt = ff \
+    #v(0em) \
+    F(v_1, u_0) &= ff and ff = ff \
+    F(v_1, u_1) &= [(v_3, u_2), 1] and [(v_3, u_2), 1] = [(v_3, u_2), 1] \
+    F(v_1, u_2) &= ff and tt = ff \
+    #v(0em) \
+    F(v_2, u_0) &= ff and ff = ff \
+    F(v_2, u_1) &= [(v_3, u_2), 1] and [(v_3, u_2), 1] = [(v_3, u_2), 1] \
+    F(v_2, u_2) &= ff and tt = ff \
+    #v(0em) \
+    F(v_3, u_0) &= tt and ff = ff \
+    F(v_3, u_1) &= tt and ff = ff \
+    F(v_3, u_2) &= tt and tt = tt
+  $)
+]
+
 
 === Translating parity games <parity-translation>
 
@@ -216,24 +225,26 @@ The priority of vertices must however also be taken into account in order to det
 
 These functions can be trivially converted to logic formulas. Notice that the atom $(tt, i)$, where $i$ is the index of the equation with variable $x_u$, is true if and only if the solution for $x_u$ is $tt$, otherwise if the atom is false then the solution is $ff$. As such the equations of the system can be converted to logic formulas by replacing each variable $x_u$ with the atom $(tt, i)$, where $i$ is the index of variable the $x_u$, each $join$ with $or$ and each $meet$ with $and$.
 
-For example the parity game in @parity-example would be translated to the following system of fixpoint equations:
+#example("translation and logic formulas for a parity game")[
+  For example the parity game in @parity-example would be translated to the following system of fixpoint equations:
 
-$
-  syseq(
-    v_0 &feq_nu v_1 join v_2 \
-    v_1 &feq_nu v_0 \
-    v_2 &feq_mu v_1 meet v_3 \
-    v_4 &feq_nu v_2 join v_3 \
-    v_3 &feq_mu v_4
-  )
-$
+  $
+    syseq(
+      v_0 &feq_nu v_1 join v_2 \
+      v_1 &feq_nu v_0 \
+      v_2 &feq_mu v_1 meet v_3 \
+      v_4 &feq_nu v_2 join v_3 \
+      v_3 &feq_mu v_4
+    )
+  $
 
-Which can then be translated to the following formulas:
+  Which can then be translated to the following formulas:
 
-$
-  F(tt, 1) &= [tt, 2] or [tt, 3] \
-  F(tt, 2) &= [tt, 1] \
-  F(tt, 3) &= [tt, 2] and [tt, 5] \
-  F(tt, 4) &= [tt, 3] or [tt, 5] \
-  F(tt, 5) &= [tt, 4]
-$
+  $
+    F(tt, 1) &= [tt, 2] or [tt, 3] \
+    F(tt, 2) &= [tt, 1] \
+    F(tt, 3) &= [tt, 2] and [tt, 5] \
+    F(tt, 4) &= [tt, 3] or [tt, 5] \
+    F(tt, 5) &= [tt, 4]
+  $
+]

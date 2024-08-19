@@ -45,14 +45,16 @@ For example the liveness property, or lack of deadlocks, which expresses the fac
 
 It is possible to translate $mu$-calculus formulas into systems of fixpoint equations over $2^bb(S)$, the powerset lattice of its states. Such system can be obtained by extracting each fixpoint subformula into its own equation and replacing it with its variable, assuming that no variable is used in multiple fixpoints. Since the order of equations matter, outer fixpoints must appear later in the system of equations. It can be shown that each function in the system is monotone, and so it always admits a solution.
 
-For example the formula $mu x. diam(Act) x or (nu y. boxx(a) y and x)$ would be translated into the following system, where for simplicity we used formulas instead of their semantics:
+#example[fixpoint equations for a $mu$-calculus formula][
+  For example the formula $mu x. diam(Act) x or (nu y. boxx(a) y and x)$ would be translated into the following system, where for simplicity we used formulas instead of their semantics:
 
-$
-  syseq(
-    y &feq_nu boxx(a) y and x \
-    x &feq_mu diam(Act) x or y \
-  )
-$
+  $
+    syseq(
+      y &feq_nu boxx(a) y and x \
+      x &feq_mu diam(Act) x or y \
+    )
+  $
+]
 
 === Bisimilarity <bisimilarity-application>
 
@@ -79,45 +81,47 @@ Bisimilarity @bisimilarity is a binary relation on states of a labelled transiti
 
 Bisimilarity is then defined to be the largest bisimulation, that is the bisimulation that contains all other bisimulations, or equivalently the union of all bisimulations.
 
-#let bisimilarity_example = canvas({
-  import draw: *
+#example("fixpoint equations for a bisimilarity problem")[
+  #let bisimilarity_example = canvas({
+    import draw: *
 
-  set-style(content: (padding: .2), stroke: black)
+    set-style(content: (padding: .2), stroke: black)
 
-  let node(pos, name, label) = {
-    circle(pos, name: name, radius: 1em)
-    content(pos, label)
-  }
-  let edge(ni, ai, nf, af, a, l, d) = {
-    let pi = (name: ni, anchor: ai)
-    let pf = (name: nf, anchor: af)
-    let bname = ni + "-" + nf
-    bezier(pi, pf, (pi, 50%, a, pf), name: bname, fill: none, mark: (end: ">"))
-    content(bname + ".ctrl-0", l, anchor: d)
-  }
+    let node(pos, name, label) = {
+      circle(pos, name: name, radius: 1em)
+      content(pos, label)
+    }
+    let edge(ni, ai, nf, af, a, l, d) = {
+      let pi = (name: ni, anchor: ai)
+      let pf = (name: nf, anchor: af)
+      let bname = ni + "-" + nf
+      bezier(pi, pf, (pi, 50%, a, pf), name: bname, fill: none, mark: (end: ">"))
+      content(bname + ".ctrl-0", l, anchor: d)
+    }
 
-  node((1, 0), "v0", $v_0$)
-  node((0, -1.5), "v1", $v_1$)
-  node((2, -1.5), "v2", $v_2$)
-  node((1, -3), "v3", $v_3$)
-  edge("v0", 200deg, "v1", 80deg, -20deg, $a$, "east")
-  edge("v0", -20deg, "v2", 100deg, 20deg, $a$, "west")
-  edge("v1", -80deg, "v3", 160deg, -20deg, $b$, "east")
-  edge("v2", -100deg, "v3", 20deg, 20deg, $b$, "west")
+    node((1, 0), "v0", $v_0$)
+    node((0, -1.5), "v1", $v_1$)
+    node((2, -1.5), "v2", $v_2$)
+    node((1, -3), "v3", $v_3$)
+    edge("v0", 200deg, "v1", 80deg, -20deg, $a$, "east")
+    edge("v0", -20deg, "v2", 100deg, 20deg, $a$, "west")
+    edge("v1", -80deg, "v3", 160deg, -20deg, $b$, "east")
+    edge("v2", -100deg, "v3", 20deg, 20deg, $b$, "west")
 
-  node((6, 0), "u0", $u_0$)
-  node((6, -1.5), "u1", $u_1$)
-  node((6, -3), "u2", $u_2$)
-  edge("u0", -90deg, "u1", 90deg, 0deg, $a$, "west")
-  edge("u1", -90deg, "u2", 90deg, 0deg, $b$, "west")
-})
+    node((6, 0), "u0", $u_0$)
+    node((6, -1.5), "u1", $u_1$)
+    node((6, -3), "u2", $u_2$)
+    edge("u0", -90deg, "u1", 90deg, 0deg, $a$, "west")
+    edge("u1", -90deg, "u2", 90deg, 0deg, $b$, "west")
+  })
 
-#figure(
-  bisimilarity_example,
-  caption: [Example of a strong bisimilarity problem],
-) <bisimilarity-example>
+  #figure(
+    bisimilarity_example,
+    caption: [Example of a strong bisimilarity problem],
+  ) <bisimilarity-example>
 
-Consider for example the two labelled transition systems given above in @bisimilarity-example. They are obviously different, but by only looking at the possible transitions it is impossible to distinguish $v_0$ from $u_0$, hence they are bisimilar. It is instead possible to distinguish $v_1$ from $u_0$, because the former can perform one transition with action $b$ while the latter can only perform a transition with action $a$, and thus they are not bisimilar.
+  Consider for example the two labelled transition systems given above in @bisimilarity-example. They are obviously different, but by only looking at the possible transitions it is impossible to distinguish $v_0$ from $u_0$, hence they are bisimilar. It is instead possible to distinguish $v_1$ from $u_0$, because the former can perform one transition with action $b$ while the latter can only perform a transition with action $a$, and thus they are not bisimilar.
+]
 
 For our purposes however there is an alternative formulation based on a greatest fixpoint. We can in fact define the following function $F: 2^(bb(S) times bb(S)) -> 2^(bb(S) times bb(S))$ over the powersets of binary relations over between states:
 
@@ -129,9 +133,7 @@ $
   }
 $
 
-$F$ can be thought as "refining" a relation by removing pairs to ensure that the bisimulation property holds for another step, which can be shown to be a monotonic operation.
-
-Then bisimulations can be seen as the fixpoints of $F$, since for them the bisimulation property always holds. Bisimilarity, being the greatest bisimulation, is thus the greatest fixpoint of $F$.
+$F$ can be thought as "refining" a relation by removing pairs to ensure that the bisimulation property holds for another step. This can be shown to be a monotonic operation, guaranteeing the existance of at least one fixpoint, including for our purposes the greatest fixpoint. Bisimulations can then be seen as the fixpoints of $F$, since for them the bisimulation property always holds and thus no pair need to be removed to make the property hold. Bisimilarity, being the greatest bisimulation, is thus the greatest fixpoint of $F$.
 
 $
   bisim #h(0.3em) = nu R. F(R)

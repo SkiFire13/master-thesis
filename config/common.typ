@@ -9,7 +9,7 @@
 
 #let _real_label = label
 
-#let environment(name) = {
+#let environment(name, style: "italic") = {
   let env_counter = counter(name)
   let fig_counter = counter(figure.where(kind: name))
   (subject, label: none, body) => block(inset: (y: 5pt))[
@@ -25,13 +25,14 @@
     *#name #env_counter.step(level: 2) #env_counter.display()*
     #box[#figure(none, kind: name, supplement: name, numbering: (n) => [#counter(heading).display((..nums) => nums.pos().at(0)).#n])#label]
     (#subject).
-    _#(body)_
+    #set text(style: style)
+    #body
   ]
 }
 
 #let definition = environment("Definition")
 #let lemma = environment("Lemma")
-#let example = environment("Example")
+#let example = environment("Example", style: "normal")
 #let notation = environment("Notation")
 #let theorem = environment("Theorem")
 
