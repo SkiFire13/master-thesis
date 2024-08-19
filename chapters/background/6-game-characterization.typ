@@ -1,4 +1,5 @@
 #import "../../config/common.typ": *
+#import "@preview/cetz:0.2.2": canvas, draw, vector
 
 == Game characterization
 
@@ -41,13 +42,86 @@ It has been proven in @baldan_games that such characterization is both correct a
   Let $E$ be a system of $n$ fixpoint equations over a complete lattice $L$ with solution $s$. For all $b in B_L$ and $i in range(n)$, we have $b sub s_i$ if and only if the player 0 has a winning strategy on the powerset game associated to $E$ starting from the vertex $(b, i)$.
 ]
 
-// TODO: Example of (small) powerset game?
+#example("game characterization", label: <game-ch-example>)[
+  Consider for example the system of equations given in @system-example over the boolean lattice $bb(B)$:
+  
+  $
+    syseq(
+      x_1 &feq_mu x_1 or x_2 \
+      x_2 &feq_nu x_1 and x_2 \ 
+    )
+  $
+
+  The corresponding game characterization would be the following:
+
+  #let game_example(withstrategy) = canvas({
+    import draw: *
+
+    set-style(content: (padding: .2), stroke: black)
+
+    let node(pos, name, p, label, pr) = {
+      let cname = name + "content"
+      content(pos, label, name: cname, padding: 1em)
+      if p == 0 {
+        circle(pos, name: name, radius: (1, 0.65), stroke: black)
+        content((v => vector.add(v, (0, .16)), cname + ".south"), text(str(pr)))
+      } else {
+        let (x, y) = pos
+        rect(cname + ".north-west", cname + ".south-east", name: name, radius: 0.05)
+        content((v => vector.add(v, (-.2, .2)), cname + ".south-east"), text(str(pr)))
+      }
+    }
+
+    node((4.5, 0), "t1", 0, $[tt, 1]$, 1)
+    node((4.5, -2.5), "t2", 0, $[tt, 2]$, 2)
+    
+    node((0, 0), "tt_e", 1, $({tt}, varempty)$, 0)
+    node((0, -2.5), "e_tt", 1, $(varempty, {tt})$, 0)
+    node((10, -1.25), "tt_tt", 1, $({tt}, {tt})$, 0)
+
+    let edge(ni, ai, nf, af, a, w) = {
+      let pi = (name: ni, anchor: ai)
+      let pf = (name: nf, anchor: af)
+      let c = if withstrategy and not w { (dash: "dotted") } else { black }
+      bezier(pi, pf, (pi, 50%, a, pf), fill: none, stroke: c, mark: (end: ">"))
+    }
+
+    edge("t1", 160deg, "tt_e", 20deg, -20deg, false)
+    edge("t1", 240deg, "e_tt", 20deg, 20deg, true)
+    edge("t1", 20deg, "tt_tt", 130deg, 20deg, false)
+
+    edge("t2", -20deg, "tt_tt", -130deg, -20deg, true)
+
+    edge("tt_e", -20deg, "t1", 200deg, -20deg, false)
+    edge("e_tt", -20deg, "t2", 200deg, -20deg, false)
+    edge("tt_tt", 160deg, "t1", -20deg, 20deg, false)
+    edge("tt_tt", 200deg, "t2", 20deg, -20deg, false)
+  })
+
+  #figure(
+    game_example(true),
+    caption: [Example of a game characterization],
+  ) <game-example>
+
+  As before, elliptic vertices represent player 0 positions while rectangular vertices represent player 1 positions. The priorities are now represented with the numbers on the bottom, while the non-dotted edges correspond to the winning strategies.
+
+  The way this is obtained is by starting with the player 0 positions, which are the ones we care about, since if you wanted to prove whether $tt$ is under the solution for $x_1$ or $x_2$ we would have to check whether $[tt, 1]$ or $[tt, 2]$ are winning or not. From those vertices we then have the following moves:
+
+  $
+    E(tt, 1) &= { #h(0.3em) ({tt}, varempty), #h(0.6em) (varempty, {tt}), #h(0.6em) ({tt}, {tt}) #h(0.3em) } \
+    E(tt, 2) &= { #h(0.3em) ({tt}, {tt}) #h(0.3em) }
+  $
+
+  Note that the remaining player 1 position $(varempty, varempty)$ is not reachable, and thus was omitted in the figure.
+
+  The game is ultimately won by player 0 on every position, since it can force every play to go through the $[tt, 2]$ position over and over. This position has the highest priority, at 2, thus being the highest of every play, and since it is even it makes player 0 the winner. Hence we can infer that $tt sub x^*_1$ and $tt sub x^*_2$, which implies $x^*_1 = tt$ and $x^*_2 = tt$.
+
+  One can also see that swapping the equations would result in the same parity graph, except with $[tt, 1]$ now having a higher odd priority than $[tt, 2]$. This makes the game losing for player 0 on all positions, since player 1 can force every play to go through $[tt, 1]$ and win. We thus get $tt subn x^*_1$ and $tt subn x^*_2$, which imply $x^*_1 = ff$ and $x^*_2 = ff$, like we saw in @order-equations.
+]
 
 === Selections
 
-// TODO: Better examples
-// TODO: Citations
-In practice it is not convenient to consider all the possible moves for player 0. Consider for example two moves for player 0 that lead to the positions $tup(X)$ and $tup(Y)$ for player 1. If $A(tup(X)) subset A(tup(Y))$ then intuitively $tup(Y)$ is not convenient for player 0, as it will give player 1 strictly more moves to play and thus more chances to win. We will now see a formalization of this idea.
+In practice it is not convenient to consider all the possible moves for player 0. For example in @game-ch-example the move from $[tt, 1]$ to $({tt}, {tt})$ is never convenient for player 0, since the moves to $({tt}, varempty)$ and $(varempty, {tt})$ would give player 1 strictly less choices. In fact going from $[tt, 2]$ to $({tt}, {tt})$ would be a losing move for player 0, and the only way to win is to go to $(varempty, {tt})$. We will now see a formalization of this idea.
 
 // TODO: Cite where this was first defined
 To start we will need to consider a new order, called _Hoare preorder_:

@@ -12,7 +12,7 @@
 #let environment(name, style: "italic") = {
   let env_counter = counter(name)
   let fig_counter = counter(figure.where(kind: name))
-  (subject, label: none, body) => block(inset: (y: 5pt))[
+  (subject, label: none, body) => block(inset: (y: 5pt), width: 100%)[
     #context {
       let env_counter_val = env_counter.get().at(0)
       let head_counter_val = counter(heading).get().at(0)
@@ -45,6 +45,7 @@
 ]
 
 #let sub = math.class("relation", sym.subset.eq.sq)
+#let subn = math.class("relation", sym.subset.eq.sq.not)
 #let meet = math.class("vary", sym.sect.sq)
 #let join = math.class("vary", sym.union.sq)
 

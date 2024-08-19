@@ -52,43 +52,43 @@ We can now define the solution for a system of fixpoint equations recursively, s
   where $s_n = eta_n (lambda x. f_n (sol(E[x_n := x]), x))$.
 ]
 
-#example("solving a fixpoint system")[
-  Consider the following system of fixpoint equations $E$ on some powerset $2^X$:
+#example("solving a fixpoint system", label: <system-example>)[
+  Consider the following system of fixpoint equations $E$ over the boolean lattice $bb(B)$:
   $
     syseq(
-      x_1 &feq_mu x_1 union x_2 \
-      x_2 &feq_nu x_1 sect x_2 \ 
+      x_1 &feq_mu x_1 or x_2 \
+      x_2 &feq_nu x_1 and x_2 \ 
     )
   $
 
-  To solve this system of fixpoint equations we apply the definiton of its solution, getting $sol(E) = (sol(E[x_2 := s_2]), s_2)$ with $s_2 = nu(lambda x. sol(E[x_2 := x]) sect x)$. In order to find $s_2$ we will need to solve $E[x_2 := x]$, that is the system of the single fixpoint equation $x_1 feq_mu x_1 union x$ and parameterized over $x$. To do this we apply the definition again, getting $sol(E[x_2 := x]) = (sol(varempty), s_1)$ with $s_1 = mu(lambda x'. x' union x)$. At this point we have hit the base case with $sol(varempty)$, which is just $()$, while we can find $s_1$ by solving the given fixpoint equation, getting $s_1 = x$ because $x$ is the smallest value that is equal to itself when joined with $x$. We thus get $sol(E[x_2 := x]) = (x)$, and we are back to find $s_2$, whose definition can now be simplified to $nu(lambda x. x sect x)$. Thus fixpoint equation can now be solved, getting $s_2 = X$ because $X$ is the greatest element of $2^X$ that also satisfies the given equation. Finally, we can get $sol(E[x_2 := s_2]) = s_2 = X$ by substituting $s_2$ in place of $x$ in $sol(E[x_2 := x])$, and with this we get $sol(E) = (X, X)$.
+  To solve this system of fixpoint equations we apply the definiton of its solution, getting $sol(E) = (sol(E[x_2 := s_2]), s_2)$ with $s_2 = nu(lambda x. sol(E[x_2 := x]) and x)$. In order to find $s_2$ we will need to solve $E[x_2 := x]$, that is the system of the single fixpoint equation $x_1 feq_mu x_1 or x$ and parameterized over $x$. To do this we apply the definition again, getting $sol(E[x_2 := x]) = (sol(varempty), s_1)$ with $s_1 = mu(lambda x'. x' or x)$. At this point we have hit the base case with $sol(varempty)$, which is just $()$, while we can find $s_1$ by solving the given fixpoint equation, getting $s_1 = x$ because $x$ is the smallest value that is equal to itself when joined with $x$. We thus get $sol(E[x_2 := x]) = (x)$, and we are back to find $s_2$, whose definition can now be simplified to $nu(lambda x. x and x)$. Thus fixpoint equation can now be solved, getting $s_2 = tt$ because $tt$ is the greatest element of $bb(B)$ that also satisfies the given equation. Finally, we can get $sol(E[x_2 := s_2]) = s_2 = tt$ by substituting $s_2$ in place of $x$ in $sol(E[x_2 := x])$, and with this we get $sol(E) = (tt, tt)$.
 
   To recap, the steps performed were:
-  - $sol(E) = (sol(E[x_2 := s_2]), s_2)$ with $s_2 = nu(lambda x. sol(E[x_2 := x]) sect x)$
-  - $sol(E[x_2 := x]) = (sol(varempty), s_1)$ with $s_1 = mu(lambda x'. x' union x)$
+  - $sol(E) = (sol(E[x_2 := s_2]), s_2)$ with $s_2 = nu(lambda x. sol(E[x_2 := x]) and x)$
+  - $sol(E[x_2 := x]) = (sol(varempty), s_1)$ with $s_1 = mu(lambda x'. x' or x)$
   - solving $s_1$ gives $s_1 = x$
-  - solving $s_2$ gives $s_2 = nu(lambda x. x sect x) = X$
-  - $sol(E) = (X, X)$
+  - solving $s_2$ gives $s_2 = nu(lambda x. x and x) = tt$
+  - $sol(E) = (tt, tt)$
 ]
 
 Notice that the way the solution of a system of fixpoint equations is defined depends on the order of the equations. Indeed different orders can result in different solutions.
 // TODO: Connection with nested fixpoint operators?
 
-#example("different order of equations")[
+#example("different order of equations", label: <order-equations>)[
   Consider a system of equations $E'$ containing the same fixpoint equations as $E$, but with their order swapped:
   $
     syseq(
-      x_1 &feq_nu x_1 sect x_2 \
-      x_2 &feq_mu x_1 union x_2 \
+      x_1 &feq_nu x_1 and x_2 \
+      x_2 &feq_mu x_1 or x_2 \
     )
   $
   
   This time the steps needed will be the following:
-  - $sol(E') = (sol(E'[x_2 := s_2]), s_2)$ with $s_2 = mu(lambda x. sol(E'[x_2 := x]) union x)$
-  - $sol(E'[x_2 := x]) = (sol(varempty), s_1)$ with $s_1 = nu(lambda x'. x' sect x)$
+  - $sol(E') = (sol(E'[x_2 := s_2]), s_2)$ with $s_2 = mu(lambda x. sol(E'[x_2 := x]) or x)$
+  - $sol(E'[x_2 := x]) = (sol(varempty), s_1)$ with $s_1 = nu(lambda x'. x' and x)$
   - solving $s_1$ gives $s_1 = x$
-  - solving $s_2$ gives $s_2 = mu(lambda x. x sect x) = varempty$
-  - $sol(E') = (varempty, varempty)$
+  - solving $s_2$ gives $s_2 = mu(lambda x. x and x) = ff$
+  - $sol(E') = (ff, ff)$
 
-  Notice that $sol(E) = (X, X) != (varempty, varempty) = sol(E')$, meaning that the difference order of the equations in the two systems does indeed influence the solution.
+  Notice that $sol(E) = (tt, tt) != (ff, ff) = sol(E')$, meaning that the difference order of the equations in the two systems does indeed influence the solution.
 ]
