@@ -159,21 +159,19 @@ In order to define the concept of _escape set_ we will use the notion of _strate
   Let $G = (V_0, V_1, E, p)$ be a parity game, $U subset.eq V$ and $G|_U$ the induced subgame of $G$. Let $L = (G|_U, sigma, tau)$ be an instance of the subgame. Let $E_sigma^*$ (resp. $E_tau^*$) be the transitive-reflexive closure of $E_sigma$ (resp. $E_tau$). The escape set for player 0 (resp. 1) from vertex $v in U$ is the set $E_L^0 (v) = v E_sigma^* sect D_G (U)$ (resp. $E_L^1 (v) = v E_tau^* sect D_G (U)$).
 ]
 
-// TODO(prof): In pratica si definisce la induttivamente la chiusura
-//             e poi si calcolano i definitive winning sets in questo modo.
-// TODO: optimal instance?
 #definition("definitive winning set")[
   Let $G = (V_0, V_1, E, p)$ be a parity game, $U subset.eq V$ and $G|_U$ the induced subgame of $G$. Let $L = (G|_U, sigma, tau)$ be an optimal instance of the subgame and let $phi$ be the valuation for this instance. The definitive winning sets $W'_0$ and $W'_1$ are defined as follows:
   $
-    W'_0 &= { v in U | E_L^0 (v) = varempty and (phi(v))_1 in V_+ } \
-    W'_1 &= { v in U | E_L^1 (v) = varempty and (phi(v))_1 in V_- }
+    W'_0 &= { v in U | E_L^1 (v) = varempty and (phi(v))_1 in V_+ } \
+    W'_1 &= { v in U | E_L^0 (v) = varempty and (phi(v))_1 in V_- }
   $
 ]
 
-// TODO: W_0 / W_1 depend from the strategy?
+In pratice we will however not compute the full escape sets, but instead we will find for which vertices they are empty. We can do this by considering all the vertices in $U_i$ that can reach vertices in the unexplored part of the game. Then we compute the set of vertices that can reach said vertices when the edges are restricted according to the strategy for player $1-i$. This will result in the set of all vertices which have a non-empty escape set, so we just need to consider their complement when computing the definitive winning sets.
+
 #lemma("definitive winning set soundness")[
   Let $G = (V_0, V_1, E, p)$ be a parity game and $G|_U$ a subgame of $G$. Then $W'_0 subset.eq W_0$ and $W'_1 subset.eq W_1$.
 ]
 
-// TODO: Più dettagli
+// TODO: Spiega algoritmo (pseudocodice?)
 Once a subgame is solved but no conclusion can be determined the subgame needs to be _expanded_, with the goal of reducing the escape sets and ultimately determing whether the vertex of interest is definitely winning or not. Two expansion schemes are provided in @friedmann_local, one called symmetric and the other asymetric. Both start by considering the player that wins the subgame from the vertex of interest and choosing one vertex in the escape set of the opponent, which cannot be empty. This vertex is then added to the subgame, and in order to keep it a total game the expansion phase must also add at least one of its successors and so on, until the graph becomes total again. The two schemes differ in this last step, as the asymmetric scheme will add one successor for player 0 vertices and all successors for player 1 vertices, while the symmetric scheme will always add one successor. Intuitively the asymmetric scheme assumes that player 0 will win the full game, while the symmetric scheme makes no such assumption and instead tries to limit the potentially expensive expansion. It was also proven in @friedmann_local that the asymmetric scheme will require at most $O(|V|^(|V_0|))$ iterations, while the symmetric one will require at most $O(|V| dot |V|^(|V_0|))$.
