@@ -111,10 +111,10 @@ On the other hand a lazier expansion scheme can take better advantage of the abi
 
 In practice we will test our adaptation using a modified version of the symmetric expansion scheme from @friedmann_local. This scheme will pick an incomplete vertex and add one its unexplored edges to the subgame. If such edge leads to an unexplored vertex the expansion scheme will continue by picking an edge from such vertex and so on until an existing vertex is reached, re-establishing the total property of the graph.
 
-// === Symbolic formulas simplification
+=== Symbolic formulas simplification
 
-// TODO: Advantage of using formulas is simplification
-// TODO: How to remove edges lazily in formulas (set atom to T/F)
+TODO: Advantage of using formulas is simplification
+TODO: How to simplify formulas while being iterated on
 
 == Improvements
 
