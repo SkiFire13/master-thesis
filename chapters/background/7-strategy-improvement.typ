@@ -103,6 +103,8 @@ An algorithm is given in @jurdzinski_improvement that takes a graph restricted t
   })
 })
 
+Given a valuation we are then interested in determining whether a strategy is optimal. It can be shown @jurdzinski_improvement that if there exist a winning strategy for a player then the _optimal_ strategy is winning, otherwise it must be losing. The problem thus reduces in determining whether the current player 0 strategy is optimal, and if not improve it until it is. This can be done by looking at the play profiles of the successors of each vertex: if one of them is greater than the one of the successor chosen by the current strategy then it is not optimal. In other words the optimal strategy chooses the successor with the greatest play profile. If the strategy is not optimal then a new strategy is determined by picking for each vertex the successor with the greatest play profile. Note however that this is not guaranteed to be optimal. In fact since the strategy has changed the valuation and play profiles must be recomputed, and hence might change and still make the new strategy non-optimal. It can however be shown @jurdzinski_improvement that each new strategy "improves" upon the previous one, and eventually this process will reach the optimal strategy. 
+
 #definition("play profile ordering")[
   Let $G = (V_0, V_1, E, p)$ be a parity game with a relevance ordering $<$, and $(u, P, e)$ and $(v, Q, f)$ be two play profiles. Then we define:
   $
@@ -115,20 +117,13 @@ An algorithm is given in @jurdzinski_improvement that takes a graph restricted t
   $
 ]
 
-Finally, a way to decide whether a strategy can be improved or is optimal is provided. This involves looking at the play profiles of the successors of each vertex: if one of them is is greater than the successor chosen by the current strategy then the strategy is not optimal and the greater one is chosen instead. At this point the valuation is no longer correct and must be recomputed, leading a new iteration.
-
-It has been proven @jurdzinski_improvement that the algorithm can require $O(Pi_(v in V_0) "out-deg"(v))$ improvement steps in the worst case. Intuitively each improvement step could improve so little that almost all $Pi_(v in V_0) "out-deg"(v)$ strategies for player 0 end up being considered.
-
-// TODO: does this need to explain progress relation too or can we assume
-// it from the fact a valuation is induced by a pair of strategies?
-
 #theorem("optimal strategies")[
   Let $G = (V_0, V_1, E, p)$ be a parity game with a relevance ordering $<$, $sigma$ and $tau$ be two strategies for respectively player 0 and 1 and $phi$ a valuation function for $(G, sigma, tau)$. The strategy $sigma$ is optimal against $tau$ if $forall u in V_0. forall v in u E. phi(v) lt.curly.eq phi(sigma(u))$. Dually, $tau$ is optimal against $sigma$ if $forall u in V_1. forall v in u E. phi(tau(u)) lt.curly.eq phi(v)$.
 ]
 
-// TODO: What is the role of optimal strategies and tau/sigma?
-
 // TODO: Small example of strategy iteration?
+
+It has been proven @jurdzinski_improvement that the algorithm can require $O(Pi_(v in V_0) "out-deg"(v))$ improvement steps in the worst case. Intuitively this is because each of the $Pi_(v in V_0) "out-deg"(v)$ strategies for player 0 could end up being considered.
 
 === Local algorithm
 
