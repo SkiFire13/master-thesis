@@ -1,4 +1,5 @@
 #import "../../config/common.typ": *
+#import "@preview/algorithmic:0.1.0"
 
 == Local strategy iteration
 
@@ -48,7 +49,59 @@ Intuitively in this context the last two values are linked to the chances that c
   Given an instance $(G, sigma, tau)$ a valuation $phi$ is a function that associates to each vertex the play profile $(w, P, e)$ of the play induced by the instance.
 ]
 
-// TODO: How to compute valuation
+// TODO: This needs generic subgames and strategy restricted edges/game.
+An algorithm is given in @jurdzinski_improvement that takes a graph restricted to a strategy for player 0 and computes an optimal strategy for player 1 along with with a valuation for them. The algorithm has a worst case complexity of $O(|V| times |E|)$.
+// TODO: Explain reach and maximal/minimal_distances
+
+#algorithmic.algorithm({
+  import algorithmic: *
+  Function($valuation$, args: ("H",), {
+    For(cond: $v in V$, {
+      State[$phi(v) = bot$]
+    })
+    For(cond: [$w in V$ (ascending order with respect to $lt.curly$)], {
+      If(cond: $phi(w) = bot$, {
+        State[$L = reach(H|_({v in V | v <= w}), w)$]
+        If(cond: $E_H sect {w} times L != varempty$, {
+          State[$R = reach(H, w)$]
+          State[$phi|_R = subvaluation(H|_R, w)$]
+          State[$E|_H = E|_H without (R times (V without R))$]
+        })
+      })
+    })
+    Return($phi$)
+  })
+  State[]
+  Function($subvaluation$, args: ("K", "w"), {
+    For(cond: $v in V_K$, {
+      State[$phi_0 (v) = w$]
+      State[$phi_1 (v) = varempty$]
+    })
+    For(cond: [$u in {v in V_K | v > w}$ (descending order with respect to $<$)], {
+      If(cond: $u in V_+$, {
+        State[$overline(U) = reach(K|_(V_K without {u}), w)$]
+        For(cond: $v in V_K without overline(U)$, {
+          State[$phi_1 (v) = phi_1 (v) union {u}$]
+        })
+        State[$E_K = E_K without ((overline(U) union {u}) times (V without overline(U)))$]
+      })
+      Else({
+        State[$U = reach(K|_(V_K without {w}), u)$]
+        For(cond: $v in U$, {
+          $phi_1 (v) = phi_1 (v) union {u}$
+        })
+        State[$E_K = E_K without ((U without {u}) times (V without U))$]
+      })
+    })
+    If(cond: $w in V_+$, {
+      State[$phi_2 = maximaldistances(K, w)$]
+    })
+    Else({
+      State[$phi_2 = minimaldistances(K, w)$]
+    })
+    Return($phi$)
+  })
+})
 
 #definition("play profile ordering")[
   Let $G = (V_0, V_1, E, p)$ be a parity game with a relevance ordering $<$, and $(u, P, e)$ and $(v, Q, f)$ be two play profiles. Then we define:
@@ -64,9 +117,7 @@ Intuitively in this context the last two values are linked to the chances that c
 
 Finally, a way to decide whether a strategy can be improved or is optimal is provided. This involves looking at the play profiles of the successors of each vertex: if one of them is is greater than the successor chosen by the current strategy then the strategy is not optimal and the greater one is chosen instead. At this point the valuation is no longer correct and must be recomputed, leading a new iteration.
 
-// TODO: Further details redirect to the paper?
-// TODO: Change wording to say the paper implemented it with such complexity.
-It can be proven @jurdzinski_improvement that each iteration has worst-case complexity $O(|V| dot |E|)$, and in the worst case requires $Pi_(v in V_0) "out-deg"(v)$ many improvement steps.
+It has been proven @jurdzinski_improvement that the algorithm can require $O(Pi_(v in V_0) "out-deg"(v))$ improvement steps in the worst case. Intuitively each improvement step could improve so little that almost all $Pi_(v in V_0) "out-deg"(v)$ strategies for player 0 end up being considered.
 
 // TODO: does this need to explain progress relation too or can we assume
 // it from the fact a valuation is induced by a pair of strategies?
@@ -91,7 +142,7 @@ The local strategy iteration algorithm @friedmann_local fills this gap by perfor
 ]
 
 #definition("partially expanded game")[
-  Let $G = (V_0, V_1, E, p)$ be a parity game and $G' = G|_U$ subgame of $G$. If $G'$ is still a total parity game it is called a partially expanded game.
+  Let $G = (V_0, V_1, E, p)$ be a parity game and $G' = G|_U$ a subgame of $G$. If $G'$ is still a total parity game it is called a partially expanded game.
 ]
 
 Given a partially expanded game, two optimal strategies and its winning sets, the local algorithm has to decide whether vertices winning for a player in this subgame are also winning in the full game. Recall that a strategy is winning for a player $i$ if any strategy for the opponent results in an induced play that is winning for $i$. However those plays being losing in the subgame do not necessarily mean that all plays in the full game will be losing too, as they might visit vertices not included in the subgame. Intuitively, the losing player might have a way to force a losing play for them to reach one of the vertices outside the subgame, called the _$U$-exterior_ of the subgame, and thus lead to a play that is not possible in the subgame. The set of vertices that can do this is called the _escape set_ of the subgame, and for such vertices no conclusions can be made. For the other vertices instead the winner in the subgame is also the winner in the full game and they constitute the definitely winning sets.

@@ -89,6 +89,12 @@
 
 #let dom = math.op("dom")
 
+#let valuation = mathstr("valuation")
+#let reach = mathstr("reach")
+#let subvaluation = mathstr("subvaluation")
+#let maximaldistances = mathstr("maximal_distances")
+#let minimaldistances = mathstr("minimal_distances")
+
 #let w0 = $w_0$
 #let l0 = $l_0$
 #let w1 = $w_1$
