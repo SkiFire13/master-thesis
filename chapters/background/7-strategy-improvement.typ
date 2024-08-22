@@ -67,14 +67,12 @@ Given a valuation we are then interested in determining whether a strategy for p
   Let $G = (V_0, V_1, E, p)$ be a parity game with a relevance ordering $<$, $sigma$ and $tau$ be two strategies for respectively player 0 and 1 and $phi$ a valuation function for $(G, sigma, tau)$. The strategy $sigma$ is optimal against $tau$ if $forall u in V_0. forall v in u E. phi(v) lt.curly.eq phi(sigma(u))$. Dually, $tau$ is optimal against $sigma$ if $forall u in V_1. forall v in u E. phi(tau(u)) lt.curly.eq phi(v)$.
 ]
 
-
-
 Finally, an algorithm is given in @jurdzinski_improvement to compute, given a stragegy for player 0, an optimal counter-strategy for player 1 along with a valuation for them.
 
 // TODO: This uses generic subgames and strategy restricted edges/games.
 #algorithmic.algorithm({
   import algorithmic: *
-  Function($valuation$, args: ("H",), {
+  Function($valuation$, args: ($H$,), {
     For(cond: $v in V$, {
       State[$phi(v) = bot$]
     })
@@ -146,7 +144,7 @@ The local strategy iteration algorithm @friedmann_local fills this gap by perfor
 Given a partially expanded game, two optimal strategies and its winning sets, the local algorithm has to decide whether vertices winning for a player in this subgame are also winning in the full game. Recall that a strategy is winning for a player $i$ if any strategy for the opponent results in an induced play that is winning for $i$. However those plays being losing in the subgame do not necessarily mean that all plays in the full game will be losing too, as they might visit vertices not included in the subgame. Intuitively, the losing player might have a way to force a losing play for them to reach one of the vertices outside the subgame, called the _$U$-exterior_ of the subgame, and thus lead to a play that is not possible in the subgame. The set of vertices that can do this is called the _escape set_ of the subgame, and for such vertices no conclusions can be made. For the other vertices instead the winner in the subgame is also the winner in the full game and they constitute the definitely winning sets.
 
 #definition($U$ + "-exterior")[
-  Let $G = (V_0, V_1, E, p)$ be a parity game and $G|_U$ a subgame of $G$. The $U$-exterior of $G|_U$, also written $D_G (U)$, is the set of successors of vertices in $G|_U$ that are not themselves in $G|_U$. That is:
+  Let $G = (V_0, V_1, E, p)$ be a parity game and $G|_U$ a subgame of $G$. The $U$-exterior of a vertex $v in U$, also written $D_G (U, v)$, is the set of its that successors that are not themselves in $U$. That is, $D_G (U, v) = v E sect (V without U)$. The $U$-exterior of of the subgame $G|_U$ is instead the union of all $U$-exteriors of its vertices, that is:
   $
     D_G (U) = union.big_(v in U) v E sect (V without U)
   $
@@ -163,18 +161,74 @@ In order to define the concept of _escape set_ we will use the notion of _strate
 ]
 
 #definition("definitive winning set")[
-  Let $G = (V_0, V_1, E, p)$ be a parity game, $U subset.eq V$ and $G|_U$ the induced subgame of $G$. Let $L = (G|_U, sigma, tau)$ be an optimal instance of the subgame and let $phi$ be the valuation for this instance. The definitive winning sets $W'_0$ and $W'_1$ are defined as follows:
+  Let $G = (V_0, V_1, E, p)$ be a parity game, $U subset.eq V$ and $G|_U$ the induced subgame of $G$. Let $L = (G|_U, sigma, tau)$ be an optimal instance of the subgame and let $phi$ be the valuation for this instance. The definitive winning sets $W'_0 (L)$ and $W'_1 (L)$ are defined as follows:
   $
-    W'_0 &= { v in U | E_L^1 (v) = varempty and (phi(v))_1 in V_+ } \
-    W'_1 &= { v in U | E_L^0 (v) = varempty and (phi(v))_1 in V_- }
+    W'_0 (L) &= { v in U | E_L^1 (v) = varempty and (phi(v))_1 in V_+ } \
+    W'_1 (L) &= { v in U | E_L^0 (v) = varempty and (phi(v))_1 in V_- }
   $
 ]
 
 In pratice we will however not compute the full escape sets, but instead we will find for which vertices they are empty. We can do this by considering all the vertices in $U_i$ that can reach vertices in the unexplored part of the game. Then we compute the set of vertices that can reach said vertices when the edges are restricted according to the strategy for player $1-i$. This will result in the set of all vertices which have a non-empty escape set, so we just need to consider their complement when computing the definitive winning sets.
 
 #lemma("definitive winning set soundness")[
-  Let $G = (V_0, V_1, E, p)$ be a parity game and $G|_U$ a subgame of $G$. Then $W'_0 subset.eq W_0$ and $W'_1 subset.eq W_1$.
+  Let $G = (V_0, V_1, E, p)$ be a parity game and $G|_U$ a subgame of $G$ with an instance $L = (G, sigma, tau)$. Then $W'_0 (L) subset.eq W_0$ and $W'_1 (L) subset.eq W_1$.
 ]
 
-// TODO: Spiega algoritmo (pseudocodice?)
-Once a subgame is solved but no conclusion can be determined the subgame needs to be _expanded_, with the goal of reducing the escape sets and ultimately determing whether the vertex of interest is definitely winning or not. Two expansion schemes are provided in @friedmann_local, one called symmetric and the other asymetric. Both start by considering the player that wins the subgame from the vertex of interest and choosing one vertex in the escape set of the opponent, which cannot be empty. This vertex is then added to the subgame, and in order to keep it a total game the expansion phase must also add at least one of its successors and so on, until the graph becomes total again. The two schemes differ in this last step, as the asymmetric scheme will add one successor for player 0 vertices and all successors for player 1 vertices, while the symmetric scheme will always add one successor. Intuitively the asymmetric scheme assumes that player 0 will win the full game, while the symmetric scheme makes no such assumption and instead tries to limit the potentially expensive expansion. It was also proven in @friedmann_local that the asymmetric scheme will require at most $O(|V|^(|V_0|))$ iterations, while the symmetric one will require at most $O(|V| dot |V|^(|V_0|))$.
+As previously mentioned, if the winner of a vertex cannot be determined in a subgame, that is the vertex is not in a definitive winning set, then the subgame must be _expanded_ to a larger subgame, which is then solved, repeating the process.
+
+Given a partially expanded game $G|_U$, the expansion process starts by selecting new vertices in the $U$-exterior to include in the set $U$, creating a new set $U'$. However $G|_U'$ might not be a total parity game, so the expansion process must continue to include new vertices in $U'$ until the $U'$-induced subgame becomes total. More formally, an _expansion scheme_ is made up of a _primary expansion funcion_ $epsilon_1$ and a _secondary expansion function_ $epsilon_2$, and the new subgame will be decided through a combination of them. In particular the primary expansion function will select a non-empty set of vertices in the $U$-exterior to add to the current game, while the secondary expansion function will be used to recursively select elements from the $U$-exterior of new vertices until the game becomes total.
+
+#definition("expansion scheme")[
+  An expansion scheme is a pair of functions $epsilon_1 : 2^V -> 2^V$ and $epsilon_2 : 2^V times V -> 2^V$ such that, given a set $U$ and a vertex $v$:
+
+  - $varempty subset.neq epsilon_1 subset.eq D_G (U)$
+  
+  - $epsilon_2 (U, v) subset.eq D_G (U, v)$
+
+  - $v E = D_G (U, v) => epsilon_2 (U, v) != varempty$
+]
+
+The expansion is then computed by first applying $epsilon_1$ to get the set of new vertices, and then by inductively applying $epsilon_2$ to each new vertex until there is no new vertex produced:
+
+#let expand = text(font: "", smallcaps("Expand"))
+
+$
+  expand(U) &= expand_2 (U, epsilon_1 (U)) \ \
+  expand_2 (U, A) &= cases(
+    U & "if" A = varempty \
+    expand_2 (U union A, union.big_(v in A) epsilon_2 (U union A, v)) & "otherwise"
+  )
+$
+
+Two expansion schemes are provided in @friedmann_local, a _symmetric scheme_ and an _asymmetric scheme_.
+
+Both start by expanding the game to one of the vertices in the escape set of the vertex of interest $v^*$ for the currently losing player $i$ on it. Formally, $epsilon_1 (U) = { w }$ for some $w in E^i_L (U)$ where $p((phi(v^*))_1) "mod" 2 equiv 1 - i$. The idea is that player $i$ has the ability to force a play from $v^*$ to reach the new vertex, which might be winning for them and thus could change the winner on $v^*$ in the new subgame. On the other hand if that does not happen then the escape set of $v^*$ for player $i$ might reduce, eventually becoming empty and thus making $v^*$ definitely winning for player $1-i$.
+
+The two expansion schemes differ however in the secondary expansion function. Both choose not to expand any new vertex if the just expanded vertex already has a successor in the current subgame, as doing otherwise may be wasteful. However the symmetric scheme chooses to expand only one of the successors, that is $epsilon_2 (U, v) = { w }$ for some $w in v E$. Meanwhile the asymmetric scheme performs a different choice depending on whether $v$ is controlled by player 0 or 1. If it is controlled by player 1 it chooses to expand all the $U$-exterior of $v$, that is $epsilon_2 (U, v) = D_G (U, v)$ if $v in V_1$, otherwise if it is controlled by player 0 it chooses to expand only one successor like in the symmetric scheme, that is $epsilon_2 (U, v) = { w }$ for some $w in v E$ if $v in V_0$.
+
+Intuitively, the symmetric scheme makes no assumption about the winner and expands vertices for both players in the same way. Meanwhile the asymmetric scheme assumes that player 0 will win, and thus tries to expand more vertices controlled by player 1 in order to reduce its escape set. Ultimately there are different tradeoffs involved, since the symmetric scheme expands relatively few vertices and thus may require solving more subgames, while the asymmetric scheme is eager, but in doing so it might expand to larger subgames that could otherwise be avoided.
+
+#let expand = mathstr("expand")
+#let improve = mathstr("improve")
+Finally, the algorithm performs an initial expansion to get a total subgame that includes the vertex of interest. Then it repeatedly solves the current subgame, using an $improve$ subroutine, until the vertex $v^*$ becomes definitely winning for either player, and expands it, using an $expand$ subroutine, when no conclusion can be made on it.
+
+#algorithmic.algorithm({
+  import algorithmic: *
+  Function(mathstr("local-strategy-iteration"), args: ($G$, $v^*$), {
+    State[$U = expand({v^*})$]
+    State[$sigma = $ arbitrary player 0 strategy on $G|_U$]
+    State[$tau = $ optimal player 1 strategy against $sigma$ on $G|_U$]
+    State[$L = (G, sigma, tau)$]
+    While(cond: $v^* in.not W_0 (L) union W_1 (L)$, {
+      If(cond: [$sigma$ is improvable w.r.t $L$], {
+        State[$L = improve(L)$]
+      })
+      Else({
+        State[$L = expand(L)$]
+      })
+    })
+    Return($sigma, tau, W_0 (L), W_1 (L)$)
+  })
+})
+
+The complexity of the algorithm depends on the specific expansion scheme used. For the two expansion schemes provided it has been proven in @friedmann_local that the asymmetric scheme will require at most $O(|V|^(|V_0|))$ iterations, while the symmetric one will require at most $O(|V| dot |V|^(|V_0|))$.
