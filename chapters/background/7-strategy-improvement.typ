@@ -49,10 +49,29 @@ Intuitively in this context the last two values are linked to the chances that c
   Given an instance $(G, sigma, tau)$ a valuation $phi$ is a function that associates to each vertex the play profile $(w, P, e)$ of the play induced by the instance.
 ]
 
-// TODO: This needs generic subgames and strategy restricted edges/game.
-An algorithm is given in @jurdzinski_improvement that takes a graph restricted to a strategy for player 0 and computes an optimal strategy for player 1 along with with a valuation for them. The algorithm has a worst case complexity of $O(|V| times |E|)$.
-// TODO: Explain reach and maximal/minimal_distances
+Given a valuation we are then interested in determining whether a strategy for player 0 is optimal. It can be shown @jurdzinski_improvement that if there exist a winning strategy for a player then the _optimal_ strategy is winning, otherwise it must be losing. The problem thus reduces to determining whether the current player 0 strategy is optimal, and if not improve it until it is. This can be done by looking at the play profiles of the successors of each vertex: if one of them is greater than the one of the successor chosen by the current strategy then it is not optimal. In other words the optimal strategy chooses the successor with the greatest play profile. If the strategy is not optimal then a new strategy is determined by picking for each vertex the successor with the greatest play profile. This will however change the optimal strategy for player 1 and thus the valuation, which must be recomputed, leading to another iteration. It has been shown in @jurdzinski_improvement that each new strategy "improves" upon the previous one, and eventually this process will reach the optimal strategy. This can however require $O(Pi_(v in V_0) "out-deg"(v))$ improvement steps in the worst case. Intuitively this is because each of the $Pi_(v in V_0) "out-deg"(v)$ strategies for player 0 could end up being considered.
 
+#definition("play profile ordering")[
+  Let $G = (V_0, V_1, E, p)$ be a parity game with a relevance ordering $<$, and $(u, P, e)$ and $(v, Q, f)$ be two play profiles. Then we define:
+  $
+    (u, P, e) lt.curly (v, Q, f) <=> cases(
+      & u lt.curly v \
+      or ( & u = v and P lt.curly Q) \
+      or ( & u = v and P = Q and u in V_- and e < f) \
+      or ( & u = v and P = Q and u in V_+ and e > f)
+    )
+  $
+]
+
+#theorem("optimal strategies")[
+  Let $G = (V_0, V_1, E, p)$ be a parity game with a relevance ordering $<$, $sigma$ and $tau$ be two strategies for respectively player 0 and 1 and $phi$ a valuation function for $(G, sigma, tau)$. The strategy $sigma$ is optimal against $tau$ if $forall u in V_0. forall v in u E. phi(v) lt.curly.eq phi(sigma(u))$. Dually, $tau$ is optimal against $sigma$ if $forall u in V_1. forall v in u E. phi(tau(u)) lt.curly.eq phi(v)$.
+]
+
+
+
+Finally, an algorithm is given in @jurdzinski_improvement to compute, given a stragegy for player 0, an optimal counter-strategy for player 1 along with a valuation for them.
+
+// TODO: This uses generic subgames and strategy restricted edges/games.
 #algorithmic.algorithm({
   import algorithmic: *
   Function($valuation$, args: ("H",), {
@@ -103,27 +122,11 @@ An algorithm is given in @jurdzinski_improvement that takes a graph restricted t
   })
 })
 
-Given a valuation we are then interested in determining whether a strategy is optimal. It can be shown @jurdzinski_improvement that if there exist a winning strategy for a player then the _optimal_ strategy is winning, otherwise it must be losing. The problem thus reduces in determining whether the current player 0 strategy is optimal, and if not improve it until it is. This can be done by looking at the play profiles of the successors of each vertex: if one of them is greater than the one of the successor chosen by the current strategy then it is not optimal. In other words the optimal strategy chooses the successor with the greatest play profile. If the strategy is not optimal then a new strategy is determined by picking for each vertex the successor with the greatest play profile. Note however that this is not guaranteed to be optimal. In fact since the strategy has changed the valuation and play profiles must be recomputed, and hence might change and still make the new strategy non-optimal. It can however be shown @jurdzinski_improvement that each new strategy "improves" upon the previous one, and eventually this process will reach the optimal strategy. 
+The algorithm works by determining from which vertices player 1 can force a play to reach that vertex again, resulting in a cycle. This is done by considering the vertices with lowest reward first, as those are the ones that are more favourable to player 1. For each one that is found the algorithm then forces every vertex that can reach it to do so, by removing the edges that would allow otherwise, and hence fixing the $w$ component of their play profile. Then for this set of vertices it computes the _subvaluation_, whose goal is to find the value of the optimal player 1 strategy for them by minimizing the $P$ and $e$ components of the play profiles of these vertices. In particular this step goes through each vertex that has a higher relevance than $w$ from the one with highest relevance to the one with lowest, which are exactly those that will influence the $P$ component and its role in the play profile ordering. For each of these, if they are favourable to player 0 then it will prevent all vertices that can reach them before reaching $w$ from doing so, again by removing the edges that would allow that. If instead they are favourable to player 1 then the algorithm will force any vertex that can reach them before reaching $w$ to do so. Finally, depending on whether $w$ is favourable to player 0 or not, to each vertex is forced the longest or shortest path to reach $w$, thus fixing the $e$ component of the play profile. Ultimately this will leave each vertex with only one outgoing edge, representing the strategy for its controlling player.
 
-#definition("play profile ordering")[
-  Let $G = (V_0, V_1, E, p)$ be a parity game with a relevance ordering $<$, and $(u, P, e)$ and $(v, Q, f)$ be two play profiles. Then we define:
-  $
-    (u, P, e) lt.curly (v, Q, f) <=> cases(
-      & u lt.curly v \
-      or ( & u = v and P lt.curly Q) \
-      or ( & u = v and P = Q and u in V_- and e < f) \
-      or ( & u = v and P = Q and u in V_+ and e > f)
-    )
-  $
-]
-
-#theorem("optimal strategies")[
-  Let $G = (V_0, V_1, E, p)$ be a parity game with a relevance ordering $<$, $sigma$ and $tau$ be two strategies for respectively player 0 and 1 and $phi$ a valuation function for $(G, sigma, tau)$. The strategy $sigma$ is optimal against $tau$ if $forall u in V_0. forall v in u E. phi(v) lt.curly.eq phi(sigma(u))$. Dually, $tau$ is optimal against $sigma$ if $forall u in V_1. forall v in u E. phi(tau(u)) lt.curly.eq phi(v)$.
-]
+It has been proven in @jurdzinski_improvement that this algorithm has a complexity of $O(|V| times |E|)$.
 
 // TODO: Small example of strategy iteration?
-
-It has been proven @jurdzinski_improvement that the algorithm can require $O(Pi_(v in V_0) "out-deg"(v))$ improvement steps in the worst case. Intuitively this is because each of the $Pi_(v in V_0) "out-deg"(v)$ strategies for player 0 could end up being considered.
 
 === Local algorithm
 
