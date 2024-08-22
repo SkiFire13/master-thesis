@@ -37,11 +37,7 @@
 #let theorem = environment("Theorem")
 
 #let proof(body) = [
-  Proof.
-
-  #body
-
-  #align(right, sym.square.stroked.medium)
+  _Proof._ #body #h(1fr) $square$
 ]
 
 #let sub = math.class("relation", sym.subset.eq.sq)
