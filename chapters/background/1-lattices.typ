@@ -189,9 +189,10 @@ Given a function $f : L -> L$ where $(L, sub)$ is a complete lattice, it is not 
   The least fixpoint of $f$, written $lfp f$, is the bottom element of such lattice, while the greatest fixpoint of $f$, written $gfp f$, is the top element.
 ]
 
-Kleene iteration @kleene also gives us a constructive way to obtain a least or greatest fixpoint by repeatedly iterating a function starting from the least or greatest element of the lattice. However it should be noted that it may not be efficient enough or even possible to compute a fixpoint in such a way, because it may require too many iterations (potentially an infinite amount in case of non-finite lattices) or because representing the actual solution may take too much space, and we are interested only in some specific characteristics of it.
+Kleene iteration @kleene also gives us a constructive way to obtain a least or greatest fixpoint by repeatedly iterating a function starting from respectively the bottom or top element of the lattice. In its most general form it may require a transfinite iteration, though with some stronger hypothesis it can be relaxed to a regular, possibly infinite, iteration, for example by requiring the function to be continuous instead of just monotone. In our case we can limit ourselves to finite lattices, in which case kleene iteration can be shown to require only a finite amount of steps.
 
-// TODO: Continuous function o iterazione transfinita.
-#theorem[Kleene iteration @kleene][
-  Let $(X, sub)$ be a complete lattice and $f: X -> X$ a continuous function. Consider the ascending chain $bot sub f(bot) sub f(f(bot)) sub dots.h.c sub f^n (bot) sub dots.h.c$, it converges to $lfp f$. In other words, $lfp f = join { f^n (bot) | n in bb(N) }$. Similarly $gfp f = meet { f^n (top) | n in bb(N) }$.
+It should be noted however that it may not be efficient enough to compute a fixpoint in such a way, because it may require too many iterations (potentially an infinite amount in case of non-finite lattices) or because representing the actual solution may take too much space, and we are interested only in some specific characteristics of it.
+
+#theorem[Kleene iteration @kleene for finite lattices][
+  Let $(X, sub)$ be a finite lattice and $f: X -> X$ a monotone function. Consider the ascending chain $bot sub f(bot) sub f(f(bot)) sub dots.h.c sub f^n (bot) sub dots.h.c$, it converges to $lfp f$ in a finite amount of steps, that is there exists a $k$ such that $lfp f = f^k (bot)$. Similarly $gfp f = f^k (top)$ for some $k$.
 ]
