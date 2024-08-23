@@ -106,13 +106,35 @@ The local strategy improvement algorithm gives a way to consider only a subset o
 // TODO: Define how new expansion functions look like. 
 In the local strategy iteration the expansion scheme is based on the idea of expanding the subgame by adding new vertices. In our adaptation it will instead add new edges, and vertices will be implicitly be added if they are the endpoint of a new edge. This does not however change much of the logic behind it, since the expansion schemes defined in @friedmann_local are all based on picking some unexplored successor, which is equivalent to picking the unexplored edge that leads to it.
 
-// TODO: O(|V|) da dove viene?
-The resulting properties of the expansion scheme are however not guaranteed to stay the same. For example the upper bound on the number of expansions grows from $O(|V|)$ to $O(|E|)$, since in the worse case each expansion adds one edge and they may all be necessary to determine the actual winner on the initial vertex. As shown in @friedmann_local, a big number of expansions might not be ideal because each will require at least one strategy iteration, which in the long run can end up being slower than directly running the global algorithm.
+More formally, the $epsilon_1$ and $epsilon_2$ functions now take the set of edges in the subgame and output a set of new edges to add to the subgame. The requirements remain similar, in that $epsilon_1$ must return a non-empty set of edges that are not already in the subgame and $epsilon_2$ must return a set of outgoing edges from the given vertex. Moreover if a vertex has no successor then $epsilon_2$ must also be non-empty in order to given that vertex a successor and make the game total.
+
+#definition("expansion scheme (updated)")[
+  Let $G = (V_0, V_1, E, p)$ be a parity game and $G' = (G, U, E')$ a subgame of $G$. An expansion scheme is a pair of functions $epsilon_1 : 2^E -> 2^E$ and $epsilon_2 : 2^E times V -> 2^E$ such that:
+
+  - $varempty subset.neq epsilon_1 (E') subset.eq E without E'$
+  
+  - $epsilon_2 (E', v) subset.eq ({v} times v E) without E'$
+
+  - $v E = D_G (U, v) => epsilon_2 (E', v) != varempty$
+]
+
+As before the expansion is computed by first applying $epsilon_1$ and then by repeatedly applying $epsilon_2$.
+
+#let expand = text(font: "", smallcaps("Expand"))
+
+$
+  expand(E') &= expand_2 (E', epsilon_1 (E')) \ \
+  expand_2 (E', E'') &= cases(
+    E & "if" E'' = varempty \
+    expand_2 (E' union E'', union.big_((u, v) in E'') epsilon_2 (E' union E'', v)) & "otherwise"
+  )
+$
+
+For our implementation we decided to adapt the symmetric expansion scheme from @friedmann_local. The adapted $epsilon_1$ picks any edge from a vertex in the escape set of $v^*$ for the losing player $i$, that is, $epsilon_1 (E') = { e }$ for $e in (v times v E') without E'$, some $v in E^i_L (v^*)$ and $p((phi(v^*))_1) "mod" 2 equiv 1 - i$, while the adapted $epsilon_2$ picks any unexplored edge from the given vertex $v$ if it has no successors, that is $epsilon_2 (E', v) = { e }$ for some $e in (v times v E') without E'$ if $v E' = varempty$, otherwise $epsilon_2 (E', v) = varempty$. The choices it makes are almost the same as those of the original symmetric algorithm if each chosen edge is replaced with its head vertex, with the exception that it may select edges that lead to already explored vertices.
+
+It should be noted that the upper bound on the number of expansions grows from $O(|V|)$, caused by when each expansions adds only a single vertex to the subgame, to $O(|E|)$, now caused by when each expansion adds only one edge to the subgame. As shown in @friedmann_local, a big number of expansions might not be ideal because each will require at least one strategy iteration, which in the long run can end up being slower than directly running the global algorithm.
 
 On the other hand a lazier expansion scheme can take better advantage of the ability to perform simplifications on symbolic moves, which allows to remove lot of edges with little work. A eager expansion scheme may instead visit all those edges, just to ultimately find out that they were all losing for the same reason. There is thus a tradeoff between expanding too much in a single step, which loses some of the benefits of using symbolic moves, and expanding too little, which instead leads to too many strategy iterations.
-
-// TODO: Muovi prima
-In practice we will test our adaptation using a modified version of the symmetric expansion scheme from @friedmann_local. This scheme will pick an incomplete vertex and add one its unexplored edges to the subgame. If such edge leads to an unexplored vertex the expansion scheme will continue by picking an edge from such vertex and so on until an existing vertex is reached, re-establishing the total property of the graph.
 
 === Symbolic formulas simplification
 

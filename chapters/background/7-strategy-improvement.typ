@@ -179,13 +179,13 @@ As previously mentioned, if the winner of a vertex cannot be determined in a sub
 Given a partially expanded game $G|_U$, the expansion process starts by selecting new vertices in the $U$-exterior to include in the set $U$, creating a new set $U'$. However $G|_U'$ might not be a total parity game, so the expansion process must continue to include new vertices in $U'$ until the $U'$-induced subgame becomes total. More formally, an _expansion scheme_ is made up of a _primary expansion funcion_ $epsilon_1$ and a _secondary expansion function_ $epsilon_2$, and the new subgame will be decided through a combination of them. In particular the primary expansion function will select a non-empty set of vertices in the $U$-exterior to add to the current game, while the secondary expansion function will be used to recursively select elements from the $U$-exterior of new vertices until the game becomes total.
 
 #definition("expansion scheme")[
-  An expansion scheme is a pair of functions $epsilon_1 : 2^V -> 2^V$ and $epsilon_2 : 2^V times V -> 2^V$ such that, given a set $U$ and a vertex $v$:
+  Let $G = (V_0, V_1, E, p)$ be a parity game and $G|_U$ a subgame of $G$. An expansion scheme is a pair of functions $epsilon_1 : 2^V -> 2^V$ and $epsilon_2 : 2^V times V -> 2^V$ such that:
 
-  - $varempty subset.neq epsilon_1 subset.eq D_G (U)$
+  - $varempty subset.neq epsilon_1 (U) subset.eq D_G (U)$
   
-  - $epsilon_2 (U, v) subset.eq D_G (U, v)$
+  - $forall v in U. epsilon_2 (U, v) subset.eq D_G (U, v)$
 
-  - $v E = D_G (U, v) => epsilon_2 (U, v) != varempty$
+  - $forall v in U. v E = D_G (U, v) => epsilon_2 (U, v) != varempty$
 ]
 
 The expansion is then computed by first applying $epsilon_1$ to get the set of new vertices, and then by inductively applying $epsilon_2$ to each new vertex until there is no new vertex produced:
