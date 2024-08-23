@@ -138,7 +138,8 @@ On the other hand a lazier expansion scheme can take better advantage of the abi
 
 === Symbolic formulas simplification
 
-TODO: Advantage of using formulas is simplification
+As mentioned briefly in @upward-logic, in the existing implementation of the symbolic algorithm @flori when a player 0 position can be assumed to be winning or losing the corresponding atom in symbolic formulas is replaced with either true or false and the formula is simplified. This is possible because in their algorithm formulas are simplified once and immediately used to generate the symbolic moves. In our algorithm however we lazily explore moves, meaning that most often when a simplification becomes possible we are in the middle of generating symbolic moves. A naive simplification is not possible, as that does not allow to resume the generation from the same point as before, thus requiring to generate again moves already considered.
+
 TODO: How to simplify formulas while being iterated on
 
 == Improvements

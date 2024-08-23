@@ -138,7 +138,7 @@ The idea will then be for player 0 to avoid playing a move $tup(Y)$ if there exi
   Let $(L, sub)$ be a lattice. A selection is a function $sigma : (B_L times range(n)) -> 2^((2^(B_L))^m)$ such that $forall b in B_L, i in range(n). up_H sigma(b, i) = E(b, i)$.
 ]
 
-=== Logic for upward-closed sets
+=== Logic for upward-closed sets <upward-logic>
 
 Ideally we would be interested in the least selection; this can be shown to always exist in finite lattices, but not in infinite ones. Moreover when it exists it might be exponential in size.
 
@@ -186,10 +186,9 @@ Given a logic formula we can however define a generator for symbolic moves, whic
   $
 ]
 
-// Seen from another point of view, a logic formula $phi$ for $E(b, i)$ represents whether $b$ will be below the solution for $x_i$, expressed as a boolean expression in function of whether some elements of the basis will be below the solutions for some variables, represented by the atoms $[b, i]$. Then $E(b, i)$ represents all the possibly partial assignments that make the formula true, while $M(phi)$ represents only a subset of possibly partial assignments such that no valid assignment exist that is not a superset of those included.
+Another advantage of representing selections using such formulas is that they can be simplified when it becomes known that some position for player 0 is winning or losing, which corresponds to the assigning either true or false to a $[b, i]$ atom. In the parity game this would then translate to either removing a set of moves for player 0, corresponding to those that allow player 1 to reach a winning position for them, or replacing moves for player 0 with ones without moves that are immediately losing for player 1. This is already exploited in the existing implementation of the symbolic algorithm @flori to remove lot of edges at once, thus simplifying the game.
 
-// TODO: this is kinda out of context. Explain more
-Another advantage of representing selections using such formulas is that they can be simplified when it becomes known that some position for player 0 is winning or losing. Such simplification would be done by replacing the corresponding $[b, i]$ atom in the formula to respectively true or false. In the parity game this would then translate to either removing a set of moves for player 0, corresponding to those that allow player 1 to reach a winning position for them, or replacing moves for player 0 with ones without moves that are immediately losing for player 1.
+// Seen from another point of view, a logic formula $phi$ for $E(b, i)$ represents whether $b$ will be below the solution for $x_i$, expressed as a boolean expression in function of whether some elements of the basis will be below the solutions for some variables, represented by the atoms $[b, i]$. Then $E(b, i)$ represents all the possibly partial assignments that make the formula true, while $M(phi)$ represents only a subset of possibly partial assignments such that no valid assignment exist that is not a superset of those included.
 
 It should be noted however that we cannot automatically get such formulas from any opaque function that could appear in a system of fixpoint equations. Instead, this will need to be done separately for each function, or class of functions.
 
