@@ -90,7 +90,7 @@ The local strategy improvement algorithm gives a way to consider only a subset o
 ]
 
 #definition("escape set (updated)")[
-  Let $G = (V_0, V_1, E, p)$ be a parity game and $G' = (G, U, E')$ a subgame of $G$. Let $L = (G|_U, sigma, tau)$ be an instance of the subgame. Let $E_sigma^*$ (resp. $E_tau^*$) be the transitive-reflexive closure of $E_sigma$ (resp. $E_tau$) and $I_G = {v | v E != v E'}$ the set of vertices that unexplored outgoing edges. The (updated) escape set for player 0 (resp. 1) from vertex $v in U$ is the set $E_L^0 (v) = v E_sigma^* sect I_G$ (resp. $E_L^1 (v) = v E_tau^* sect I_G$).
+  Let $G = (V_0, V_1, E, p)$ be a parity game and $G' = (G, U, E')$ a subgame of $G$. Let $L = (G|_U, sigma, tau)$ be an instance of the subgame. Let $E_sigma^*$ (resp. $E_tau^*$) be the transitive-reflexive closure of $E_sigma$ (resp. $E_tau$) and $I_G = {v | v E != v E'}$ the set of vertices that have unexplored outgoing edges. The (updated) escape set for player 0 (resp. 1) from vertex $v in U$ is the set $E_L^0 (v) = v E_sigma^* sect I_G$ (resp. $E_L^1 (v) = v E_tau^* sect I_G$).
 ]
 
 #theorem("definitive winning set is sound")[
@@ -104,7 +104,7 @@ The local strategy improvement algorithm gives a way to consider only a subset o
 === Expansion scheme
 
 // TODO: Define how new expansion functions look like. 
-In the local strategy iteration the expansion scheme is based on the idea of expanding the subgame by adding new vertices. In our adaptation it will instead add new edges, and vertices will be implicitly be added if they are the endpoint of a new edge. This does not however change much of the logic behind it, since the expansion schemes defined in @friedmann_local are all based on picking some unexplored successor, which is equivalent to picking the unexplored edge that leads to it. In our case it just may happen that an unexplored edge leads to an explored vertex, in which case the expansion can end.
+In the local strategy iteration the expansion scheme is based on the idea of expanding the subgame by adding new vertices. In our adaptation it will instead add new edges, and vertices will be implicitly be added if they are the endpoint of a new edge. This does not however change much of the logic behind it, since the expansion schemes defined in @friedmann_local are all based on picking some unexplored successor, which is equivalent to picking the unexplored edge that leads to it.
 
 // TODO: O(|V|) da dove viene?
 The resulting properties of the expansion scheme are however not guaranteed to stay the same. For example the upper bound on the number of expansions grows from $O(|V|)$ to $O(|E|)$, since in the worse case each expansion adds one edge and they may all be necessary to determine the actual winner on the initial vertex. As shown in @friedmann_local, a big number of expansions might not be ideal because each will require at least one strategy iteration, which in the long run can end up being slower than directly running the global algorithm.
