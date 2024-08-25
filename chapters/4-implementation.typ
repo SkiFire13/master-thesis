@@ -25,9 +25,9 @@ The implementation was splitted in multiple crates, just like in the original LC
 
 The dependent crates are:
 
-- _parity_, which implements the parsing and translation from parity games to a system of fixpoint equations, which we see in section @parity-implementation, and a binary crate for the associated CLI;
-- _mucalc_, which implements the parsing of labelled transition system files from the AUT format (also called Aldebaran), the parsing of a subset of $mu$-calculus formulas and the translation from them to a system of fixpoint equations, along with a binary crate for the associated CLI;
-- _bisimilarity_, which implements the translation from a bisimilarity problem between two states of two different labelled transition systems to a system of one fixpoint equation, along with a bianry crate for the associated CLI. 
+- _parity_, which implements the parsing and translation from parity games to a system of fixpoint equations, which we saw in section @parity-implementation, and a binary crate for the associated CLI;
+- _mucalc_, which implements the parsing of labelled transition system files from the AUT format (also called Aldebaran) and of a subset of $mu$-calculus formulas, followed by their translation to a system of fixpoint equations and logic formulas as shown in @mucalculus-application[Sections] and @mucalculus-translation[], and along with a binary crate for the associated CLI;
+- _bisimilarity_, which implements the translation from a bisimilarity problem between two states of two different labelled transition systems to a system of one fixpoint equation and then logic formulas as shown in @bisimilarity-application[Sections] and @bisimilarity-translation[], along with a binary crate for the associated CLI.
 
 == Testing with parity games <parity-implementation>
 

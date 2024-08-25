@@ -235,7 +235,7 @@ The definition also did not include fixpoint formulas since those were already b
 
 // TODO: Example of logic formulas for mucalculus?
 
-=== Translating bisimilarity
+=== Translating bisimilarity <bisimilarity-translation>
 
 Likewise for bisimilarity we have seen in @bisimilarity-application that it can be translated to a fixpoint equation, which in turn can be seen as a system of a single fixpoint equation. As with $mu$-calculus formulas the domain is the powerset lattice $2^(bb(S) times bb(S))$, and thus its basis is $bb(S) times bb(S)$. Since there is just one variable and equation we will only define $F(s_1, s_2)$, representing the formula for the player 0 vertex $((s_1, s_2), 1)$:
 
