@@ -239,87 +239,26 @@ Solve took 1.1076ms
 The formula is satisfied
 ```
 
-// TODO: Don't compare performance but rather correctness
-In this very small example we can see that our implementation is slightly slower. However it should be noted that it is also doing slightly more work by bridging the symbolic formulation and the strategy iteration solver, thus masking any potential difference in complexity.
+We used this small example to get some empirical evidence that our implementation for $mu$-calculus is correct, as it gives the same result as the other tools, and to also show the process we used to run all the tools involved. From now on we will omit the specific commands we ran and instead will only report the time required to run them.
 
 // TODO: Explain gossip
-We then tested the second formula that was used in @flori, which uses the bigger "gossip" labelled transition system, also an example from mCRL2, with 9152 states and 183041 transitions. The formula tested was $nu x. diam(tt) tt and boxx(tt) x$, which represents the lack of deadlocks. It should be noted that formulas checking for absence of deadlock that are satisfied, like this one, are a worst case for local algorithms because they require visiting the whole graph, thus vanishing the advantage of local algorithms which consists in the possibility of visiting only the states that are relevant.
+We then tested the second formula that was used in @flori, which uses the bigger "gossip" labelled transition system, also an example from mCRL2 which models a group of $n$ girls sharing gossips through phone calls. We tested up to $n = 5$, which leads to 9152 states and 183041 transitions. The formula tested was $nu x. diam(tt) tt and boxx(tt) x$, which represents the lack of deadlocks. It should be noted that formulas checking for absence of deadlock that are satisfied, like this one, are a worst case for local algorithms because they require visiting the whole graph, thus vanishing the advantage of local algorithms which consists in the possibility of visiting only the states that are relevant.
 
-// TODO: Show in table form
-// TODO: More tests
-Just like before we first checked it using mCRL2:
+#figure(
+  table(
+    columns: (auto,) * 5,
+    align: horizon,
+    inset: (x: 0.3em),
+    table.header([$n$], [*mCRL2*], [*AUT generation*], [*Our solver*], [*LCSFE*]),
+    [2], [67.8 ms], [54.7 ms], [132 #(sym.mu)s], [65.5 #(sym.mu)s],
+    [3], [68.5 ms], [59.2 ms], [212 #(sym.mu)s], [195 #(sym.mu)s],
+    [4], [72.0 ms], [117 ms],  [2.30 ms],        [4.38 ms],
+    [5], [1.47 s],  [2.05 s],  [202 ms],         [5.90 s],
+  ),
+  caption: [Gossips benchmark results]
+) <table-gossips-benchmarks>
 
-```cmd
-> mcrl22lps gossip.mcrl2 gossip.lps --timings
-```
-```
-- tool: mcrl22lps
-  timing:
-    total: 0.043529
-```
-
-```cmd
-> lps2pbes gossip.lps --formula=gossip1_deadlock_liveness.mcf \
-  gossip1.pbes --timings
-```
-```
-- tool: lps2pbes
-  timing:
-    total: 0.019922
-```
-
-```cmd
-> pbes2bool gossip1.pbes -rjittyc --timings
-```
-```
-true
-- tool: pbes2bool
-  timing:
-    instantiation: 1.395733
-    solving: 0.001688
-    total: 1.422398
-```
-
-Which confirms the formula to be valid. Then as before we used mCRL2 to convert it to the AUT format and checked it again using LCSFE and our implementation. It should be noted that for LCSFE we had to rise the default stack space since the recursive nature of the solver lead it to a stack overflow.
-
-```cmd
-> lps2lts gossip.lps gossip.lts -rjittyc --timings
-```
-```
-- tool: lps2lts
-  timing:
-    total: 1.507845
-```
-
-```cmd
-> ltsconvert gossip.lts gossip.aut --timings
-```
-```
-- tool: ltsconvert
-  timing:
-    reachability check: 0.004988
-    total: 0.269247
-```
-
-```cmd
-> lcsfe-cli mu-ald gossip.aut gossip1_deadlock_liveness.mcf 0
-```
-```
-Preprocessing took: 0.1968049 sec.
-Solving the verification task took: 5.6878138 sec.
-Result: The property is satisfied from state 0
-```
-
-```cmd
-> mucalc gossip.aut gossip1_deadlock_liveness.mcf
-```
-```
-Preprocessing took 38.8635ms
-Solve took 164.6531ms
-The formula is satisfied
-```
-
-Our implementation is an order of magnitude faster than LCSFE, confirming that the better parity game solving algorithm does make a difference, to the point where the bottleneck becomes the generation of the AUT file. Compared with mCRL2 our implementation overall takes a similar amount of time, most of which is spent doing conversions with mCRL2. Overall however the pure mCRL2 approach is slightly faster, probably due to the costs of the intermediate conversions to produce the AUT file or the overhead of using a local algorithm in a case where all states must be explored regardless.
+Our implementation scales much better than LCSFE, confirming that the different parity game solving algorithm does make a difference, to the point where the bottleneck becomes the generation of the AUT file, which takes an order of magnitude more time than solving the parity game itself. Compared with mCRL2 our implementation overall takes a similar amount of time, most of which is however spent doing conversions to produce a AUT file using mCRL2 itself. Overall the pure mCRL2 approach is slightly faster, probably due to the costs of the intermediate conversions to produce the AUT file or the overhead of using a local algorithm in a case where all states must be explored regardless.
 
 We also ran our solver on some of the instances in the VLTS benchmark suite to understand the limitations and the strengths of our implementation. For each chosen instance we verified the $mu$-calculus formulas $nu x. diam(tt) tt and boxx(tt) x$, which checks for absence of deadlocks, and $mu x. diam(tt) x or (mu y. diam(#h(0em)"tau"#h(0em)) y)$, which checks for the presence of livelocks, which are cycles consisting of only tau transitions. This time we considered the total time including preprocessing, which eventually becomes negligible. For each instance we ran the solver 5 times, ignored the slowest and quickest ones and reported a mean of the remaining 3.
 
