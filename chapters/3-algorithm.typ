@@ -249,7 +249,7 @@ In the local strategy iteration it may happen that we learn about the winner on 
 We now propose a transformation that produces a compatible graph and reduces the amount of edges of vertices in the definitely winning sets, thus decreasing the amount of work that the valuation step needs to perform. Informally, the idea will be to replace all outgoing edges from vertices in a definitely winning set with one pointing to one of the four auxiliary vertices $w0$, $l0$, $w1$ or $l1$ in such a way that its winner is preserved and the graph remains bipartite.
 
 #definition("simplified graph")[
-  Let $G = (V'_0, V'_1, E', p)$ be the extended game of some game $(V_0, V_1, E, p)$, let $G' = (G, U, E'')$ be a partially expanded game with ${w0, l0, w1, l1} in U$ and let $W'_0$ and $W'_1$ be the definitely winning sets of $G'$. Let $v in (V_0 union V_1) sect (W'_0 union W'_1)$, then $G$ can be simplified to the graph $(V'_0, V'_1, E''', p')$ where:
+  Let $G = (V'_0, V'_1, E', p)$ be the extended game of some game $(V_0, V_1, E, p)$, let $G' = (G, U, E'')$ be a partially expanded game with ${w0, l0, w1, l1} in U$ and let $W'_0$ and $W'_1$ be the definitely winning sets of $G'$. Let $v in (V_0 union V_1) sect (W'_0 union W'_1)$, then $G$ can be simplified to the graph $G'' = (V'_0, V'_1, E''', p)$ where:
   
   - if $v in V_0 sect W'_0$ then $E''' = E' without v E'' union {(v, l1)}$;
   - if $v in V_0 sect W'_1$ then $E''' = E' without v E'' union {(v, w1)}$;
@@ -258,18 +258,42 @@ We now propose a transformation that produces a compatible graph and reduces the
 ]
 
 #theorem("simplified graph compatible")[
-  TODO: Prove that the simplified graph is compatible with the original extended game.
+  Let $G = (V_0, V_1, E, p)$ be an extended parity game which has been simplified to $G'' = (V'_0, V'_1, E', p)$ according to the previous definition. Then $G''$ is compatible with $G$.
+]
+#proof[
+  We want to prove that the winning sets in $G$ are equal to the ones in $G''$, that is $forall i. W_i = W''_i$. Without loss of generality we assume the simplification has happened on a vertex $v in W'_0$.
+  Consider now any vertex $u in W_i$, that is winning for some player $i$ in $G$. We want to prove that $u in W''_i$ too. Consider any winning strategy for player $i$ and any other strategy for player $1-i$ in $G$. Any play in $G$ induced by these two strategies will be winning for player $i$ since we have $v in W_i$. We now distinguish two cases:
+  - $i = 0$, then these plays could reach vertex $v$. The corresponding play in $G''$ would then also reach $v$, but would then only be able to reach $l1$, $w0$ and loop between them. The resulting play would is however also won by player 0, hence $v in W''_0$.
+  - $i = 1$, then it is not possible for the play in $G$ to reach vertex, since otherwise player 0 would have a strategy to continue the play and win it, resulting in $u in W_0$ instead of $W_1$. Hence all plays in $G$ do not go through $v$ and remain the same in $G'$, thus remaining winning for player 1 and $u in W''_1$.
 ]
 
 === Computing play profiles of the expansion
 
 Each game expansion is normally followed by a strategy iteration step, which computes the play profile of each vertex and then tries to improve the current strategy. We can notice however that the play profiles of all the vertices are known right before the expansion, and if we keep the current strategies fixed, both for player 0 and 1, then the newer vertices cannot influence the play profiles for the existing vertices, since the existing strategies will force any play to remain within the edges in the old subgame. Hence, we can compute the play profiles for the newer vertices in isolation, and only then determine if the existing strategies can be improved given the newer vertices.
 
-In order to compute the play profile of the expanded vertices we need to distinguish two cases. In the first case the expansion stops by reaching an existing vertex, in which case the play profiles will be an extension of the play profile of that vertex, according to the play that starts from each of the expanded vertices and visits the other expanded vertices until it reaches the existing vertex. In the second case the expansion stops by reaching another vertex of the expansion, creating a loop, in which case the loop and the most relevant vertex of the loop must be determined, and the play profiles will be determined by looking at the path from each expanded vertex to the most relevant vertex of the loop.
+It is known that a play profile on a vertex depends on the vertex itself and on the play profile of its successor according to the strategy for the player controlling that vertex. In particular, given a vertex $x$ and its successor $y$ we know the following:
 
-By computing the play profiles after an expansion step it can be determined whether an improvement step can occur or not by comparing the play profiles of the strategy successor of the first expanded vertex with its successor in the expansion. If this does not lead to an improvement step then the expansion can continue, avoiding the cost of the strategy improvement step.
+$
+  phi_0 (x) &= phi_0 (y) \
+  phi_1 (x) &= cases(
+    phi_1 (y) & "if" x < phi_0 (x) \
+    varempty & "if" x = phi_0 (x) \
+    phi_1 (y) union {x} & "if" x > phi_0 (x)
+  ) \
+  phi_2 (x) &= cases(
+    phi_2 (y) + 1 & "if" x != phi_0 (x) \
+    0 & "if" x = phi_0 (x)
+  )
+$
 
-// TODO: more formal description?
+Notice however how this can result in a cyclic dependency if we need to compute the play profiles of multiple vertices creating a cycle. We thus distinguish two cases:
+
+- if the expansion stops by reaching an existing vertex then its play profile was already known and there is no cyclic dependency. Each play profile can be computed based on the one of the successor, starting with the play profile of the last new vertex found;
+- if the expansion stops by reaching a vertex found in the current expansion then there is a cyclic dependency. The cyclic dependency can however be broken by finding the most relevant vertex of the cycle $w$, for which we know that $phi (w) = (w, varempty, 0)$. This then breaks the cyclic dependency, since we know the play profile of one of the vertices in the cycle, and we can compute the play profiles of the rest like in the previous case.
+
+By computing the play profiles after an expansion step we can thus perform an improvement right away without having to go through a valuation step to recompute the play profiles. We can further improve this by noticing that the play profiles of existing vertices did not change, thus allowing us to skip the improvement check for any vertex that did not have an outgoing edge just added.
+
+Ultimately this allows us to skip a lot of valuation steps, which are relatively expensive. This also allows to reduce some of the downsides of the local algorithm, among which there is an increased amount of valuation steps required.
 
 === Exponentially increasing expansion scheme
 
