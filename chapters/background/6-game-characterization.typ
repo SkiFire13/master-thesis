@@ -35,7 +35,6 @@ Intuitively each player 0 vertex $(b, i)$ represents the fact that the basis ele
 
 The priority function is not fully specified, but it can be shown that there exist a mapping to $bb(N)$ that satisfies the given order and partition into even/odd. An intuitive way would be to just list the priorities in order and give to map each of them to the next available even or odd natural number.
 
-// TODO: Cite Venema. 2008 ?
 It has been proven in @baldan_games that such characterization is both correct and complete, allowing us to solve generic systems of fixpoint equations with it.
 
 #theorem("correctness and completeness of the powerset game")[
@@ -229,7 +228,7 @@ We can then define the logic formula for the vertex $(s, i)$ as $F(s, phi_i (x_1
 )
 
 // TODO: This should use composition of operators?
-It is interesting to note that the cases for $diam(A) psi$ and $boxx(A) psi$ are effectively taking the respective semantics definition, which use universal and existential equantifiers, and translating them to finite sequence of respectively conjunctions and disjunctions between the elements that satisfy such quantifiers.
+It is interesting to note that the cases for $diam(A) psi$ and $boxx(A) psi$ are effectively taking the respective semantics definition, which use universal and existential quantifiers, and translating them to finite sequence of respectively conjunctions and disjunctions between the elements that satisfy such quantifiers.
 
 The definition also did not include fixpoint formulas since those were already been removed when translating to a system of fixpoint equations.
 

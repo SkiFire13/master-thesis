@@ -8,7 +8,7 @@ In this section we will explain our design choices, what was actually implemente
 
 == Technologies used
 
-Just like LCSFE, our implementation is written in Rust @rust, a modern systems programming language, focused on performance and correctness and whose goal is to rival languages like C and C++ while offering memory safety. Just like C and C++, Rust mainly follows the imperative paradigm, allowing mutations, loops and general side effects, but it also includes lot of functional programming related features, like algebraic data structures and most notably _enums_, pattern matching, which allows to exhaustively inspect those enums, and _closures_, which are anonymous function that can capture their outer environment, although with some limitations due to how the memory management works. Among other features there are _traits_, which work similarly to type classes in Haskell and fill the same usecases as interfaces in popular OOP languages like Java. It should also be mentioned that Rust programs are organized in _crates_, which make up the unit of compilation, and _modules_, which are a hierarchical division internal to a crate and help organize code and avoid name clashes.
+Just like LCSFE, our implementation is written in Rust @rust, a modern systems programming language, focused on performance and correctness and whose goal is to rival languages like C and C++ while offering memory safety. Just like C and C++, Rust mainly follows the imperative paradigm, allowing mutations, loops and general side effects, but it also includes lot of functional programming related features, like algebraic data structures and most notably _enums_, pattern matching, which allows to exhaustively inspect those enums, and _closures_, which are anonymous function that can capture their outer environment, although with some limitations due to how the memory management works. Among other features there are _traits_, which work similarly to type classes in Haskell and fill the same use cases as interfaces in popular OOP languages like Java. It should also be mentioned that Rust programs are organized in _crates_, which make up the unit of compilation, and _modules_, which are a hierarchical division internal to a crate and help organize code and avoid name clashes.
 
 The most interesting features however are its _ownership_ system and its borrow checker, which allow the compiler to guarantee memory safety without a garbage collection or other kind of runtime support. The ownership system enforces that every value has exactly one _owner_, which is responsible for freeing up its resources, making classes of issues like use-after-free impossible, and others like memory leaking much more difficult to hit. The borrow checker instead rules how borrows can be created and used. Every variable can be borrowed, creating either a shared reference or an exclusive references, which are pointers with a special meaning for the compiler. The borrow checker ensures that at any point in time there can be either multiple shared references or one exclusive reference pointing to a variable, but not both. Coupled with the fact that only exclusive references allow mutations, this system guarantees that references always point to valid data.
 
@@ -17,7 +17,7 @@ The borrowing rules however can become an obstacle when writing programs that pe
 
 == Structure of the implementation
 
-The implementation was splitted in multiple crates, just like in the original LCSFE implementation, however compared to it it was simplified a bit, with just one main _solver_ crate implementing the solving algorithm and multiple dependent crates, some that translate specific problems into systems of fixpoint equations with logic formulas ready to be solved by the solver crate, and others that offer a CLI interface for testing such functionalities. The solver crate is organized into three main modules:
+The implementation was split in multiple crates, just like in the original LCSFE implementation, however compared to it it was simplified a bit, with just one main _solver_ crate implementing the solving algorithm and multiple dependent crates, some that translate specific problems into systems of fixpoint equations with logic formulas ready to be solved by the solver crate, and others that offer a CLI interface for testing such functionalities. The solver crate is organized into three main modules:
 
 - _symbolic_, which defines the structures for systems of fixpoint equation, logic formulas, symbolic moves and other relevant methods for manipulating them;
 - _strategy_, which implements the strategy iteration algorithm;
@@ -245,8 +245,8 @@ In this very small example we can see that our implementation is slightly slower
 // TODO: Explain gossip
 We then tested the second formula that was used in @flori, which uses the bigger "gossip" labelled transition system, also an example from mCRL2, with 9152 states and 183041 transitions. The formula tested was $nu x. diam(tt) tt and boxx(tt) x$, which represents the lack of deadlocks. It should be noted that formulas checking for absence of deadlock that are satisfied, like this one, are a worst case for local algorithms because they require visiting the whole graph, thus vanishing the advantage of local algorithms which consists in the possibility of visiting only the states that are relevant.
 
-// TODO: Mostra in forma tabellare
-// TODO: Fai più test variando il parametro N di gossips?
+// TODO: Show in table form
+// TODO: More tests
 Just like before we first checked it using mCRL2:
 
 ```cmd
@@ -341,11 +341,11 @@ We also ran our solver on some of the instances in the VLTS benchmark suite to u
   ) <table-vlts-benchmarks>
 ]
 
-The various labelled transition systems reported in @table-vlts-benchmarks have different sizes, and some have deadlocks and livelocks while others do not, which greately influences the results and makes the various results not directly comparable to one another. We can for example see that checking for the absense of deadlocks when they are not present quickly becomes very slow, like in `vasy_52_318` where in particular we observed that even single iterations of the strategy iteration algorithm become quite slow. Checking for livelocks instead appears to be generally slower when the answer is negative, because in those cases it does not suffice to find the cycle with tau transitions but instead all the graph needs to be considered.
+The various labelled transition systems reported in @table-vlts-benchmarks have different sizes, and some have deadlocks and livelocks while others do not, which greatly influences the results and makes the various results not directly comparable to one another. We can for example see that checking for the absence of deadlocks when they are not present quickly becomes very slow, like in `vasy_52_318` where in particular we observed that even single iterations of the strategy iteration algorithm become quite slow. Checking for livelocks instead appears to be generally slower when the answer is negative, because in those cases it does not suffice to find the cycle with tau transitions but instead all the graph needs to be considered.
 
 In the `cwi_1_2` we observed the computation of play profiles for newly expanded vertices to be especially effective, allowing the valuation step to be performed only once.
 
-The `vasy_720_390` instance is also interesting because it is not connected, with only 87740 states which are actually reachable from the initial one. This is a favourable case for local algorithms, and in fact the time required to verify the formulas is proportional to the number of actually reachable states rather than the full amount.
+The `vasy_720_390` instance is also interesting because it is not connected, with only 87740 states which are actually reachable from the initial one. This is a favorable case for local algorithms, and in fact the time required to verify the formulas is proportional to the number of actually reachable states rather than the full amount.
 
 // TODO: Re-check the livelock formula
 

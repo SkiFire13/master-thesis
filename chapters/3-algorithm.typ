@@ -11,7 +11,7 @@ Our goal will be to adapt and improve the local strategy iteration algorithm to 
 
 The parity game formulation of a system of fixpoint equations admits positions where a player has no available moves, namely it is not a total parity game. However the strategy improvement algorithm requires a total parity game, so we need to convert a generic parity game into a "compatible" total parity game that can be handled by it, for some definition of "compatible.
 
-The way we do this transformation is by extending the parity game, inserting auxiliary vertices that will be used as successors for those vertices that do not have one. We call this the _extended total parity game_, for short _extended game_, since it extends the original parity game to make it total. In particular we will add two vertices $w0$ and $w1$ representing vertices that are both controlled by and winning for respectively player 0 and 1. The vertices $w0$ and $w1$ will in turn also need successors, and these will be respectively $l1$ and $l0$, representing vertices that are controlled by and losing for respectively player 1 and 0. Likewise, the vertices $l0$ and $l1$ will need at least one successor, at that will be respectively $w1$ and $w0$. The vertices $w0$ and $l1$ will thus form a forced cycle, as well as $w1$ and $l0$. This, along with priorities choosen as favourable for the player that should win these cycles, will guarantee that the winner will actually be the expected one. Then, vertices that have no successors in the general game, meaning they are losing for the player controlling them, in the game will have as successor $w0$ or $w1$, that is controlled by and winning for the opposing player.
+The way we do this transformation is by extending the parity game, inserting auxiliary vertices that will be used as successors for those vertices that do not have one. We call this the _extended total parity game_, for short _extended game_, since it extends the original parity game to make it total. In particular we will add two vertices $w0$ and $w1$ representing vertices that are both controlled by and winning for respectively player 0 and 1. The vertices $w0$ and $w1$ will in turn also need successors, and these will be respectively $l1$ and $l0$, representing vertices that are controlled by and losing for respectively player 1 and 0. Likewise, the vertices $l0$ and $l1$ will need at least one successor, at that will be respectively $w1$ and $w0$. The vertices $w0$ and $l1$ will thus form a forced cycle, as well as $w1$ and $l0$. This, along with priorities chosen as favorable for the player that should win these cycles, will guarantee that the winner will actually be the expected one. Then, vertices that have no successors in the general game, meaning they are losing for the player controlling them, in the game will have as successor $w0$ or $w1$, that is controlled by and winning for the opposing player.
 
 #definition("extended total parity game")[
   Let $G = (V_0, V_1, E, p)$ be a parity game. The extended total parity game of $G$ is the parity game $G' = (V'_0, V'_1, E', p')$ where:
@@ -63,7 +63,7 @@ The bijection is not only limited to this. It can be showed that strategies that
   We will prove that for all $i$ the play induced by $I$ is won by player $i$ if and only if the induced play by $I'$ is also won by player $i$:
   - $=> \)$: We distinguish two cases on the play induced by $I$:
     - the play is infinite: $v_0 v_1 v_2 ... $, then every vertex is in $dom(sigma_i)$ for some $i$ and thus $sigma'_i$ are defined to be equal to $sigma_i$ and will induce the same play, which is won by player $i$;
-    - the play is finite: $v_0 v_1 ... v_n$, with $v_n in V_(1-i)$ because the play is won by player $i$. For the same reason as the previous point the two induced plays are the same until $v_n$, which is not in $dom(sigma_(1-i))$ but is in $dom(sigma'_(1-i))$. The play induced by $I'$ is $v_0 v_1 ... v_n w_i l_(1-i) w_i ...$ which is also won by player $i$ because only the vertices $w_i$ and $l_(1-i)$ repeat infinitely often, and they have both priority favourable to player $i$.
+    - the play is finite: $v_0 v_1 ... v_n$, with $v_n in V_(1-i)$ because the play is won by player $i$. For the same reason as the previous point the two induced plays are the same until $v_n$, which is not in $dom(sigma_(1-i))$ but is in $dom(sigma'_(1-i))$. The play induced by $I'$ is $v_0 v_1 ... v_n w_i l_(1-i) w_i ...$ which is also won by player $i$ because only the vertices $w_i$ and $l_(1-i)$ repeat infinitely often, and they have both priority favorable to player $i$.
   - $arrow.l.double \)$: We distinguish the following cases on the play induced by $I'$:
     - the play never reaches the $w_0, w_1, l_0$ or $l_1$ vertices: $v_0 v_1 v_2 ...$, then only the first case of $sigma'_i$ is ever used and thus every vertex is in $dom(sigma_i)$. Thus $I$ induces the same play, which is won by player $i$;
     - the play reaches $w_i$: $v_0 v_1 ... v_n w_i l_(1-i) w_i ...$, then $v_n$ is not in $dom(sigma_(1-i))$ and $I$ induces the finite play $v_0 v_1 ... v_n$ which is won by player $i$ because $v_n in V_(1-i)$ due to its successor being controlled by player $i$;
@@ -208,13 +208,13 @@ When simplifying we will be interested for every formula about whether it has be
 //   - has been considered before the current one;
 //   - has yet to be considered.
 
-// The simplification algorithm then works similarly to the existing one for simplyfing a formula iterator, but in addition:
+// The simplification algorithm then works similarly to the existing one for simplifying a formula iterator, but in addition:
 
 // - for $phi_1 or phi_2$ formula iterators:
 //   - if the formula has been simplified to $tt$ then consider the first subformula that has been simplified to $tt$:
 //     - if it is the subformula before the current subformula, or it is the current subformula but it reports to have already considered a winning move, then this formula has also already considered a winning move;
 //     - if it is the current subformula and it reports that the winning move is the current one, then the winning move of the whole formula is also the current one;
-//     - otherwise the winning move has yet to beconsidered.
+//     - otherwise the winning move has yet to be considered.
 //   - if the formula has not been simplified to either $tt$ or $ff$, then:
 //     - if the current subformula has been simplified to $ff$ or has reached its end then this iterator needs to advance;
 //     - otherwise the current move is the same as the current subformula iterator one, which might still be the same or have changed to a new one.
@@ -238,14 +238,13 @@ When simplifying we will be interested for every formula about whether it has be
 //       - if the left subformula current move is the same and the right subformula iterator has reached its end then advance the left subformula iterator:
 //         - if that reaches its end then this iterator also has reached its end;
 //         - otherwise this iterator current move has changed.
-//       - if the legt subformula current move is the same and the right subformula iterator has not reached its end then 
+//       - if the left subformula current move is the same and the right subformula iterator has not reached its end then 
 
 == Improvements
 
 === Graph simplification
 
-In the local strategy iteration it may happen that we learn about the winner on a vertex that is not the one we are interested in. When this happens we will do a lot of wasted work in the subsequent valuations steps, since it will have to visit its edges again and again. 
-// TODO(Prof): Explain cosa?
+In the local strategy iteration it may happen that we learn about the winner on a vertex that is not the one we are interested in. When this happens we will do a lot of wasted work in the subsequent valuations steps, since it will have to visit its edges again and again.
 We now propose a transformation that produces a compatible graph and reduces the amount of edges of vertices in the definitely winning sets, thus decreasing the amount of work that the valuation step needs to perform. Informally, the idea will be to replace all outgoing edges from vertices in a definitely winning set with one pointing to one of the four auxiliary vertices $w0$, $l0$, $w1$ or $l1$ in such a way that its winner is preserved and the graph remains bipartite.
 
 #definition("simplified graph")[
@@ -299,7 +298,7 @@ Ultimately this allows us to skip a lot of valuation steps, which are relatively
 
 While lazier expansion schemes are intuitively better when paired with symbolic moves simplification, and the incremental play profiles computation helps often removes the need to perform an expensive valuation step, it can still happen that games fall into the worst case of expanding only a handful of edges in each iteration without being able to perform significant simplifications. This can be avoided by expanding more eagerly, like in the asymmetric expansion scheme for the local strategy improvement algorithm, but ideally we would like to be lazier when possible.
 
-We thus changed the expansion logic to repeatedly expansiond until a minimum amount of edges has been added to the game. We choose this number to be initially pretty small in order to favour the locality of the algorithm, but made it increase to favour more eager expansions once it becomes clear that the winner cannot be quickly determined locally.
+We thus changed the expansion logic to repeatedly expand until a minimum amount of edges has been added to the game. We choose this number to be initially pretty small in order to favour the locality of the algorithm, but made it increase to favour more eager expansions once it becomes clear that the winner cannot be quickly determined locally.
 
 There are multiple ways to perform this increase, and this will influence the final complexity of the algorithm. In our case we choose to increase this number exponentially, thus guaranteeing that the maximum number of expansions is logarithmic in the amount of edges and keeping the cost of the worst cases under control.
 

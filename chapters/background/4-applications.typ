@@ -3,7 +3,7 @@
 
 == Applications
 
-In this section we discus two classical verification problems, model checking behavioural properties expressed in the $mu$-calculus and checking behavioral equivalece formalized as bisimilarity. We show that both can be seen as istances
+In this section we discus two classical verification problems, model checking behavioral properties expressed in the $mu$-calculus and checking behavioral equivalence formalized as bisimilarity. We show that both can be seen as instances
 of the solution of a system of fixpoint equations.
 
 === $mu$-calculus <mucalculus-application>
@@ -16,7 +16,7 @@ $
   phi, psi := tt | ff | p | x | phi or psi | phi and psi | boxx(A) phi | diam(A) phi | eta x. phi
 $
 
-// TODO: Esempi
+// TODO: Examples?
 
 #example("lack of deadlocks")[
   For example the liveness property, or lack of deadlocks, which expresses the fact that all reachable states can make at least one transition, can be expressed with the formula $nu x. diam(Act) tt and boxx(Act) x$. This can be read as requiring a state $s$ to be able to make at least one transition, that is it satisfies $diam(Act) tt$, and that after one transition the same property should hold, that is it satisfies $boxx(Act) x$, where $x$ is equivalent to the initial formula. Intuitively the fixpoint is extending the first requirement to any state reachable after a number of transitions.
@@ -60,7 +60,7 @@ It is possible to translate $mu$-calculus formulas into systems of fixpoint equa
 
 === Bisimilarity <bisimilarity-application>
 
-Bisimilarity @bisimilarity is a binary relation on states of a labelled transition system, where two states are in the relation if they are indistuinguishable by only looking at some kind of behaviour. We will focus on the strong bisimilarity $bisim$, where such behaviour is identified with the possible transitions from a state. Bisimilarity is usually defined in terms of bisimulations, which are also binary relations on states. For the strong bisimilarity the associated bisimulations $R$ have the following requirement: 
+Bisimilarity @bisimilarity is a binary relation on states of a labelled transition system, where two states are in the relation if they are indistinguishable by only looking at some kind of behavior. We will focus on the strong bisimilarity $bisim$, where such behavior is identified with the possible transitions from a state. Bisimilarity is usually defined in terms of bisimulations, which are also binary relations on states. For the strong bisimilarity the associated bisimulations $R$ have the following requirement: 
 
 #definition("bisimulation")[
   Let $(bb(S), Act, ->)$ be a labelled transition system. A relation $R subset.eq bb(S) times bb(S)$ is a bisimulation if for all $s, t in bb(S)$ the following holds:
@@ -135,7 +135,7 @@ $
   }
 $
 
-$F$ can be thought as "refining" a relation by removing pairs to ensure that the bisimulation property holds for another step. This can be shown to be a monotonic operation, guaranteeing the existance of at least one fixpoint, including for our purposes the greatest fixpoint. Bisimulations can then be seen as the fixpoints of $F$, since for them the bisimulation property always holds and thus no pair need to be removed to make the property hold. Bisimilarity, being the greatest bisimulation, is thus the greatest fixpoint of $F$.
+$F$ can be thought as "refining" a relation by removing pairs to ensure that the bisimulation property holds for another step. This can be shown to be a monotonic operation, guaranteeing the existence of at least one fixpoint, including for our purposes the greatest fixpoint. Bisimulations can then be seen as the fixpoints of $F$, since for them the bisimulation property always holds and thus no pair need to be removed to make the property hold. Bisimilarity, being the greatest bisimulation, is thus the greatest fixpoint of $F$.
 
 $
   bisim #h(0.3em) = nu R. F(R)
