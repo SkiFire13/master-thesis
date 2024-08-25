@@ -136,11 +136,109 @@ It should be noted that the upper bound on the number of expansions grows from $
 
 On the other hand a lazier expansion scheme can take better advantage of the ability to perform simplifications on symbolic moves, which allows to remove lot of edges with little work. A eager expansion scheme may instead visit all those edges, just to ultimately find out that they were all losing for the same reason. There is thus a tradeoff between expanding too much in a single step, which loses some of the benefits of using symbolic moves, and expanding too little, which instead leads to too many strategy iterations.
 
-=== Symbolic formulas simplification
+=== Symbolic formulas and simplification
 
-As mentioned briefly in @upward-logic, in the existing implementation of the symbolic algorithm @flori when a player 0 position can be assumed to be winning or losing the corresponding atom in symbolic formulas is replaced with either true or false and the formula is simplified. This is possible because in their algorithm formulas are simplified once and immediately used to generate the symbolic moves. In our algorithm however we lazily explore moves, meaning that most often when a simplification becomes possible we are in the middle of generating symbolic moves. A naive simplification is not possible, as that does not allow to resume the generation from the same point as before, thus requiring to generate again moves already considered.
+Differently from the implementation in @flori, we need to generate symbolic moves lazily in order to take advantage of the local algorithm and the simplification of formulas. To do this we represent the generator for symbolic moves described in @upward-logic a sequence of moves rather than a set. Then, we can generate moves in the same order they appear in the sequence, and keep track of which point we have reached.
 
-TODO: How to simplify formulas while being iterated on
+For sake of simplicity we assume that every $and$ and $or$ operator with a single subformula can be first simplified to that subformula itself, while $and$ and $or$ operators with more than two subformulas can be rewritten to nested $and$ and $or$ operators each with exactly two subformulas using the associative property. We thus define the sequence of moves for each type of formula as following, where for the recursive case we take $M(phi_i) = (tup(X)_(i 1), tup(X)_(i 2), ..., tup(X)_(i n))$:
+
+$
+  M([b, i]) &= (tup(X)) "with" X_i = {b} "and" forall j != i. X_j = varempty \
+  M(tt) &= (tup(X)) "with" forall i. X_i = varempty \
+  M(ff) &= () \
+  M(phi_1 or phi_2) &= (tup(X)_11, tup(X)_12, ..., tup(X)_(1 n) tup(X)_21, tup(X)_22, ..., tup(X)_(2 m)) \
+  M(phi_1 and phi_2) &= (tup(X)_11 union tup(X)_21, ..., tup(X)_(1 1) union tup(X)_(2 m), tup(X)_12 union tup(X)_21, ..., tup(X)_(1 n) union tup(X)_(2 m))
+$
+
+Intuitively $[b, i]$ formulas represent sequences of a single element, $tt$ also represents a sequence of a single winning move for player 0, while $ff$ represents an empty sequence which is thus losing for player 0. The $or$ operator represent concatenating the two (or more) sequences, with the left one first, and the $and$ operator is equivalent to the cartesian product of the two (or more) sequences, by fixing an element of the first sequence and joining it with each element of the second sequence, then repeating this for all elements of the first sequence.
+
+For the $and$ operator in particular it can be helpful to imagine its sequence as listing all the 2-digits numbers in some arbitrary base, with the tens digit representing the move from the left subformula and the ones digit representing the move from the right subformula.
+
+In practice the implementation is based on _formula iterators_, on which we define three operations:
+- getting the current move;
+- advancing the iterator to the next move, optionally signaling the end of the moves sequence;
+- resetting the iterator, thus making it start again from the first move.
+
+These are implemented for every type of formula:
+
+- for $[b, i]$ formula iterators:
+  - the current move is always $tup(X)$ with $X_i = {b}$ and $forall j != i. X_j = varempty$;
+  - advancing the iterator always signals that the sequence has ended, since there is ever only one move;
+  - resetting the iterator always does nothing, since the first move is always the end represented by the iterator.
+- for $phi_1 or phi_2$ formula iterators:
+  - the current move is the current move of the currently active subformula iterator, which is kept as part of the iterator state;
+  - advancing the iterator means advancing the iterator of the currently active subformula, and if that signals the end of the formula then the next subformula becomes the active one. If there is no next subformula then the end of the sequence is signaled;
+  - resetting the iterator means resetting the iterators for both subformulas and making $phi_1$ the currently active subformula.
+- for $phi_1 and phi_2$ formula iterators:
+  - the current move is always the union of the current move of the two subformula iterators;
+  - advancing the iterator means advancing the iterator of the right subformula, and if that reports the end of the sequence then it is resetted and the iterator for the left subformula is advanced. If that also reports the end of its sequence then this iterator also reports the end of its sequence;
+  - resetting the iterator means resetting the iterators of both subformulas.
+
+As mentioned briefly in @upward-logic, in LCSFE @flori formulas are simplified once before exploring their moves. This is however not applicable to our case since we lazily explore moves, and thus have to simplify formulas whose moves have already been partially explored. An option would be performing simplifications anyway, losing the information about which moves have already been explored and thus needing to explore them again. We however want to preserve this information to avoid exploring moves over and over, and thus need a way to simplify formulas while tracking the effects on their iterator.
+
+The way we do this is by considering the effects that simplifying a formula iterator has their sequence. It turns out that simplifying a formula can be considered as removing some elements from its sequence, in particular simplifying a formula to $ff$ removes all the moves from its sequence while simplifying a formula to $tt$ removes all the moves from its sequence except the first winning one. Simplifying a formula iterator then involves simplifying its subformula iterators, which in turn might remove moves from the parent formula iterator. The current move may also be among those removed moves, in which case the iterator might need to be advanced to the next remaining move, potentially reaching its end.
+
+When simplifying we will be interested for every formula about whether it has been simplified to $tt$, $ff$ or whether its truth value is still unknown. In case it has not been simplified to $ff$ we will also care about whether it has reached the end of its sequence after the simplification, and if not whether the current move has changed or not. This will be useful to update the current move of the parent formula iterators. In particular:
+
+- for $[b, i]$ formulas, simplifying them can be seen as replacing them with either $tt$ or $ff$:
+  - for the $ff$ case this is equivalent to removing the only element of the sequence. The iterator in this case reaches its end;
+  - for the $tt$ case doing this would however replace the element of the sequence. We instead allow sequences representing $tt$ formulas to contain a single winning move instead of a specific one common among all $tt$ formulas. We then keep the same move in the sequence, since that is winning by hypothesis, and thus no move is added or removed. The current move in this case remains the same.
+- $tt$ and $ff$ formulas do not need to be simplified, since they are already as much simplified as possible;
+- for $or$ formulas each subformula is simplified and moves that are removed from those subformulas sequences also get removed from the $or$ sequence. Then:
+  - if one of the subformulas is simplified to $tt$ then all the moves of the $or$ formula sequence are removed except the winning one from the first $tt$ subformula. The iterator is updated based on whether the winning move was before, the same or after the current move.
+  - if all the subformulas are simplified to $ff$ then this formula is also simplified to $ff$ and has reached its end;
+  - otherwise the current move is updated to the new current move of the current subformula if it has not reached its end, to the first move of the next subformula if that exists, or the iterator signals having reached the end of the sequence. 
+- for $and$ formulas each subformula is simplified and moves that use removed moves from any subformulas are removed. Then:
+  - if any subformula has been simplified to $ff$ then the whole formula also simplified to $ff$ and signals having reached its end;
+  - if all subformulas have been simplified to $tt$ then this formula also simplifies to $tt$. The current move is updated accordingly to the position of the join of the winning moves of the subformulas and the current move;
+  - otherwise the first subformula from the left that has reached its end causes the advance of the subformula on its left and the reset of itself and all the ones on its right. If there is no subformula on its left the whole iterator has reached its end.
+
+// If a subformula is simplified to $tt$ then its sequence of moves is replaced with one containing its first winning move, while if a subformula is simplified to $ff$ then its sequence of moves is replaced with an empty one. From the point of view of the parent formula iterator, this is equivalent to removing all the moves that involve one of the moves of that subformula. 
+
+//  If the current move is included in this removed moves then the iterator must advance to the next remaining move, if it exists, or signal that it has reached its end. 
+
+// To do this we need to track some informations about the subformulas iterator when they are simplified, namely:
+// - whether those iterators also became $tt$ or $ff$;
+// - if they did not became $tt$ or $ff$, which of the following three cases they fall on:
+//   - the current move is still the same;
+//   - the current move has been removed and a new one has taken its place;
+//   - the current move has been removed and the sequence has ended.
+// - if they did became $tt$, whether a winning move:
+//   - is the current move;
+//   - has been considered before the current one;
+//   - has yet to be considered.
+
+// The simplification algorithm then works similarly to the existing one for simplyfing a formula iterator, but in addition:
+
+// - for $phi_1 or phi_2$ formula iterators:
+//   - if the formula has been simplified to $tt$ then consider the first subformula that has been simplified to $tt$:
+//     - if it is the subformula before the current subformula, or it is the current subformula but it reports to have already considered a winning move, then this formula has also already considered a winning move;
+//     - if it is the current subformula and it reports that the winning move is the current one, then the winning move of the whole formula is also the current one;
+//     - otherwise the winning move has yet to beconsidered.
+//   - if the formula has not been simplified to either $tt$ or $ff$, then:
+//     - if the current subformula has been simplified to $ff$ or has reached its end then this iterator needs to advance;
+//     - otherwise the current move is the same as the current subformula iterator one, which might still be the same or have changed to a new one.
+// - for $phi_1 and phi_2$ formula iterators:
+//   - if the formula has been simplified to $tt$ then:
+//     - if the left subformula has already considered a winning move then this iterator has also already considered a winning move;
+//     - if the left subformula current move is winning then this iterator winning move depends on when the right subformula winning move;
+//     - if the left subformula has not considered a winning move yet then this iterator has also not considered a winning move yet.
+//   - if the formula has not been simplified to either $tt$ or $ff$, then:
+//     - if the left subformula has been simplified to $tt$:
+//       - if it has already considered a winning move, then this iterator has reached its end;
+//       - if its current move is winning then the current move is the same as the right subformula iterator one, which might still be the same or have changed to a new one;
+//       - if it has not considered a winning move yet, then reset the right subformula iterator, and the current move has changed;
+//     - if the right subformula has been simplified to $tt$:
+//       - if it has already considered a winning move then advance the left subformula iterator and the current move has changed;
+//       - if its current move is winning then the current move remains the same;
+//       - it it has yet to consider a winning move then the current move has changed.
+//     - if neither has been simplified to $tt$ then:
+//       - if the left subformula iterator has reached its end then the whole formula also has;
+//       - if the left subformula current move has changed then reset the right subformula iterator, and the current move of this iterator has also changed;
+//       - if the left subformula current move is the same and the right subformula iterator has reached its end then advance the left subformula iterator:
+//         - if that reaches its end then this iterator also has reached its end;
+//         - otherwise this iterator current move has changed.
+//       - if the legt subformula current move is the same and the right subformula iterator has not reached its end then 
 
 == Improvements
 
