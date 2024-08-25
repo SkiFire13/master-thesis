@@ -77,7 +77,7 @@ We used some of the parity game instances included in the Oink @oink collection 
 
 == Testing with $mu$-calculus
 
-As mentioned in @mucalculus-application and @mucalculus-translation, $mu$-calculus formulas can be translated to systems of fixpoint equations and then to logic formulas. We implemented this in the _mucalc_ crate, which does this after parsing a labeled transition system and a $mu$-calculus formula from two given files.
+As mentioned in @mucalculus-application[Sections] and @mucalculus-translation[], $mu$-calculus formulas can be translated to systems of fixpoint equations and then to logic formulas. We implemented this in the _mucalc_ crate, which performs this translation after parsing a labeled transition system and a $mu$-calculus formula from two given files.
 
 The labelled transition system is expected to be in the AUT (Aldebaran) format, according to the following grammar, which based on the one given in @aut_spec:
 
