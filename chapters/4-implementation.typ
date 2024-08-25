@@ -288,9 +288,9 @@ The `vasy_720_390` instance is also interesting because it is not connected, wit
 
 // TODO: Re-check the livelock formula
 
-TODO: Generate random FIFO/LIFO using CADP and gather measurements on them?
+// TODO: Generate random FIFO/LIFO using CADP and gather measurements on them?
 
-TODO: Comparisons with and without improvements?
+// TODO: Comparisons with and without improvements?
 
 == Testing with bisimilarity
 
