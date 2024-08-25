@@ -295,12 +295,21 @@ By computing the play profiles after an expansion step we can thus perform an im
 
 Ultimately this allows us to skip a lot of valuation steps, which are relatively expensive. This also allows to reduce some of the downsides of the local algorithm, among which there is an increased amount of valuation steps required.
 
-=== Exponentially increasing expansion scheme
+=== Exponentially increasing expansions
 
-While lazier expansion schemes are intuitively better when paired with symbolic moves simplification, and the incremental play profiles computation helps often removes the need to perform an expensive valuation step, it can still happen that games fall into the worst case of expanding only a handful of edges in each iteration without being able to perform significant simplifications. This can be avoided by expanding more eagerly, like in the asymmetric expansion scheme for the local strategy improvement algorithm, but ideally we would like to be lazier when possible. We thus tried setting a minimum amount of edge to add to the graph before considering to perform a valuation step, and increasing it exponentially for each subsequent expansion. This will initially have the benefits of a lazy expansion scheme, due to not forcing to add many edges to the graph, but ultimately will only require a logarithmic number of expansions in the worst case, and with it the number of costly valuation steps. 
+While lazier expansion schemes are intuitively better when paired with symbolic moves simplification, and the incremental play profiles computation helps often removes the need to perform an expensive valuation step, it can still happen that games fall into the worst case of expanding only a handful of edges in each iteration without being able to perform significant simplifications. This can be avoided by expanding more eagerly, like in the asymmetric expansion scheme for the local strategy improvement algorithm, but ideally we would like to be lazier when possible.
 
-- TODO: proof on the maximum number of expansions?
+We thus changed the expansion logic to repeatedly expansiond until a minimum amount of edges has been added to the game. We choose this number to be initially pretty small in order to favour the locality of the algorithm, but made it increase to favour more eager expansions once it becomes clear that the winner cannot be quickly determined locally.
 
-- TODO: does this actually change complexity, or only in practice for "reasonable" inputs?
+There are multiple ways to perform this increase, and this will influence the final complexity of the algorithm. In our case we choose to increase this number exponentially, thus guaranteeing that the maximum number of expansions is logarithmic in the amount of edges and keeping the cost of the worst cases under control.
 
-// TODO: Explain the final algorithm?
+To see why this is the case consider the sum of the number of edges $e_i$ added in each expansion $i$. We require each $e_i$ to be at least $a times b^i$ for some constants $a > 0$ and $b > 1$. This creates a geometric progression, whose sum is known to be $a (b^n - 1) / (b - 1)$, though for our purposes we can focus only on bounding it by $a b ^ n$.
+
+$
+  "#edges added"
+  &= e_0 + e_1 + e_2 + ... + e_n \
+  &>= a + a b + a b ^ 2 + ... + a b ^ n \
+  &>= a b ^ n
+$
+
+Then we know that in the worst case we can add at most $|E|$, since those are all the edges. This gives the equation $|E| >= a b ^ n$, which if we solve for $n$ given $n <= log_b (|E|) / a$.
