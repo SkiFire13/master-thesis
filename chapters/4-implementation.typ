@@ -242,25 +242,59 @@ The formula is satisfied
 We used this small example to get some empirical evidence that our implementation for $mu$-calculus is correct, as it gives the same result as the other tools, and to also show the process we used to run all the tools involved. From now on we will omit the specific commands we ran and instead will only report the time required to run them.
 
 // TODO: Explain gossip
-We then tested the second formula that was used in @flori, which uses the bigger "gossip" labelled transition system, also an example from mCRL2 which models a group of $n$ girls sharing gossips through phone calls. We tested up to $n = 5$, which leads to 9152 states and 183041 transitions. The formula tested was $nu x. diam(tt) tt and boxx(tt) x$, which represents the lack of deadlocks. It should be noted that formulas checking for absence of deadlock that are satisfied, like this one, are a worst case for local algorithms because they require visiting the whole graph, thus vanishing the advantage of local algorithms which consists in the possibility of visiting only the states that are relevant.
+We then tested the second formula that was used in @flori, which uses the bigger "gossip" labelled transition system, also an example from mCRL2 which models a group of $n$ girls sharing gossips through phone calls. We tested up to $n = 5$, which leads to 9152 states and 183041 transitions, after which the transition system began growing too big. The formula tested was $nu x. diam(tt) tt and boxx(tt) x$, which represents the lack of deadlocks. It should be noted that formulas checking for absence of deadlock that are satisfied, like this one, are a worst case for local algorithms because they require visiting the whole graph, thus vanishing the advantage of local algorithms which consists in the possibility of visiting only the states that are relevant.
 
 #figure(
   table(
     columns: (auto,) * 5,
     align: horizon,
-    inset: (x: 0.3em),
+    inset: (x: 1em),
+    stroke: none,
     table.header([$n$], [*mCRL2*], [*AUT generation*], [*Our solver*], [*LCSFE*]),
-    [2], [67.8 ms], [54.7 ms], [132 #(sym.mu)s], [65.5 #(sym.mu)s],
-    [3], [68.5 ms], [59.2 ms], [212 #(sym.mu)s], [195 #(sym.mu)s],
-    [4], [72.0 ms], [117 ms],  [2.30 ms],        [4.38 ms],
-    [5], [1.47 s],  [2.05 s],  [202 ms],         [5.90 s],
+    table.hline(),
+    [2], [67.8 ms], [54.7 ms], [132 #us], [65.5 #us],
+    [3], [68.5 ms], [59.2 ms], [212 #us], [195 #us],
+    [4], [72.0 ms], [117 ms],  [2.30 ms], [4.38 ms],
+    [5], [1.47 s],  [2.05 s],  [202 ms],  [5.90 s],
   ),
   caption: [Gossips benchmark results]
 ) <table-gossips-benchmarks>
 
-Our implementation scales much better than LCSFE, confirming that the different parity game solving algorithm does make a difference, to the point where the bottleneck becomes the generation of the AUT file, which takes an order of magnitude more time than solving the parity game itself. Compared with mCRL2 our implementation overall takes a similar amount of time, most of which is however spent doing conversions to produce a AUT file using mCRL2 itself. Overall the pure mCRL2 approach is slightly faster, probably due to the costs of the intermediate conversions to produce the AUT file or the overhead of using a local algorithm in a case where all states must be explored regardless.
+Our implementation scales much better than LCSFE, confirming that the different parity game solving algorithm does make a difference in this case, to the point where the bottleneck becomes the generation of the AUT file, which takes an order of magnitude more time than solving the parity game itself. Compared with mCRL2 our implementation overall takes a similar amount of time, most of which is however spent doing conversions to produce the AUT file using mCRL2 itself. Overall the pure mCRL2 approach is slightly faster, probably due to the costs of the intermediate conversions to produce the AUT file or the overhead of using a local algorithm in a case where all states must be explored regardless.
 
-We also ran our solver on some of the instances in the VLTS benchmark suite to understand the limitations and the strengths of our implementation. For each chosen instance we verified the $mu$-calculus formulas $nu x. diam(tt) tt and boxx(tt) x$, which checks for absence of deadlocks, and $mu x. diam(tt) x or (mu y. diam(#h(0em)"tau"#h(0em)) y)$, which checks for the presence of livelocks, which are cycles consisting of only tau transitions. This time we considered the total time including preprocessing, which eventually becomes negligible. For each instance we ran the solver 5 times, ignored the slowest and quickest ones and reported a mean of the remaining 3.
+We also compared our tool with LCSFE on a set of randomly generated transition systems given the number of states, the number of transitions for each state, and the number of labels. For sake of simplicity the labels have been given a natural number starting from $0$ as their name. We used the two tools to test a _fairness_ formula on these transition systems, that is a formula in the shape $nu x. mu y. (P and diam(Act) x) or diam(Act) y$, which is satisfied when there exist a path in the labelled transition system where $P$ is true infinitely often. We choose such formula because it represents a common property to verify, it actually uses nested fixpoints, and also because it does not require exploring the whole transition system to verify, hence favoring local solvers. For the formula $P$ we choose $diam(0) tt and diam(1) tt and diam(2) tt$, that is we require a state to be able to do three transitions with respectively the labels $0$, $1$ and $2$, because it is an arbitrary condition that we can manipulate how often it is satisfied by changing the number of transitions and labels. We then tested on a number of states ranging from $1000$ to $10000$, while the number of transitions and labels tested was respectively 10/10 and 20/100, representing a case where the condition $P$ was satisfied quite often and a bit rarer.
+
+#let size_cell(s, t, l) = (
+  table.cell(align: right)[#s],
+  [/],
+  table.cell(align: center)[#t],
+  [/],
+  table.cell(align: left)[#l]
+)
+
+#figure(
+  table(
+    columns: (auto, 0em, auto, 0em, auto, auto, auto),
+    align: center + horizon,
+    inset: (x: 1em),
+    stroke: none,
+    table.header(table.cell(colspan: 5)[*Size (states/ \ transitions/labels)*], [*Our solver*], [*LCSFE*]),
+    table.hline(),
+    ..size_cell(1000, 10, 10),  [2.74 ms], [21.8 ms],
+    ..size_cell(2500, 10, 10),  [5.10 ms], [59.9 ms],
+    ..size_cell(5000, 10, 10),  [10.2 ms], [120 ms],
+    ..size_cell(10000, 10, 10), [18.5 ms], [250 ms],
+    ..size_cell(1000, 20, 100), [5.63 ms], [26.6 ms],
+    ..size_cell(2500, 20, 100), [13.8 ms], [67.7 ms],
+    ..size_cell(5000, 20, 100), [40.1 ms], [142 ms],
+    ..size_cell(10000, 20, 100), [48.6 ms], [298 ms],
+  ),
+  caption: [Random LTS benchmark results]
+) <table-random-fairness-benchmarks>
+
+Again we can see our tool improving compared to LCSFE, though this time by not so much. This could be attributed to a difference in either the efficiency of the algorithm of the one of the implementation though.
+
+Finally, we also ran our solver on some of the instances in the VLTS benchmark suite to understand the limitations and the strengths of our implementation. For each chosen instance we verified the $mu$-calculus formulas $nu x. diam(tt) tt and boxx(tt) x$, which checks for absence of deadlocks, and $mu x. diam(tt) x or (mu y. diam(#h(0em)"tau"#h(0em)) y)$, which checks for the presence of livelocks, which are cycles consisting of only tau transitions. This time we considered the total time including preprocessing, which eventually becomes negligible. For each instance we ran the solver 5 times, ignored the slowest and quickest ones and reported a mean of the remaining 3.
 
 #[
   #set text(size: 10pt)
@@ -269,7 +303,9 @@ We also ran our solver on some of the instances in the VLTS benchmark suite to u
       columns: (auto, 4.5em, 4.5em, 4.5em, auto, 4.5em, auto),
       align: horizon,
       inset: (x: 0.3em),
+      stroke: none,
       table.header([*Name*], [*States count*], [*Trans. count*], [*Deadlocks?*], [*Deadlock solve time*], [*Livelocks?*], [*Livelock solve time*]),
+      table.hline(),
       `cwi_1_2`, [1952], [2387], [no], [8.74 ms], [no], [13.4 ms],
       `vasy_0_1`, [289], [1224], [no], [4.93 ms], [no], [6.06 ms],
       `vasy_52_318`, [52268], [318126], [no], [443 s], [yes], [34.9 s],
