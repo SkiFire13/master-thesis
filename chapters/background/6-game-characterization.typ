@@ -189,8 +189,6 @@ Another advantage of representing selections using such formulas is that they ca
 
 // Seen from another point of view, a logic formula $phi$ for $E(b, i)$ represents whether $b$ will be below the solution for $x_i$, expressed as a boolean expression in function of whether some elements of the basis will be below the solutions for some variables, represented by the atoms $[b, i]$. Then $E(b, i)$ represents all the possibly partial assignments that make the formula true, while $M(phi)$ represents only a subset of possibly partial assignments such that no valid assignment exist that is not a superset of those included.
 
-It should be noted however that we cannot automatically get such formulas from any opaque function that could appear in a system of fixpoint equations. Instead, this will need to be done separately for each function, or class of functions.
-
 // TODO: Comment, example?
 
 === Translating $mu$-calculus formulas <mucalculus-translation>
