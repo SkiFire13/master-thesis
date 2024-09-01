@@ -73,12 +73,14 @@ We will now introduce graphs and some convenient notation for them. Moreover we 
 ]
 
 
-We can now introduce parity games, which consist of a graph partitioned into two set of vertices, representing the positions controlled by each player, along with a priority function. We will also define what is a play and which player is its winner.
+We can now introduce parity games, which consist of a graph partitioned into two set of vertices, representing the positions controlled by each player, along with a priority function.
 
 #definition("parity graph, parity game")[
   A parity graph is a triple $G = (V, E, p)$ where $(V, E)$ is a finite graph and $p: V -> bb(N)$ is a so called priority function. A parity graph is a triple $G = (V, E, p)$.
   Let $V$ be partitioned into two sets $V_0$ and $V_1$. The tuple $G = (V_0, V_1, E, p)$ is a parity game.
 ]
+
+A particular game played on a parity game is called a _play_. Each play starts with the token on a given vertex and proceeds by moving the token to one of the successors of the current vertex, as chosen by the player controlling it. A play can eventually reach a vertex which has no successors, in which case the player controlling that vertex loses the play. Otherwise, the play can be infinite, in which case the winner of the play is determined by the highest priority of the vertices that are visited infinitely often: if that is even the winner is player 0, otherwise it is player 1.
 
 #definition("play")[
   Let $G = (V_0, V_1, E, p)$ be a parity game. A play in $G$ from a vertex $v_0 in V_0 union V_1$ is a potentially infinite sequence $pi = v_0 v_1 ...$ such that $forall i. v_i E v_(i+1)$. If the play is finite, that is $pi = v_0 v_1 ... v_n$, then $v_n in S_G$ is required.

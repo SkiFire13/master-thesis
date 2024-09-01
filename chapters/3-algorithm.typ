@@ -40,7 +40,7 @@ We now want to prove that this new parity game is "compatible" with the original
 ]
 
 #definition("extended strategies")[
-  Let $G = (V_0, V_1, E, p)$ be a parity game and $G' = (V'_0, V'_1, E', p')$ be the extended game from $G$. Let $sigma$ a strategy on $G$ for player $i$. $sigma$ induces the following extended $sigma'$ strategy on $G'$:
+  Let $G = (V_0, V_1, E, p)$ be a parity game and $G' = (V'_0, V'_1, E', p')$ be the extended game from $G$. Let $sigma$ a strategy on $G$ for player $i$. We say that $sigma$ induces the following extended strategy $sigma'$ on $G'$:
   $
     sigma'(v) = cases(
       sigma (v) & "if" v in V_i and v in.not S_G \
@@ -84,7 +84,6 @@ The bijection is not only limited to this. It can be showed that strategies that
 
 The local strategy improvement algorithm gives a way to consider only a subset of the vertices, but still assumes all edges between such vertices to be known. However this is not necessarily true in the symbolic formulation, as the list of successors of vertices in $V_0$ is computed lazily, and this might include vertices already in the subgame. We thus have to update the local algorithm to handle this case by extending the idea of escape set. Instead of identifying those vertices that can reach the $U$-exterior we will identify those vertices that can reach an "unexplored" edge, that is an edge present in the full game but not in the subgame. We will call the vertices directly connected to such edges _incomplete vertices_. Note that the resulting set will be a superset of the $U$-exterior, since edges that lead outside $U$ cannot be part of the subgame.
 
-// TODO: Make this fit
 #definition("subgame")[
   Let $G = (V_0, V_1, E, p)$ be a parity game, $U subset.eq V$ and $E' subset.eq E sect (U times U)$, then $G' = (V_0 sect U, V_1 sect U, E', p|_U)$ is a subgame of $G$, where $p|_U$ is the function $p$ with domain restricted to $U$. We will write $G' = (G, U, E')$ for brevity.
 ]
@@ -94,17 +93,16 @@ The local strategy improvement algorithm gives a way to consider only a subset o
 ]
 
 #theorem("definitive winning set is sound")[
-  Let $G = (V_0, V_1, E, p)$ be a parity game and $G' = (G, U, E')$ a subgame of $G$. Let $G = (V_0, V_1, E, p)$ be a parity game and $U subset.eq V$. Let $L = (G|_U, sigma, tau)$ be an optimal instance of the subgame. Then $W'_0 subset.eq W_0$ and $W'_1 subset.eq W_1$.
+  Let $G = (V_0, V_1, E, p)$ be a parity game and $G' = (G, U, E')$ a subgame of $G$. Let $G = (V_0, V_1, E, p)$ be a parity game and $U subset.eq V$. Let $L = (G|_U, sigma, tau)$ be an instance of the subgame where $sigma$ and $tau$ are optimal strategies. Then $W'_0 subset.eq W_0$ and $W'_1 subset.eq W_1$.
 ]
 
 #proof[
-  Let $v in W'_i$, then there exist a strategy $sigma_i$ on $G'$ the for player $i$ such that for any strategy $sigma_(1-i)$ for player $1-i$ on $G'$ the resulting play is winning for player $i$. Moreover after fixing the strategy $sigma_i$ the player $1-i$ has no way make the play to reach a vertex connected to an edge that is not included in the subgame, by definition of $W'_i$. Thus given any strategy for player $1-i$ in the full game, the resulting play will still be limited to the subgame, and will be won by player $i$. Hence $v in W_i$ and thus $W'_i subset.eq W_i$.
+  Let $v in W'_i$, then there exist a strategy $sigma_i$ on $G'$ the for player $i$ such that for any strategy $sigma_(1-i)$ for player $1-i$ on $G'$ the resulting play is winning for player $i$. Moreover $E_L^(1-i) (v) = varempty$ by definition of $W'_i$, meaning that in the graph restricted to the strategy $sigma_i$, any vertex controlled by player $1-i$ that has unexplored edges is not reachable. This in turn means that on the full game $G$ the strategy $sigma_i$ is still winning, because for any strategy $sigma'_(1-i)$ for player $1-i$ on $G$ the resulting play will still be within the subgame, since no unexplored edge can be reached, and any such play is winning for player $i$, hence $v in W_i$.
 ]
 
 === Expansion scheme
 
-// TODO: Define how new expansion functions look like. 
-In the local strategy iteration the expansion scheme is based on the idea of expanding the subgame by adding new vertices. In our adaptation it will instead add new edges, and vertices will be implicitly be added if they are the endpoint of a new edge. This does not however change much of the logic behind it, since the expansion schemes defined in @friedmann_local are all based on picking some unexplored successor, which is equivalent to picking the unexplored edge that leads to it.
+In the local strategy iteration the expansion scheme is based on the idea of expanding the subgame by adding new vertices. In our adaptation it will instead add new edges, and vertices will be implicitly added if they are the endpoint of a new edge. This does not however change much of the logic behind it, since the expansion schemes defined in @friedmann_local are all based on picking some unexplored successor, which is equivalent to picking the unexplored edge that leads to it.
 
 More formally, the $epsilon_1$ and $epsilon_2$ functions now take the set of edges in the subgame and output a set of new edges to add to the subgame. The requirements remain similar, in that $epsilon_1$ must return a non-empty set of edges that are not already in the subgame and $epsilon_2$ must return a set of outgoing edges from the given vertex. Moreover if a vertex has no successor then $epsilon_2$ must also be non-empty in order to given that vertex a successor and make the game total.
 
@@ -138,9 +136,9 @@ On the other hand a lazier expansion scheme can take better advantage of the abi
 
 === Symbolic formulas and simplification
 
-Differently from the implementation in @flori, we need to generate symbolic moves lazily in order to take advantage of the local algorithm and the simplification of formulas. To do this we represent the generator for symbolic moves described in @upward-logic a sequence of moves rather than a set. Then, we can generate moves in the same order they appear in the sequence, and keep track of which point we have reached.
+Differently from the implementation in @flori, we need to generate symbolic moves lazily in order to take advantage of the local algorithm and the simplification of formulas. To do this we represent the generator for symbolic moves described in @upward-logic as a sequence of moves rather than as a set. Then, we can generate moves in the same order they appear in the sequence, and keep track of which point we have reached.
 
-For sake of simplicity we assume that every $and$ and $or$ operator with a single subformula can be first simplified to that subformula itself, while $and$ and $or$ operators with more than two subformulas can be rewritten to nested $and$ and $or$ operators each with exactly two subformulas using the associative property. We thus define the sequence of moves for each type of formula as following, where for the recursive case we take $M(phi_i) = (tup(X)_(i 1), tup(X)_(i 2), ..., tup(X)_(i n))$:
+For sake of simplicity we assume that every $and$ and $or$ operator with a single subformula can be first simplified to that subformula itself, while $and$ and $or$ operators with more than two subformulas can be rewritten to nested $and$ and $or$ operators each with exactly two subformulas using the associative property. We thus define the sequence of moves for each type of formula as follows, where for the recursive case we take $M(phi_i) = (tup(X)_(i 1), tup(X)_(i 2), ..., tup(X)_(i n))$:
 
 $
   M([b, i]) &= (tup(X)) "with" X_i = {b} "and" forall j != i. X_j = varempty \
@@ -150,9 +148,9 @@ $
   M(phi_1 and phi_2) &= (tup(X)_11 union tup(X)_21, ..., tup(X)_(1 1) union tup(X)_(2 m), tup(X)_12 union tup(X)_21, ..., tup(X)_(1 n) union tup(X)_(2 m))
 $
 
-Intuitively $[b, i]$ formulas represent sequences of a single element, $tt$ also represents a sequence of a single winning move for player 0, while $ff$ represents an empty sequence which is thus losing for player 0. The $or$ operator represent concatenating the two (or more) sequences, with the left one first, and the $and$ operator is equivalent to the cartesian product of the two (or more) sequences, by fixing an element of the first sequence and joining it with each element of the second sequence, then repeating this for all elements of the first sequence.
+Intuitively a formula $[b, i]$ represents a sequence consisting of a single element, $tt$ also represents a sequence of a single winning move for player 0, while $ff$ represents an empty sequence which is thus losing for player 0. The $or$ operator represent concatenating the two (or more) sequences, with the left one first, and the $and$ operator is equivalent to the cartesian product of the two (or more) sequences, by fixing an element of the first sequence and joining it with each element of the second sequence, then repeating this for all elements of the first sequence.
 
-For the $and$ operator in particular it can be helpful to imagine its sequence as listing all the 2-digits numbers in some arbitrary base, with the tens digit representing the move from the left subformula and the ones digit representing the move from the right subformula.
+// For the operator $and$ in particular it can be helpful to imagine its sequence as listing 2-digits numbers, with the tens digit representing the move from the left subformula and the ones digit representing the move from the right subformula. Intuitively doing this means fixing the left digit first and incrementing the second one 
 
 In practice the implementation is based on _formula iterators_, on which we define three operations:
 - getting the current move;
@@ -176,7 +174,7 @@ These are implemented for every type of formula:
 
 As mentioned briefly in @upward-logic, in LCSFE @flori formulas are simplified once before exploring their moves. This is however not applicable to our case since we lazily explore moves, and thus have to simplify formulas whose moves have already been partially explored. An option would be performing simplifications anyway, losing the information about which moves have already been explored and thus needing to explore them again. We however want to preserve this information to avoid exploring moves over and over, and thus need a way to simplify formulas while tracking the effects on their iterator.
 
-The way we do this is by considering the effects that simplifying a formula iterator has their sequence. It turns out that simplifying a formula can be considered as removing some elements from its sequence, in particular simplifying a formula to $ff$ removes all the moves from its sequence while simplifying a formula to $tt$ removes all the moves from its sequence except the first winning one. Simplifying a formula iterator then involves simplifying its subformula iterators, which in turn might remove moves from the parent formula iterator. The current move may also be among those removed moves, in which case the iterator might need to be advanced to the next remaining move, potentially reaching its end.
+The way we do this is by considering the effects that simplifying a formula iterator has on their sequence. It turns out that simplifying a formula can be considered as removing some elements from its sequence, in particular simplifying a formula to $ff$ removes all the moves from its sequence while simplifying a formula to $tt$ removes all the moves from its sequence except the first winning one. Simplifying a formula iterator then involves simplifying its subformula iterators, which in turn might remove moves from the parent formula iterator. The current move may also be among those removed moves, in which case the iterator might need to be advanced to the next remaining move, potentially reaching its end.
 
 When simplifying we will be interested for every formula about whether it has been simplified to $tt$, $ff$ or whether its truth value is still unknown. In case it has not been simplified to $ff$ we will also care about whether it has reached the end of its sequence after the simplification, and if not whether the current move has changed or not. This will be useful to update the current move of the parent formula iterators. In particular:
 
@@ -270,7 +268,7 @@ We now propose a transformation that produces a compatible graph and reduces the
 
 Each game expansion is normally followed by a strategy iteration step, which computes the play profile of each vertex and then tries to improve the current strategy. We can notice however that the play profiles of all the vertices are known right before the expansion, and if we keep the current strategies fixed, both for player 0 and 1, then the newer vertices cannot influence the play profiles for the existing vertices, since the existing strategies will force any play to remain within the edges in the old subgame. Hence, we can compute the play profiles for the newer vertices in isolation, and only then determine if the existing strategies can be improved given the newer vertices.
 
-It is known that a play profile on a vertex depends on the vertex itself and on the play profile of its successor according to the strategy for the player controlling that vertex. In particular, given a vertex $x$ and its successor $y$ we know the following:
+It is known that a play profile on a vertex depends on the vertex itself and on the play profile of its successor according to the strategy for the player controlling that vertex. In particular, given a vertex $x$ and its successor $y$ we know the following about its play profile components $phi_0$, $phi_1$ and $phi_2$:
 
 $
   phi_0 (x) &= phi_0 (y) \

@@ -90,5 +90,5 @@ Notice that the way the solution of a system of fixpoint equations is defined de
   - solving $s_2$ gives $s_2 = mu(lambda x. x and x) = ff$
   - $sol(E') = (ff, ff)$
 
-  Notice that $sol(E) = (tt, tt) != (ff, ff) = sol(E')$, meaning that the difference order of the equations in the two systems does indeed influence the solution.
+  Notice that $sol(E) = (tt, tt) != (ff, ff) = sol(E')$, meaning that the different order of the equations in the two systems does indeed influence the solution.
 ]

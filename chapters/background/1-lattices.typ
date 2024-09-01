@@ -87,7 +87,7 @@ Meet and join do not always exist, for example in the poset $P$ the join between
   It is a complete lattice if meet and join exist for every subset, that is given $S subset.eq L$ both $meet S$ and $join S$ are defined.
 ]
 
-Observe that every complete lattice $L$ has a smallest element, called the _bottom_ element $bot = meet varempty$, and a largest element, called the _top_ element $top = join L$. In particular, a complete lattice cannot be empty. For example in the three lattices in @poset-example the top elements would be $top$, $omega$ and $tt$, while the bottom elements would be $bot$, $0$ and $ff$. 
+Observe that every complete lattice $L$ has a smallest element, called the _bottom_ element $bot = meet varempty$, and a largest element, called the _top_ element $top = join L$. In particular, a complete lattice cannot be empty. For example in the three lattices in @poset-example the top elements are $top$, $omega$ and $tt$, while the bottom elements are $bot$, $0$ and $ff$, respectively.
 
 From now on we will work with complete lattices. For most examples we will however use finite lattices, which can be proved to always be complete lattices.
 
@@ -95,7 +95,7 @@ From now on we will work with complete lattices. For most examples we will howev
   Let $(L, sub)$ be a finite lattice, that is a lattice where $L$ is a finite set. Then it is also a complete lattice.
 ]
 
-In @poset-example both $L$ and $bb(B)$ are finite complete lattices. In particular $bb(B)$ is called the _boolean lattice_, since it contains the two boolean literals $tt$ and $ff$ and its join and meet operators are respectively the $or$ and $and$ operators. The $bb(N)_omega$ lattice is instead an infinite complete lattice, since it contains all natural numbers equipped with a top element $omega$. Note that the plain set of natural numbers $bb(N)$ is not a complete lattice because $join bb(N)$ is not defined, while in $bb(N)_omega$ it would be $omega$.
+In @poset-example both $L$ and $bb(B)$ are finite complete lattices. In particular $bb(B)$ is called the _boolean lattice_, since it contains the two boolean literals $tt$ and $ff$ and its join and meet operators are respectively the $or$ and $and$ logical operators. The $bb(N)_omega$ lattice is instead an infinite complete lattice, since it contains all natural numbers equipped with a top element $omega$. Note that the plain set of natural numbers $bb(N)$ is not a complete lattice because $join bb(N)$ is not defined, while in $bb(N)_omega$ it is $omega$.
 
 #definition("powerset")[
   Let $X$ be a set. Its powerset, written $2^X$, is the set of all subsets of $X$, that is $2^X = {S | S subset.eq X}$.
@@ -152,10 +152,10 @@ In @poset-example both $L$ and $bb(B)$ are finite complete lattices. In particul
 When we will later characterize the solutions of a system of fixpoint equations it will be convenient to consider a basis of the lattice involved. Intuitively a basis is a subset of elements which allows to express any other element as a join of a subset of such basis.
 
 #definition("basis")[
-  Let $(L, sub)$ be a lattice. A basis is a subset $B_L subset.eq L$ such that all elements of $L$ can be defined by joining subsets of the basis, that is $forall l in L. l = join { b in B_L | b sub l }$.
+  Let $(L, sub)$ be a lattice. A basis is a subset $B_L subset.eq L$ such that all elements $l in L$, $l = join { b in B_L | b sub l }$.
 ]
 
-To give an example of a basis, consider the $L$ lattice in @poset-example. A basis for it is the set $B_L = {a, c, d}$, where we can express the other elements with $bot = join varempty$, $b = join {c, d}$ and $top = join {a, c, d} = join {a, c} = join {a, d}$. Note that there may be more than one way to obtain an element by joining a subset of a basis, as shown with $top$. The boolean lattice $bb(B)$ instead admits the simple basis ${ tt }$, since $ff = join varempty$ and $tt = join { tt }$. Another basis that we will use often is the basis of a powerset lattice, which we will now define.
+To give an example of a basis, consider the lattice $L$ in @poset-example. A basis for it is the set $B_L = {a, c, d}$, where we can express the other elements with $bot = join varempty$, $b = join {c, d}$ and $top = join {a, c, d} = join {a, c} = join {a, d}$. Note that there may be more than one way to obtain an element by joining a subset of a basis, as shown with $top$. The boolean lattice $bb(B)$ instead admits the simple basis ${ tt }$, since $ff = join varempty$ and $tt = join { tt }$. Another basis that we will use often is the basis of a powerset lattice, which we will now define.
 
 #definition("basis of powerset", label: <powerset-basis>)[
   Given a set $X$, a basis of the poset $(2^X, subset.eq)$ is the set of singletons $B_(2^X) = { {x} | x in X }$.
@@ -180,7 +180,7 @@ It can be proven that the upward-closure of a set is an upward-closed set.
 Given a function $f : L -> L$ where $(L, sub)$ is a complete lattice, it is not guaranteed that a fixpoint exists. However if we restrict ourself to _monotone_ functions, then by the Knaster-Tarski theorem @tarski there exists at least one fixpoint. Moreover the set of all fixpoints is also a complete lattice, which guarantees the existence and uniqueness the least and greatest fixpoints.
 
 #definition("monotone function")[
-  Let $(X, sub)$ be a poset and $f: X -> X$ a function. $f$ is monotone if $forall x, y in X. x sub y => f(x) sub f(y)$
+  Let $(X, sub)$ be a poset and $f: X -> X$ a function.  We say that $f$ is monotone if $forall x, y in X. x sub y => f(x) sub f(y)$
 ]
 
 #theorem[Knaster-Tarski @tarski][
@@ -189,9 +189,9 @@ Given a function $f : L -> L$ where $(L, sub)$ is a complete lattice, it is not 
   The least fixpoint of $f$, written $lfp f$, is the bottom element of such lattice, while the greatest fixpoint of $f$, written $gfp f$, is the top element.
 ]
 
-Kleene iteration @kleene also gives us a constructive way to obtain a least or greatest fixpoint by repeatedly iterating a function starting from respectively the bottom or top element of the lattice. In its most general form it may require a transfinite iteration, though with some stronger hypothesis it can be relaxed to a regular, possibly infinite, iteration, for example by requiring the function to be continuous instead of just monotone. In our case we can limit ourselves to finite lattices, in which case kleene iteration can be shown to require only a finite amount of steps.
+Kleene iteration @kleene also gives us a constructive way to obtain a least or greatest fixpoint by repeatedly iterating a function starting from respectively the bottom or top element of the lattice. In its most general form it may require a transfinite iteration, though with some stronger hypothesis it can be relaxed to a regular, possibly infinite, iteration, for example by requiring the function to be continuous instead of just monotone. In our case we can limit ourselves to finite lattices, in which case Kleene iteration can be shown to require only a finite amount of steps.
 
-It should be noted however that it may not be efficient enough to compute a fixpoint in such a way, because it may require too many iterations (potentially an infinite amount in case of non-finite lattices) or because representing the actual solution may take too much space, and we are interested only in some specific characteristics of it.
+It should be noted however that it may not be efficient enough to compute a fixpoint in such a way, because it may require too many iterations (potentially an infinite amount in case of non-finite lattices) or because computing and representing the full solution may require too much space, and we are interested only in some specific characteristics of it.
 
 #theorem[Kleene iteration @kleene for finite lattices][
   Let $(X, sub)$ be a finite lattice and $f: X -> X$ a monotone function. Consider the ascending chain $bot sub f(bot) sub f(f(bot)) sub dots.h.c sub f^n (bot) sub dots.h.c$, it converges to $lfp f$ in a finite amount of steps, that is there exists a $k$ such that $lfp f = f^k (bot)$. Similarly $gfp f = f^k (top)$ for some $k$.

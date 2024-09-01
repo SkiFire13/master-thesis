@@ -16,10 +16,8 @@ $
   phi, psi := tt | ff | p | x | phi or psi | phi and psi | boxx(A) phi | diam(A) phi | eta x. phi
 $
 
-// TODO: Examples?
-
 #example("lack of deadlocks")[
-  For example the liveness property, or lack of deadlocks, which expresses the fact that all reachable states can make at least one transition, can be expressed with the formula $nu x. diam(Act) tt and boxx(Act) x$. This can be read as requiring a state $s$ to be able to make at least one transition, that is it satisfies $diam(Act) tt$, and that after one transition the same property should hold, that is it satisfies $boxx(Act) x$, where $x$ is equivalent to the initial formula. Intuitively the fixpoint is extending the first requirement to any state reachable after a number of transitions.
+  For example the liveness property, or lack of deadlocks, which expresses the fact that all reachable states can make at least one transition, can be expressed with the formula $nu x. diam(Act) tt and boxx(Act) x$. This can be read as requiring a state $s$ to be able to make at least one transition, that is it satisfies $diam(Act) tt$, and that after every single possible step transition the same property should hold, that is it satisfies $boxx(Act) x$, where $x$ is equivalent to the initial formula. Intuitively the fixpoint is extending the first requirement to any state reachable after a number of transitions.
 ]
 
 The semantics of a formula are given by the set of states that satisfy the formula in an environment. Given $rho : Prop union Var -> 2^bb(S)$, we define:
@@ -43,7 +41,7 @@ The semantics of a formula are given by the set of states that satisfy the formu
 
 We will thus say that a state $s$ satisfies a $mu$-calculus formula $phi$ if it is contained in its semantics, that is if $s in sem(phi)_rho_0$, where $rho_0$ is initially irrelevant for all $x in Var$ and with some fixed value for all $p in Prop$.
 
-Intuitively the $mu$ calculus enriches the common propositional logic with the modal operators $boxx(\_)$ and $diam(\_)$, often called respectively box and diamond, which require a formula to hold for respectively all or any state reachable by the current state through a transition with one of the given actions. On top of this fixpoints then allow to express recursive properties, for example to propagate some requirements across any number of transitions.
+Intuitively the $mu$ calculus enriches the common propositional logic with the modal operators $boxx(\_)$ and $diam(\_)$, often called respectively box and diamond, which require a formula to hold for respectively all or any state reachable by the current state through a transition with one of the given actions. On top of this fixpoints then allow to express recursive properties, that is properties that hold on a certain state and also on the states reached after certain sequences of transitions. This can be used for example to propagate some requirements across any number of transitions.
 
 It is possible to translate $mu$-calculus formulas into systems of fixpoint equations over $2^bb(S)$, the powerset lattice of its states. Such system can be obtained by extracting each fixpoint subformula into its own equation and replacing it with its variable, assuming that no variable is used in multiple fixpoints. Since the order of equations matter, outer fixpoints must appear later in the system of equations. It can be shown that each function in the system is monotone, and so it always admits a solution.
 
@@ -71,13 +69,10 @@ Bisimilarity @bisimilarity is a binary relation on states of a labelled transiti
     <=>
     #h(2em)
     
-    #block($
-      forall a, s'. &s &&->^a s' &&=> exists t'. &&t &&->^a t' &&and (s', t') in R &
-      \
-      #hide($and$)#place(dx: 5.7em, dy: -0.4em, sym.and)
-      \
-      forall a, t'. &t &&->^a t' &&=> exists s'. &&s &&->^a s' &&and (s', t') in R
-    $)
+    cases(
+      forall a\, s'. &s &&->^a s' &&=> exists t'. &&t &&->^a t' &&and (s', t') in R,
+      forall a\, t'. &t &&->^a t' &&=> exists s'. &&s &&->^a s' &&and (s', t') in R
+    )
   $
 ]
 
@@ -135,7 +130,7 @@ $
   }
 $
 
-$F$ can be thought as "refining" a relation by removing pairs to ensure that the bisimulation property holds for another step. This can be shown to be a monotonic operation, guaranteeing the existence of at least one fixpoint, including for our purposes the greatest fixpoint. Bisimulations can then be seen as the fixpoints of $F$, since for them the bisimulation property always holds and thus no pair need to be removed to make the property hold. Bisimilarity, being the greatest bisimulation, is thus the greatest fixpoint of $F$.
+$F$ can be thought as "refining" a relation by removing pairs to ensure that the bisimulation property holds for another step. This can be shown to be a monotonic operation, guaranteeing the existence of at least one fixpoint, including for our purposes the greatest fixpoint. Bisimulations can then be seen as the post-fixpoints of $F$, since for them the bisimulation property always holds and thus no pair need to be removed to make the property hold. Bisimilarity, being the greatest bisimulation, is thus the greatest fixpoint of $F$.
 
 $
   bisim #h(0.3em) = nu R. F(R)

@@ -1,7 +1,7 @@
 #import "../../config/common.typ": *
 #import "@preview/cetz:0.2.2": canvas, draw, vector
 
-== Game characterization
+== Game characterization of the solution of systems of equations
 
 === Game definition
 
@@ -31,7 +31,7 @@ The solution of systems of fixpoint equations can be characterized using a parit
     - $p((b, i)) < p((b', j))$ if $i < j$.
 ]
 
-Intuitively each player 0 vertex $(b, i)$ represents the fact that the basis element $b$ is under the $i$-th component of the solution. Its moves then are all the possible assignments to the tuple of variables $tup(x)$, expressed however as tuples of subsets of the basis, such that $b$ is under the result of $f_i (tup(x))$. Player 1 then can challenge player 0 by claiming that one of those subsets contains an element of the basis that is not actually under the solution, and this continues either infinitely or until one of the two players has no move possible.
+Intuitively each vertex $(b, i)$, owned by player 0, represents the fact that the basis element $b$ is under the $i$-th component of the solution. Its moves then are all the possible assignments to the tuple of variables $tup(x)$. These are expressed as tuples of subsets $X_1, ..., X_n$ of the basis, with the requirement that $b$ is under the result of $f_i (join X_1, ..., join X_n)$. Player 1 then can challenge player 0 by claiming that one of those subsets contains an element of the basis that is not actually under the solution, and this continues either infinitely or until one of the two players has no move possible.
 
 The priority function is not fully specified, but it can be shown that there exist a mapping to $bb(N)$ that satisfies the given order and partition into even/odd. An intuitive way would be to just list the priorities in order and give to map each of them to the next available even or odd natural number.
 
@@ -102,25 +102,25 @@ It has been proven in @baldan_games that such characterization is both correct a
     caption: [Example of a game characterization],
   ) <game-example>
 
-  As before, elliptic vertices represent player 0 positions while rectangular vertices represent player 1 positions. The priorities are now represented with the numbers on the bottom, while the non-dotted edges correspond to the winning strategies.
+  As before, elliptic vertices represent player 0 positions while rectangular vertices represent player 1 positions. The priorities are now represented with the numbers on the bottom center or right, while the non-dotted edges correspond to the winning strategies.
 
-  The way this is obtained is by starting with the player 0 positions, which are the ones we care about, since if you wanted to prove whether $tt$ is under the solution for $x_1$ or $x_2$ we would have to check whether $[tt, 1]$ or $[tt, 2]$ are winning or not. From those vertices we then have the following moves:
+  The way this is obtained is by starting with the player 0 positions, which are the ones we care about, since if one wanted to prove whether $tt$ is under the solution for $x_1$ or $x_2$ they would have to check whether $[tt, 1]$ or $[tt, 2]$ are winning or not. From those vertices we then have the following moves:
 
   $
     E(tt, 1) &= { #h(0.3em) ({tt}, varempty), #h(0.6em) (varempty, {tt}), #h(0.6em) ({tt}, {tt}) #h(0.3em) } \
     E(tt, 2) &= { #h(0.3em) ({tt}, {tt}) #h(0.3em) }
   $
 
-  Note that the remaining player 1 position $(varempty, varempty)$ is not reachable, and thus was omitted in the figure.
+  Note that the remaining position of player 1 $(varempty, varempty)$ is not reachable, and thus was omitted from the figure.
 
-  The game is ultimately won by player 0 on every position, since it can force every play to go through the $[tt, 2]$ position over and over. This position has the highest priority, at 2, thus being the highest of every play, and since it is even it makes player 0 the winner. Hence we can infer that $tt sub x^*_1$ and $tt sub x^*_2$, which implies $x^*_1 = tt$ and $x^*_2 = tt$.
+  The game is ultimately won by player 0 on every position, since it can force every play to go through the position $[tt, 2]$ over and over. This position has the highest priority, at 2, thus being the highest of every play, and since it is even it makes player 0 the winner. Hence we can infer that $tt sub x^*_1$ and $tt sub x^*_2$, which implies $x^*_1 = tt$ and $x^*_2 = tt$.
 
-  One can also see that swapping the equations would result in the same parity graph, except with $[tt, 1]$ now having a higher odd priority than $[tt, 2]$. This makes the game losing for player 0 on all positions, since player 1 can force every play to go through $[tt, 1]$ and win. We thus get $tt subn x^*_1$ and $tt subn x^*_2$, which imply $x^*_1 = ff$ and $x^*_2 = ff$, like we saw in @order-equations.
+  One can also see that swapping the equations would result in the same parity graph, except for position $[tt, 1]$ which now would have a higher odd priority than $[tt, 2]$. This makes the game losing for player 0 on all positions, since player 1 can force every play to go through $[tt, 1]$ and win. We thus get $tt subn x^*_1$ and $tt subn x^*_2$, which imply $x^*_1 = ff$ and $x^*_2 = ff$, like we already saw in @order-equations.
 ]
 
 === Selections
 
-In practice it is not convenient to consider all the possible moves for player 0. For example in @game-ch-example the move from $[tt, 1]$ to $({tt}, {tt})$ is never convenient for player 0, since the moves to $({tt}, varempty)$ and $(varempty, {tt})$ would give player 1 strictly less choices. In fact going from $[tt, 2]$ to $({tt}, {tt})$ would be a losing move for player 0, and the only way to win is to go to $(varempty, {tt})$. We will now see a formalization of this idea.
+In practice it is not convenient to consider all the possible moves for player 0. For instance in @game-ch-example the move from $[tt, 1]$ to $({tt}, {tt})$ is never convenient for player 0, since the moves to $({tt}, varempty)$ and $(varempty, {tt})$ would give player 1 strictly less choices. In fact going from $[tt, 2]$ to $({tt}, {tt})$ would be a losing move for player 0, and the only way to win is to go to $(varempty, {tt})$. In general, for player 0, it will be always convenient to play moves consisting of sets of elements with limited cardinality and as small as possible in the order. We will now see a formalization of this idea.
 
 // TODO: Cite where this was first defined
 To start we will need to consider a new order, called _Hoare preorder_:
@@ -131,7 +131,7 @@ To start we will need to consider a new order, called _Hoare preorder_:
 
 We also consider the pointwise extension $phsub$ of the Hoare preorder on the set $(2^(B_L))^n$, that is $forall X, Y in (2^(B_L))^n, tup(X) phsub tup(Y) <=> forall i in range(n). X_i hsub Y_i$, and the upward-closure with respect to it, that is given $T subset.eq (2^(B_L))^n$ then $up_H T = { tup(X) | exists tup(Y) in T and tup(Y) phsub tup(X) }$.
 
-The idea will then be for player 0 to avoid playing a move $tup(Y)$ if there exist another move $tup(X)$ such that $tup(X) phsublt tup(Y)$. More formally, it can be proven that any set of moves whose upward-closure with respect to $phsub$ is equal to $E(b, i)$ is equivalent to it for the purpose of the game. That is, we can replace the moves for that player 0 position and it would not change the winners compared to the original game. We call such alternative sets of moves _selections_, and a point of interest will be finding small selections in order to reduce the size of the game.
+The idea will then be for player 0 to avoid playing a move $tup(Y)$ if there exist another move $tup(X)$ such that $tup(X) phsublt tup(Y)$. More formally, it can be proven that any set of moves whose upward-closure with respect to $phsub$ is equal to $E(b, i)$ is equivalent to it for the purpose of the game. That is, we can replace the moves for that player 0 position and it would not change the winners compared to the original game. We call such sets of moves _selections_, and a point of interest will be finding small selections in order to reduce the size of the game.
 
 #definition("selection")[
   Let $(L, sub)$ be a lattice. A selection is a function $sigma : (B_L times range(n)) -> 2^((2^(B_L))^m)$ such that $forall b in B_L, i in range(n). up_H sigma(b, i) = E(b, i)$.
@@ -142,7 +142,7 @@ The idea will then be for player 0 to avoid playing a move $tup(Y)$ if there exi
 Ideally we would be interested in the least selection; this can be shown to always exist in finite lattices, but not in infinite ones. Moreover when it exists it might be exponential in size.
 
 #example("least selection may not exist")[
-  Consider for example the complete lattice $bb(N)_omega$ seen in @poset-example, and consider a system of fixpoint equations with only the equation $x feq_mu f(x)$ where $f(n) = n + 1$ if $n in bb(N)$ and $f(omega) = omega$. We will pick the lattice itself as its basis and we will want to prove $omega sub x^*$ with $x^*$ being the solution of this equation. This will generate a powerset game starting from position $omega$ with moves $E(omega)$, for which it can be shown that the move $bb(N)$ is winning for player 0. We are however interested in selections for $E(omega)$, and it can be shown that any ${ X }$ where $X subset.eq bb(N)$ and $X$ is infinite is a valid selection for $E(omega)$. In fact $omega sub f(join X)$ can only be satisfied if $f(join X) = omega$ and thus $join X = omega$, which is true for any infinite $X$. There are however infinite such sets, and there is no smallest one, since it is always possible to get a smaller one by removing one element. Thus there cannot be a smallest selection.
+  Consider for example the complete lattice $bb(N)_omega$ seen in @poset-example, and consider a system of fixpoint equations with only the equation $x feq_mu f(x)$ where $f(n) = n + 1$ if $n in bb(N)$ and $f(omega) = omega$. We will pick the lattice itself as its basis and we will want to prove $omega sub x^*$ with $x^*$ being the solution of this equation. This will generate a powerset game starting from position $omega$ with moves $E(omega)$, for which it can be shown that the move $bb(N)$ is winning for player 0. We are however interested in selections for $E(omega)$, and it can be shown that any ${ X }$ where $X subset.eq bb(N)$ and $X$ is infinite is a valid selection for $E(omega)$. In fact $omega sub f(join X)$ can only be satisfied if $f(join X) = omega$ and thus $join X = omega$, which is true for all and only the infinite $X$. There are however infinitely many such sets, and there is no smallest one, since it is always possible to get a smaller one by removing one element. Thus there cannot be a smallest selection.
 ]
 
 #example("least selection can be exponential")[
@@ -152,14 +152,14 @@ Ideally we would be interested in the least selection; this can be shown to alwa
 For these reasons a logic for upward-closed sets is used to represent the $E(b, i)$ set in a more compact way. Additionally this allows us to generate relative selections which are typically small, even if they are not the least ones. From now on we will refer to formulas in such logic with "logic formulas".
 
 #definition("logic for upward-closed sets")[
-  Let $(L, sub)$ be a complete lattice and $B_L$ a basis of $L$. Given $n in bb(N)$ we can define the following logic, where $b in B_L$ and $i in range(n)$:
+  Let $(L, sub)$ be a complete lattice and $B_L$ a basis of $L$. Given $n in bb(N)$ we define the following logic, where $b in B_L$ and $i in range(n)$:
 
   $
     phi := [b, i] | and.big_(k in K) phi_k | or.big_(k in K) phi_k
   $
 ]
 
-The $tt$ and $ff$ formula are then implicitly defined as $and_(k in varempty) phi_k$ and $or_(k in varempty) phi_k$.
+The formulas $tt$ and $ff$ are then implicitly defined as $and_(k in varempty) phi_k$ and $or_(k in varempty) phi_k$.
 
 We now give the semantics of a logic formula, which consist in the set of moves that the formula is representing. We will be interested in formulas whose semantics will be equal to the set $E(b, i)$.
 
@@ -185,7 +185,7 @@ Given a logic formula we can however define a generator for symbolic moves, whic
   $
 ]
 
-Another advantage of representing selections using such formulas is that they can be simplified when it becomes known that some position for player 0 is winning or losing, which corresponds to the assigning either true or false to a $[b, i]$ atom and propagating that through the operators it is contained in. In the parity game this would translate to either removing some moves for player 0, due to them being winning for 1, or replacing some player 0 moves with a smaller number of them that do not give player 1 the option to reach positions that are winning for player 0. This is already exploited in the existing implementation of the symbolic algorithm @flori to potentially remove lot of edges at once, thus simplifying the game, while preserving the winners on all positions.
+Another advantage of representing selections using such formulas is that they can be simplified when it becomes known that some position $[b, i]$ for player 0 is winning or losing. This corresponds to the assigning either true or false to the atom $[b, i]$ in the formula and propagating that through the operators it is contained in. In the parity game this would translate to either removing some moves for player 0, due to them being winning for player 1, or replacing ,moves for player 0 moves with a smaller number of them that do not give player 1 the option to reach positions that are winning for player 0. This is already exploited in the existing implementation of the symbolic algorithm @flori to potentially remove lot of edges at once, thus simplifying the game, while preserving the winners on all positions.
 
 // Seen from another point of view, a logic formula $phi$ for $E(b, i)$ represents whether $b$ will be below the solution for $x_i$, expressed as a boolean expression in function of whether some elements of the basis will be below the solutions for some variables, represented by the atoms $[b, i]$. Then $E(b, i)$ represents all the possibly partial assignments that make the formula true, while $M(phi)$ represents only a subset of possibly partial assignments such that no valid assignment exist that is not a superset of those included.
 
@@ -205,7 +205,7 @@ $
   )
 $
 
-We need to define a logic formula representing the moves for player 0 for each vertex $(b, i)$ for a basis element $b$ and a variable index $i$. Recall that the system of equations is defined over $2^bb(S)$, the powerset lattice of its states, and whose basis is $bb(S)$ as shown in @powerset-basis. We thus need to define a formula for each state $s$ and index $i$ such that the formula is true when the state $s$ satisfies the formula $phi_i (tup(x^*))$, with $tup(x^*)$ representing the actual solution of the system. Moreover we are allowed to refer to any vertex controlled by player 0 in this formula, which is equivalent to being able to require that any another state $s'$ satisfies one of the formulas $phi_j (tup(x^*))$.
+We need to define a logic formula representing the moves for player 0 for each vertex $(b, i)$ for a basis element $b$ and a variable index $i$. Recall that the system of equations is defined over $2^bb(S)$, the powerset lattice of its states, while the basis is $B_(2^bb(S))$, consisting of singletons, given in @powerset-basis. We thus need to define a formula for each state $s$ and index $i$ such that the formula is true when the state $s$ satisfies the formula $phi_i (tup(x^*))$, with $tup(x^*)$ representing the actual solution of the system. Moreover we are allowed to refer to any vertex controlled by player 0 in this formula, which is equivalent to being able to require that any another state $s'$ satisfies one of the formulas $phi_j (tup(x^*))$.
 
 We can then define the logic formula for the vertex $(s, i)$ as $F(s, phi_i (x_1, ..., x_n))$, where $F$ is in turn defined by structural induction on its second argument:
 
@@ -236,7 +236,7 @@ The definition also did not include fixpoint formulas since those were already b
 
 === Translating bisimilarity <bisimilarity-translation>
 
-Likewise for bisimilarity we have seen in @bisimilarity-application that it can be translated to a fixpoint equation, which in turn can be seen as a system of a single fixpoint equation. As with $mu$-calculus formulas the domain is the powerset lattice $2^(bb(S) times bb(S))$, and thus its basis is $bb(S) times bb(S)$. Since there is just one variable and equation we will only define $F(s_1, s_2)$, representing the formula for the player 0 vertex $((s_1, s_2), 1)$:
+Likewise for bisimilarity we have seen in @bisimilarity-application that it can be translated to a fixpoint equation, which in turn can be seen as a system of a single fixpoint equation. As with $mu$-calculus formulas the domain is the powerset lattice $2^(bb(S) times bb(S))$, and thus its basis is $B_(2^(bb(S) times bb(S)))$, which can also be expressed as ${ {(s_1, s_2)} | s_1, s_2 in bb(S) }$. Since there is just one variable and equation we will only define $F(s_1, s_2)$, representing the formula for the player 0 vertex $((s_1, s_2), 1)$:
 
 $
   F(s_1, s_2) =
@@ -276,7 +276,7 @@ $
 
 It is known that parity games can also be translated to nested fixpoints @parity_to_fixpoint, which in turn are equivalent to systems of fixpoint equations. We will later use this fact to generate simple problems for testing our implementation.
 
-In particular, given a parity game $G = (V_0, V_1, E, p)$ we can define a system of fixpoint equations on the boolean lattice $bb(B)$, where $tt$ represents a vertex being winning for player 0 while $ff$ is winning for player 1. Then for each vertex $v in V_0 union V_1$ a variable $x_v$ will defined along with the following equation:
+In particular, given a parity game $G = (V_0, V_1, E, p)$ we can define a system of fixpoint equations on the boolean lattice $bb(B)$, where $tt$ represents a vertex being winning for player 0 while $ff$ is winning for player 1. Then for each vertex $v in V_0 union V_1$ a variable $x_v$ will be defined along with the following equation:
 
 $
   x_v feq_eta cases(,
