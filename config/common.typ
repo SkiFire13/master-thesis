@@ -97,3 +97,5 @@
 #let l1 = $l_1$
 
 #let us = sym.mu + "s"
+
+#let tX = $tup(X)$

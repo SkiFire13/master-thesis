@@ -184,13 +184,29 @@ When simplifying we will be interested, for every subformula, about whether it h
   - if it is neither of them then the iterator is not changed.
 - $tt$ and $ff$ formulas do not need to be simplified, since they are already as much simplified as possible;
 - for $or$ formulas, each subformula is simplified, thus any move that is removed from those subformulas sequences is also removed from the $or$ sequence. Then:
-  - if one of the subformulas is simplified to $tt$ then the $or$ iterator becomes equal to that subformula iterator. The current move is updated based on whether the winning move was before the current move, in which case the iterator reaches its end, the current move itself, in which case it remains the same, or after the current move, in which case the current move it updated to the winning move.
+  - if one of the subformulas is simplified to $tt$ then this formula simplifies to $tt$. The current move is updated based on whether the winning move was before the current move, in which case the iterator reaches its end, the current move itself, in which case it remains the same, or after the current move, in which case the current move it updated to the winning move.
   - if all the subformulas are simplified to $ff$ then this formula is also simplified to $ff$ and reaches its end;
   - otherwise the current move is updated to the new current move of the current subformula if it has not reached its end, to the first move of the next subformula if that exists, which becomes the new active subformula, or the iterator signals having reached the end of the sequence.
 - for $and$ formulas each subformula is simplified and moves that use removed moves from any subformulas are removed. Then:
   - if any subformula has been simplified to $ff$ then the whole formula also simplified to $ff$ and reaches its end;
   - if all subformulas have been simplified to $tt$ then this formula also simplifies to $tt$. If the current move is the winning one nothing changes, otherwise if the first subformula whose winning move is not the current one had already considered that move the iterator reaches its end, if not the current move is advanced until the winning one;
   - otherwise the first subformula from the left that has reached its end causes the advance of the subformula on its left and the reset of itself and all the ones on its right. If there is no subformula on its left the whole iterator has reached its end.
+
+// #example("simplification on iterators")[
+//   Consider two formulas $phi_1$ and $phi_2$ each with moves $M(phi_i) = (tup(X)_(i 1), ..., tup(X)_(i n))$. We now show some examples of simplifications of $or$ and $and$ formulas involving $phi_1$ and $phi_2$ to give an intuition about how this works in practice. We will represent the current move by placing a vertical bar right before it, or at the end of the list of moves if the iterator has reached its end.
+  
+//   - if $phi_1$ simplifies to $tt$, with the winning move being $X_(1 k)$ then we would have:
+//     $
+//       M(phi_1 or phi_2) = \(underbrace(tX_(1 1)\, ...\, tX_(1 n), M(phi_1)), underbrace(tX_(2 1)\, ... | ...\, tX_(2 m), M(phi_2))\) -> (tX_(1 k) |) \
+//       M(phi_1 or phi_2) = \(underbrace(tX_(1 1)\, ...\, tX_(1 k)\, ... | ... \, tX_(1 n), M(phi_1)), underbrace(..., M(phi_2))\) -> (tX_(1 k) |) \
+//       M(phi_1 or phi_2) = \(underbrace(tX_(1 1)\, ... | ...\, tX_(1 k)\, ... \, tX_(1 n), M(phi_1)), underbrace(..., M(phi_2))\) -> (| tX_(1 k)) \
+//       M(phi_2 or phi_1) = \(underbrace(tX_(2 1)\, ... | ... \, tX_(2 m), M(phi_2)), underbrace(tX_(1 1)\, ...\, tX_(1 n), M(phi_1))\) -> (| tX_(1 k)) \
+//     $
+//   - if $phi_1$ simplifies to $ff$ then we would have:
+//     $
+//       M(phi_1 or phi_2) = \(underbrace(tX_(1 1)\, ... | ... \, tX_(1 n), M(phi_1)), underbrace(tX_(2 1)\, ...\, tX_(2 m), M(phi_2))\) -> \(| underbrace(tX_(2 1)\, ...\, tX_(2 m), M(phi_2))\)
+//     $
+// ]
 
 // If a subformula is simplified to $tt$ then its sequence of moves is replaced with one containing its first winning move, while if a subformula is simplified to $ff$ then its sequence of moves is replaced with an empty one. From the point of view of the parent formula iterator, this is equivalent to removing all the moves that involve one of the moves of that subformula. 
 
