@@ -27,48 +27,79 @@ A common example of poset is $(bb(N), <=)$, the set of natural numbers, and $<=$
 
     let node(pos, name, label) = content(pos, label, name: name)
 
-    content((-2, -4), $P$)
-    node((-4, 0), "x", $x$)
-    node((-2, 0), "y", $y$)
-    node((-3, -2), "w", $w$)
-    node((-3, -4), "z", $z$)
-    line("x", "w")
-    line("y", "w")
-    line("z", "w")
+    group({
+      translate((2.5, 2))
+      content((1, 0), $P$)
+      node((-1, 4), "x", $x$)
+      node((1, 4), "y", $y$)
+      node((0, 2), "w", $w$)
+      node((0, 0), "z", $z$)
+      line("x", "w")
+      line("y", "w")
+      line("z", "w")
+    })
 
-    content((3, -4), $L$)
-    node((1.5, 0), "top", $top$)
-    node((0, -2), "a", $a$)
-    node((2.25, -1.25), "b", $b$)
-    node((1.5, -2.5), "c", $c$)
-    node((3, -2.5), "d", $d$)
-    node((1.5, -4), "bot", $bot$)
-    line("top", "a")
-    line("top", "b")
-    line("a", "bot")
-    line("b", "c")
-    line("b", "d")
-    line("c", "bot")
-    line("d", "bot")
+    group({
+      translate((8, 2))
+      content((1, 0), $Q$)
+      node((0, 4), "top", $top$)
+      node((1.2, 2.8), "q", $q$)
+      node((-1.2, 2.8), "p", $p$)
+      node((1.2, 1.2), "m", $m$)
+      node((-1.2, 1.2), "n", $n$)
+      node((0, 0), "bot", $bot$)
+      line("top", "p")
+      line("top", "q")
+      line("p", "n")
+      line("p", "m")
+      line("q", "n")
+      line("q", "m")
+      line("n", "bot")
+      line("m", "bot")
+    })
 
-    content((7, -4), $bb(N)_omega$)
-    node((6, 0), "omega", $omega$)
-    node((6, -1.6), "2", $2$)
-    node((6, -2.8), "1", $1$)
-    node((6, -4), "0", $0$)
-    line("omega", "2", stroke: (dash: "densely-dotted"))
-    line("2", "1")
-    line("1", "0")
+    group({
+      translate((1.5, -4))
+      content((1.5, 0), $L$)
+      node((0, 4), "top", $top$)
+      node((-1.5, 2), "a", $a$)
+      node((0.75, 2.75), "b", $b$)
+      node((0, 1.5), "c", $c$)
+      node((1.5, 1.5), "d", $d$)
+      node((0, 0), "bot", $bot$)
+      line("top", "a")
+      line("top", "b")
+      line("a", "bot")
+      line("b", "c")
+      line("b", "d")
+      line("c", "bot")
+      line("d", "bot")
+    })
 
-    content((9, -4), $bb(B)$)
-    node((9, -1), "tt", $tt$)
-    node((9, -3), "ff", $ff$)
-    line("tt", "ff")
+    group({
+      translate((6.5, -4))
+      content((1, 0), $bb(N)_omega$)
+      node((0, 4), "omega", $omega$)
+      node((0, 2.4), "2", $2$)
+      node((0, 1.2), "1", $1$)
+      node((0, 0), "0", $0$)
+      line("omega", "2", stroke: (dash: "densely-dotted"))
+      line("2", "1")
+      line("1", "0")
+    })
+
+    group({
+      translate((10.5, -3))
+      content((0, -1), $bb(B)$)
+      node((0, 2), "tt", $tt$)
+      node((0, 0), "ff", $ff$)
+      line("tt", "ff")
+    })
   })
 
   #figure(
     poset_example,
-    caption: [Hasse diagrams of four posets],
+    caption: [Hasse diagrams of five posets],
   ) <poset-example>
 ]
 
@@ -80,7 +111,7 @@ A common example of poset is $(bb(N), <=)$, the set of natural numbers, and $<=$
 
 For example in @poset-example, in the poset $L$ the join between $c$ and $d$, that is $join {c, d}$, is $b$, while the join between $a$, $c$ and $d$ is $join {a, c, d} = top$.
 
-Meet and join do not always exist, for example in the poset $P$ the join between $x$ and $y$ does not exist because there is no element that is greater than both of them. It can however be proven that when a join or meet exists it is unique. For our purposes we will however be interested in posets where meet and join always exists, also commonly called _lattices_. The poset $P$ is thus not a lattice, while $L$, $bb(N)_omega$ and $bb(B)$ are all lattices.
+Meet and join do not always exist, for example in the poset $P$ the join between $x$ and $y$ does not exist because there is no element that is greater than both of them, while in the poset $Q$ the join between $n$ and $m$ doesn't exist because there $p$, $q$ and $top$ are all greater than both $n$ and $m$, but none of them is smallest one. It can however be proven that when a join or meet exists it is unique. For our purposes we will however be interested in posets where meet and join always exists, also commonly called _lattices_. The posets $P$ and $Q$ are thus not lattices, while $L$, $bb(N)_omega$ and $bb(B)$ are all lattices.
 
 #definition("complete lattice")[
   Let $(L, sub)$ be a poset. It is also a lattice if meet and join exist for every pair of elements, that is given $x, y in L$ both $meet {x, y}$ and $join {x, y}$ are defined.
