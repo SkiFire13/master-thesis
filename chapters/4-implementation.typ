@@ -1,4 +1,5 @@
 #import "../config/common.typ": *
+#import "@preview/cetz:0.2.2": canvas, draw
 
 = Implementation
 
@@ -17,17 +18,56 @@ The borrowing rules however can become an obstacle when writing programs that pe
 
 == Structure of the implementation
 
-The implementation was split in multiple crates, just like in the original LCSFE implementation, however compared to it it was simplified a bit, with just one main _solver_ crate implementing the solving algorithm and multiple dependent crates, some that translate specific problems into systems of fixpoint equations with logic formulas ready to be solved by the solver crate, and others that offer a CLI interface for testing such functionalities. The solver crate is organized into three main modules:
+The implementation was split in multiple crates, just like in the original LCSFE implementation. It consists of one main _solver_ crate implementing the solving algorithm and multiple dependent crates, that translate specific problems into systems of fixpoint equations with logic formulas ready to be solved by the solver crate and offer a CLI interface for testing such functionalities. 
 
-- _symbolic_, which defines the structures for systems of fixpoint equation, logic formulas, symbolic moves and other relevant methods for manipulating them;
-- _strategy_, which implements the strategy iteration algorithm;
-- _local_, which implements the local algorithm and the expansion scheme, along with the improvement we made to them.
+#figure(
+  canvas({
+    import draw: *
 
-The dependent crates are:
+    let edge(pi, pf, a) = {
+      bezier(pi, pf, (pi, 50%, a, pf), fill: none, stroke: black, mark: (end: ">"))
+    }
+    let inner_edge(pi, pf, a) = {
+      bezier(pi, pf, (pi, 50%, a, pf), fill: none, stroke: black, mark: (start: ">", end: ">"))
+    }
+
+    content((-4, 4), box(stroke: black, inset: 0.6em)[_parity_])
+    content((0, 4), box(stroke: black, inset: 0.6em)[_mucalc_])
+    content((4, 4), box(stroke: black, inset: 0.6em)[_bisimilarity_])
+    content((1.5, 2), box(stroke: black, inset: 0.6em)[_aut_])
+
+    content((-1.8, 0), [_solver_])
+    content((0, 0), box(stroke: black, inset: 0.6em)[_local_])
+    content((-1.5, -2), box(stroke: black, inset: 0.6em)[_strategy_])
+    content((1.5, -2), box(stroke: black, inset: 0.6em)[_symbolic_])
+    rect((-2.5, 0.5), (2.6, -2.5), name: "s")
+
+    edge((-4, 3.63), (-1.3, 0.5), 0deg)
+    edge((0, 3.63), (0, 0.5), 0deg)
+    edge((4, 3.63), (1.3, 0.5), 0deg)
+
+    edge((0.3, 3.63), (1.2, 2.37), 0deg)
+    edge((3.7, 3.63), (1.8, 2.37), 0deg)
+    
+    inner_edge((-0.2, -0.37), (-1.5, -1.63), 0deg)
+    inner_edge((0.2, -0.37), (1.5, -1.63), 0deg)
+  }),
+  caption: [Crates tree of the implementation]
+)
+
+The crates involved are the following:
 
 - _parity_, which implements the parsing and translation from parity games to a system of fixpoint equations, which we saw in section @parity-implementation, and a binary crate for the associated CLI;
-- _mucalc_, which implements the parsing of labelled transition system files from the AUT format (also called Aldebaran) and of a subset of $mu$-calculus formulas, followed by their translation to a system of fixpoint equations and logic formulas as shown in @mucalculus-application[Sections] and @mucalculus-translation[], and along with a binary crate for the associated CLI;
+- _aut_, which implements the parsing of labelled transition system files from the AUT format (also called Aldebaran) and is consumed by both the _mucalc_ and _bisimilarity_ crates;
+- _mucalc_, which implements the parsing of a subset of $mu$-calculus formulas, followed by their translation to a system of fixpoint equations and logic formulas as shown in @mucalculus-application[Sections] and @mucalculus-translation[], and along with a binary crate for the associated CLI;
 - _bisimilarity_, which implements the translation from a bisimilarity problem between two states of two different labelled transition systems to a system of one fixpoint equation and then logic formulas as shown in @bisimilarity-application[Sections] and @bisimilarity-translation[], along with a binary crate for the associated CLI.
+
+The _solver_ crate is also internally split into three main modules implementing the major pieces of functionality:
+
+- _symbolic_, which defines the structures for systems of fixpoint equation and logic formulas, and more importantly implements formula iterators their simplification;
+- _strategy_, which implements the strategy iteration algorithm;
+- _local_, which implements the local algorithm and the expansion scheme, along with the improvement we made to them, connecting to the _symbolic_ module to generate new moves when necessary and to the _strategy_ module to perform the valuation and improvement steps.
+
 
 == Testing with parity games <parity-implementation>
 
