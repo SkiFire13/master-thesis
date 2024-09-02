@@ -300,7 +300,7 @@ We then tested the second formula that was used in @flori, which uses the bigger
   caption: [Gossips benchmark results]
 ) <table-gossips-benchmarks>
 
-Our implementation scales much better than LCSFE, confirming that the different parity game solving algorithm does make a difference in this case, to the point where the bottleneck becomes the generation of the AUT file, which takes an order of magnitude more time than solving the parity game itself. Compared with mCRL2 our implementation overall takes a similar amount of time, most of which is however spent doing conversions to produce the AUT file using mCRL2 itself. Overall the pure mCRL2 approach is slightly faster, probably due to the costs of the intermediate conversions to produce the AUT file or the overhead of using a local algorithm in a case where all states must be explored regardless.
+Our implementation scales much better than LCSFE, confirming that the different parity game solving algorithm does make a difference in this case, to the point where the bottleneck becomes the generation of the AUT file, which takes an order of magnitude more time than solving the parity game itself. Compared with mCRL2 our implementation overall takes a similar amount of time, most of which is however spent doing conversions to produce the AUT file using mCRL2 itself. This suggests that lazily generating the labelled transition system might be beneficial, though this was considered out of scope for our work. Overall the pure mCRL2 approach is slightly faster, probably due to the costs of the intermediate conversions to produce the AUT file or the overhead of using a local algorithm in a case where all states must be explored regardless.
 
 We also compared our tool with LCSFE on a set of randomly generated transition systems given the number of states, the number of transitions for each state, and the number of labels. For sake of simplicity the labels have been given a natural number starting from $0$ as their name. We used the two tools to test a _fairness_ formula on these transition systems, that is a formula in the shape $nu x. mu y. (P and diam(Act) x) or diam(Act) y$, which is satisfied when there exist a path in the labelled transition system where $P$ is true infinitely often. We choose such formula because it represents a common property to verify, it actually uses nested fixpoints, and also because it does not require exploring the whole transition system to verify, hence favoring local solvers. As a formula $P$ we choose $diam(0) tt and diam(1) tt and diam(2) tt$, that is we require a state to be able to do three transitions with respectively the labels $0$, $1$ and $2$, because it is an arbitrary condition that we can manipulate how often it is satisfied by changing the number of transitions and labels. We then tested on a number of states ranging from $1000$ to $10000$, while the number of transitions and labels tested was respectively 10/10 and 20/100, representing a case where the condition $P$ was satisfied quite often and a bit rarer.
 
@@ -361,12 +361,6 @@ The various labelled transition systems reported in @table-vlts-benchmarks have 
 In the `cwi_1_2` we observed the computation of play profiles for newly expanded vertices to be especially effective, allowing the valuation step to be performed only once.
 
 The `vasy_720_390` instance is also interesting because it is not connected, with only 87740 states which are actually reachable from the initial one. This is a favorable case for local algorithms, and in fact the time required to verify the formulas is proportional to the number of actually reachable states rather than the full amount.
-
-// TODO: Re-check the livelock formula
-
-// TODO: Generate random FIFO/LIFO using CADP and gather measurements on them?
-
-// TODO: Comparisons with and without improvements?
 
 == Testing with bisimilarity
 
