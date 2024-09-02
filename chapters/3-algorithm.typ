@@ -1,4 +1,5 @@
 #import "../config/common.typ": *
+#import "@preview/cetz:0.2.2": canvas, draw
 
 // TODO: Better section title?
 = Symbolic local algorithm <section-algorithm>
@@ -134,7 +135,7 @@ It should be noted that the upper bound on the number of expansions grows from $
 
 On the other hand a lazier expansion scheme can take better advantage of the ability to perform simplifications on symbolic moves, which allows to remove lot of edges with little work. A eager expansion scheme may instead visit all those edges, just to ultimately find out that they were all losing for the same reason. There is thus a tradeoff between expanding too much in a single step, which loses some of the benefits of using symbolic moves, and expanding too little, which instead leads to too many strategy iterations.
 
-=== Symbolic formulas and simplification
+=== Symbolic formulas iterators and simplification
 
 Differently from the implementation in @flori, we need to generate symbolic moves lazily in order to take advantage of the local algorithm and the simplification of formulas. To do this we represent the generator for symbolic moves described in @upward-logic as a sequence of moves rather than as a set. Then, we can generate moves in the same order they appear in the sequence, and keep track of which point we have reached.
 
@@ -172,9 +173,159 @@ These are implemented for every type of formula:
   - advancing the iterator means advancing the iterator of the right subformula, and if that reports the end of the sequence then it is resetted and the iterator for the left subformula is advanced. If that also reports the end of its sequence then this iterator also reports the end of its sequence;
   - resetting the iterator means resetting the iterators of both subformulas.
 
+#example("formula iterator")[
+  Consider for example the formula $(a or b) and (c or d)$, where for sake of simplicity we have represented atoms with a single variable name. The sequence of its moves would then be ${a,c}$, ${a,d}$, ${b,c}$ and ${b,d}$. Initially the formula iterator would start with the following state, where red edges represent the currently active subformula of an $or$ formula:
+  #figure(
+    canvas({
+      import draw: *
+      set-style(content: (padding: .2))
+      let node(pos, name, label) = content(pos, label, name: name)
+
+      node((1.5, 2), "and", $and$)
+      node((0.5, 1), "ab", $or$)
+      node((2.5, 1), "cd", $or$)
+      node((0, 0), "a", $a$)
+      node((1, 0), "b", $b$)
+      node((2, 0), "c", $c$)
+      node((3, 0), "d", $d$)
+      line("and", "ab")
+      line("and", "cd")
+      line("ab", "a", stroke: red)
+      line("ab", "b")
+      line("cd", "c", stroke: red)
+      line("cd", "d")
+    }),
+    caption: [Example of formula iterator]
+  )
+  The current move would then be ${a, c}$, since the $and$ formula performs the union of the moves of its two subformulas, while the two $or$ subformulas select their left subformula as active.
+
+  Advancing the iterator would result in advancing the iterator for the right subformula of the $and$, which happens without reaching its end, thus resulting in the following formula iterator:
+  #figure(
+    canvas({
+      import draw: *
+      set-style(content: (padding: .2))
+      let node(pos, name, label) = content(pos, label, name: name)
+
+      node((1.5, 2), "and", $and$)
+      node((0.5, 1), "ab", $or$)
+      node((2.5, 1), "cd", $or$)
+      node((0, 0), "a", $a$)
+      node((1, 0), "b", $b$)
+      node((2, 0), "c", $c$)
+      node((3, 0), "d", $d$)
+      line("and", "ab")
+      line("and", "cd")
+      line("ab", "a", stroke: red)
+      line("ab", "b")
+      line("cd", "c")
+      line("cd", "d", stroke: red)
+    }),
+    caption: [Example of formula iterator after one step]
+  )
+  The current formula would then be ${a,d}$, which is also the next move in the original sequence.
+
+  Advancing again the iterator would result in the right subformula signaling it has reached its end, and thus the $and$ subformula advances the left subformula and resets the right one, resulting in the following iterator:
+  #figure(
+    canvas({
+      import draw: *
+      set-style(content: (padding: .2))
+      let node(pos, name, label) = content(pos, label, name: name)
+
+      node((1.5, 2), "and", $and$)
+      node((0.5, 1), "ab", $or$)
+      node((2.5, 1), "cd", $or$)
+      node((0, 0), "a", $a$)
+      node((1, 0), "b", $b$)
+      node((2, 0), "c", $c$)
+      node((3, 0), "d", $d$)
+      line("and", "ab")
+      line("and", "cd")
+      line("ab", "a")
+      line("ab", "b", stroke: red)
+      line("cd", "c", stroke: red)
+      line("cd", "d")
+    }),
+    caption: [Example of formula iterator after two steps]
+  )
+  This time the current move is ${b,c}$, the next one in the sequence.
+
+  Advancing would again advance the right subformula:
+  #figure(
+    canvas({
+      import draw: *
+      set-style(content: (padding: .2))
+      let node(pos, name, label) = content(pos, label, name: name)
+
+      node((1.5, 2), "and", $and$)
+      node((0.5, 1), "ab", $or$)
+      node((2.5, 1), "cd", $or$)
+      node((0, 0), "a", $a$)
+      node((1, 0), "b", $b$)
+      node((2, 0), "c", $c$)
+      node((3, 0), "d", $d$)
+      line("and", "ab")
+      line("and", "cd")
+      line("ab", "a")
+      line("ab", "b", stroke: red)
+      line("cd", "c")
+      line("cd", "d", stroke: red)
+    }),
+    caption: [Example of formula iterator after two steps]
+  )
+  The current move is now ${b,d}$, the last move in the sequence. In fact advancing again would result in the right subformula signaling it has reached its end, causing the left subformula to also advance and reach its end, ultimately resulting in the whole formula iterator reaching its end.
+]
+
 As mentioned briefly in @upward-logic, in LCSFE @flori formulas are simplified once before exploring their moves according to the assumptions on the winner for each vertex made at that point in the exploration. This is however not applicable to our case since we lazily explore moves, and thus have to simplify formulas whose moves have already been partially explored. An option would be performing simplifications anyway, losing the information about which moves have already been explored and thus needing to explore them again. We however want to preserve this information to avoid exploring moves over and over, and thus need a way to simplify formulas while tracking the effects on their iterator.
 
-The way we do this is by considering how the operation of simplifying a formula iterator can be seen on their sequence. It turns out that simplifying a formula is equivalent to removing some elements from its sequence, in particular simplifying a formula to $ff$ removes all the moves from its sequence, while simplifying a formula to $tt$ removes all the moves from its sequence except the first winning one. Simplifying a formula iterator then requires simplifying its subformula iterators, which in turn might remove moves from the parent formula iterator. The current move may also be among those removed moves, in which case the iterator might need to be advanced to the next remaining move, potentially reaching its end.
+The way we do this is by considering how the operation of simplifying a formula iterator can be seen on their sequence. It turns out that simplifying a formula is equivalent to removing some elements from its sequence, in particular simplifying a formula to $ff$ removes all the moves from its sequence, while simplifying a formula to $tt$ removes all the moves from its sequence except the first winning one. Simplifying a formula iterator then requires simplifying its subformula iterators, which in turn might remove moves from the parent formula iterator. Most importantly, the current move may also be among those removed moves, in which case the iterator needs to be advanced to the next remaining move, potentially reaching its end. Note that a formula iterator might also need to be adjusted depending on whether a subformula has been advanced or reached its end after being simplified; for example if the left subformula of an $and$ formula is advanced, even if once, then from the point of view of the sequence of moves of the $and$ formula a lot of moves might have been skipped, corresponding to all the pairs between the skipped move on the left subformula and all the moves in the right subformula.
+
+#example("formula iterator simplification")[
+  Consider again an iterator for the formula $(a or b) and (c or d)$ in the following state:
+  #figure(
+    canvas({
+      import draw: *
+      set-style(content: (padding: .2))
+      let node(pos, name, label) = content(pos, label, name: name)
+
+      node((1.5, 2), "and", $and$)
+      node((0.5, 1), "ab", $or$)
+      node((2.5, 1), "cd", $or$)
+      node((0, 0), "a", $a$)
+      node((1, 0), "b", $b$)
+      node((2, 0), "c", $c$)
+      node((3, 0), "d", $d$)
+      line("and", "ab")
+      line("and", "cd")
+      line("ab", "a", stroke: red)
+      line("ab", "b")
+      line("cd", "c")
+      line("cd", "d", stroke: red)
+    }),
+    caption: [Example of formula iterator simplification]
+  )
+  If it becomes known that the position represented by the atom $c$ is winning, then we might want to simplify the $c or d$ branch to just $c$, since $c$ will always be a best move for player 0. This is similar to assigning to $tt$ to $c$, resulting in $c or d$ also being $tt$, though from the point of view of the sequence of moves keeping $c$ is more intuitive since we ultimately want a winning move. Note however that we also want to update its current move, and since $c$ was already considered due to appearing on the left side of the $or$ formula, the new iterator is thus considered as having reached its end.
+  
+  From the point of view of the sequence of moves for the $and$ formula however, this is equivalent to discarding all the moves derived from the $d$ in the right subformula and instead considering only those derived from $c$, thus the original sequence with ${a,c}$, ${a,d}$, ${b,c}$ and ${b,d}$ would become just ${a,c}$ and ${b,c}$. Notice however how the iterator has already considered the move ${a,c}$, and thus it should advance to the next move ${b,c}$. This can be inferred by the fact that the right subformula has reached its end, so just like when advancing the $and$ formula, the left subformula is advanced to $b$ and the right subformula is resetted, which for a formula iterator consisting of just $c$ does nothing. Thus we end up with the following simplified formula iterator:
+  #figure(
+    canvas({
+      import draw: *
+      set-style(content: (padding: .2))
+      let node(pos, name, label) = content(pos, label, name: name)
+
+      node((1.5, 2), "and", $and$)
+      node((0.5, 1), "ab", $or$)
+      node((2.5, 1), "c", $c$)
+      node((0, 0), "a", $a$)
+      node((1, 0), "b", $b$)
+      line("and", "ab")
+      line("and", "c")
+      line("ab", "a")
+      line("ab", "b", stroke: red)
+    }),
+    caption: [Example of formula iterator simplification]
+  )
+  Notice how this iterator would consider exactly the moves ${a,c}$ and ${b,c}$ if restarted, but instead is currently considering the move ${b,c}$ because the original iterator already considered the move ${a,c}$ and would be a waste to consider it again.
+]
 
 When simplifying we will be interested, for every subformula, about whether it has been simplified to $tt$, $ff$ or whether its truth value is still unknown. In case it has not been simplified to $ff$ we will also care about whether it has reached the end of its sequence after the simplification, and if not whether the current move has changed or not. This will be useful to update the current move of the parent formula iterators. In particular:
 
