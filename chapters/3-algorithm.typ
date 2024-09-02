@@ -1,7 +1,7 @@
 #import "../config/common.typ": *
 
 // TODO: Better section title?
-= Symbolic local algorithm
+= Symbolic local algorithm <section-algorithm>
 
 == Adapting the algorithm
 

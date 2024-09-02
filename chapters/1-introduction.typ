@@ -22,3 +22,13 @@ In this thesis we will build upon the work in @baldan_games and @flori, which pr
 Our contribution will then be to adapt some known algorithms @jurdzinski_improvement @friedmann_local to solve the powerset game in a somewhat efficient way, hopefully more than the existing implementation. This will involve performing changes to the powerset game and the algorithms in order to satisfy the assumptions that would otherwise not hold, including requirements on the structure of the graph or how it can be explored. We will give particular attention to the local approach, in order to keep the previously mentioned benefits, and to the simplification of formulas, which can greatly speed up the solver. Our work will also include some optimizations and improvements that became possible thanks to solving this specific kind of game. On top of this we include the translations of some problems to systems of fixpoint equations and the corresponding symbolic formulas, and will solve them using our implementation, comparing the results to the existing work in @flori.
 
 The goal will ultimately be showing that we can solve generic systems of mixed fixpoint equations over some complete lattice, highlighting the flexibility of such approach, and in a way that is faster than the existing approach, though we will not be expecting performance to be necessarily be competitive with state of the art specialized solvers.
+
+The rest of this thesis sections are organized as follows:
+
+- @section-background introduces all the theoretical notions which we will build up on. In particular this includes the background needed to introduce systems of fixpoint equations, parity games and the powerset game. It also includes an explanation of $mu$-calculus and bisimilarity, along with a way to convert them to instances we can work with. Finally, it includes descriptions of the parity game algorithms we will be adapting;
+
+- @section-algorithm explains how we adapted the given parity game algorithms to the powerset game and also includes various optimizations that we found for these particular instances;
+
+- @section-implementation presents the implementation of our algorithm, along with its design choices and observations on its performance;
+
+- @section-conclusions summarizes our contribution in this thesis along with possible future improvements or extensions.

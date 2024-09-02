@@ -1,7 +1,7 @@
 #import "../config/common.typ": *
 #import "@preview/cetz:0.2.2": canvas, draw
 
-= Implementation
+= Implementation <section-implementation>
 
 The final goal of this thesis was a concrete implementation of the algorithms explained in the previous sections. The implementation partly relies on the work done in LCSFE @flori which, as mentioned in the introduction, was based on a different algorithm for parity games. The final implementation is available in the repository #underline(link("https://github.com/SkiFire13/master-thesis-code"))
 

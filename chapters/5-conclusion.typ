@@ -1,4 +1,4 @@
-= Conclusions
+= Conclusions <section-conclusions>
 
 We have seen how common systems of fixpoint equations are, especially in model checking, and how we can characterize them using a particular parity game called the powerset game. We have also seen how the moves of this game can be reduced and efficiently expressed using a logic for upward closed sets, which also fits a local algorithm for solving the game. We have then seen a pair of algorithms for solving parity games based on strategies. Our contribution has then been to adapt such algorithms to be used with the powerset game, introducing a series of small optimizations in the process. With this we have improved on a previous attempt of implementing a solver for the powerset game, in some cases even by orders of magnitude.
 
