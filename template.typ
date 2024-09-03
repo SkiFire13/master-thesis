@@ -4,7 +4,6 @@
 #import "preface/copyright.typ": copyright
 #import "preface/dedication.typ": dedication
 #import "preface/summary.typ": summary
-#import "preface/acknowledgements.typ": acknowledgements
 #import "preface/toc.typ": toc
 
 #let template(
@@ -60,8 +59,6 @@
     dedication()
     pagebreak-to-right(weak: true)
     summary()
-    pagebreak-to-right(weak: true)
-    acknowledgements()
     pagebreak-to-right(weak: true)
     toc()
     pagebreak-to-right(weak: true)
