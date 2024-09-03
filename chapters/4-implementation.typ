@@ -334,7 +334,7 @@ We also compared our tool with LCSFE on a set of randomly generated transition s
 
 Again we can see our tool improving compared to LCSFE, though this time by not so much. This could be attributed to a difference in either the efficiency of the algorithm of the one of the implementation though.
 
-Finally, we also ran our solver on some of the instances in the VLTS benchmark suite to understand the limitations and the strengths of our implementation. For each chosen instance we verified the $mu$-calculus formulas $nu x. diam(tt) tt and boxx(tt) x$, which checks for absence of deadlocks, and $mu x. diam(tt) x or (mu y. diam(#h(0em)"tau"#h(0em)) y)$, which checks for the presence of livelocks, which are cycles consisting of only tau transitions. This time we considered the total time including preprocessing, which eventually becomes negligible. For each instance we ran the solver 5 times, ignored the slowest and quickest ones and reported a mean of the remaining 3.
+Finally, we also ran our solver on some of the instances in the VLTS benchmark suite to understand the limitations and the strengths of our implementation. For each chosen instance we verified the $mu$-calculus formulas $nu x. diam(tt) tt and boxx(tt) x$, which checks for absence of deadlocks, and $mu x. diam(tt) x or (mu y. diam(#h(0em)"tau"#h(0em)) y)$, which checks for the presence of livelocks, that is cycles consisting of only tau transitions. For each instance we ran the solver 5 times, ignored the slowest and quickest ones and reported a mean of the remaining 3.
 
 #[
   #set text(size: 10pt)
