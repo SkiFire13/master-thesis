@@ -346,8 +346,8 @@ Finally, we also ran our solver on some of the instances in the VLTS benchmark s
       stroke: none,
       table.header([*Name*], [*States count*], [*Trans. count*], [*Deadlocks?*], [*Deadlock solve time*], [*Livelocks?*], [*Livelock solve time*]),
       table.hline(),
-      `cwi_1_2`, [1952], [2387], [no], [8.74 ms], [no], [13.4 ms],
       `vasy_0_1`, [289], [1224], [no], [4.93 ms], [no], [6.06 ms],
+      `cwi_1_2`, [1952], [2387], [no], [8.74 ms], [no], [13.4 ms],
       `vasy_52_318`, [52268], [318126], [no], [443 s], [yes], [34.9 s],
       `vasy_69_520`, [69754], [520633], [yes], [122 ms], [no], [6.09 s],
       `vasy_720_390`, [720247], [390999], [yes], [82 ms], [no], [3.40 s],
@@ -364,4 +364,25 @@ The `vasy_720_390` instance is also interesting because it is not connected, wit
 
 == Testing with bisimilarity
 
-We also briefly tested performance of our bisimilarity checker implementation. For that we used some of the instances mentioned above and a reduced version of them according to strong bisimilarity. We then tried checking states from them that are bisimilar and some that are not, with unsatisfying though expected results. It should be noted that strong bisimilarity admits an algorithm that runs in $O(M log N)$ @bisimilaritymlogn time, where $N$ is the number of states and $M$ the number of transitions. In comparison, for states that are bisimilar the solver needs to visit at least as many vertexes as states, similarly to the deadlock case for $mu$-calculus, leading to a complexity of $O(N dot M)$ for each the improvement step, let alone the whole algorithm. For states that are not bisimilar the results are instead mixed, with some being recognized immediately, while others needs several transitions before being distinguishable, leading to a similar runtime as the case where they are bisimilar. Ultimately however the goal was to show that this approach was flexible enough, and being able to solve bisimilarity too, although a bit inefficiently, does confirm it.
+We also briefly tested performance of our bisimilarity checker implementation. For that we used some of the instances mentioned above, in particular `vasy_0_1` and `cwi_1_2` because bigger instances were too slow to check. For each instance we obtained a reduced version of them according to strong bisimilarity and then used our implementation to check whether random states in the original instance were bisimilar with the ones in the reduced one.
+
+
+#figure(
+  table(
+    columns: (auto, auto, auto, auto),
+    align: center + horizon,
+    inset: (x: 1em),
+    stroke: none,
+    table.header(table.cell(rowspan: 2)[*Name*], table.cell(rowspan: 2)[*Bisimilar*], table.cell(colspan: 2)[*Non bisimilar*], [*Min*], [*Max*]),
+    table.hline(),
+    `vasy_0_1`, [15.4 ms], [540 #us], [80 ms],
+    `cwi_1_2`, [5.63 s], [1.17 ms], [5.73 s],
+  ),
+  caption: [Bisimilarity benchmark results]
+) <table-bisimilarity-benchmarks>
+
+We splitted the results based on whether the two states were bisimilar or not, as that influences how many states the local algorithm has to consider. We also noticed that when checking non bisimilar states the time needed varied a lot, which we suspect was due to some states having lot of transitions with the same label and thus causing lot of pairs of states to be checked before becoming distinguishable.
+
+It should be noted that strong bisimilarity admits an algorithm that runs in $O(M log N)$ @bisimilaritymlogn time, where $N$ is the number of states and $M$ the number of transitions. In comparison, for states that are bisimilar the solver needs to visit at least as many vertexes as states, similarly to the deadlock case for $mu$-calculus, leading to a complexity of $O(N dot M)$ for each the improvement step, let alone the whole algorithm. 
+
+Ultimately the goal was to show that the powerset game was flexible enough, and being able to solve bisimilarity too, although a bit inefficiently, does confirm it.
