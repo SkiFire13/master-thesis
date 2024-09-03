@@ -9,13 +9,13 @@
   #dedication-bookmark
 
   #align(center)[
-    TODO \
-    --- Oscar Wilde
+    A citation \
+    --- Unknown
   ]
 
   #v(1cm)
 
   #align(center)[
-    Dedicato a TODO...
+    Dedicated to...
   ]
 ]
