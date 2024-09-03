@@ -42,6 +42,7 @@
   )
   set text(lang: lang)
   set text(font: "New Computer Modern", size: 11pt)
+  set par(justify: true)
 
   {
     set heading(numbering: none)
@@ -87,8 +88,6 @@
       show ".": math.class("punctuation", ".")
       it
     }
-
-    set par(justify: true)
 
     body
   }
