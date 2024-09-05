@@ -29,5 +29,4 @@
 #include "chapters/4-implementation.typ"
 #include "chapters/5-conclusion.typ"
 
-// TODO: Move to template/a more organized place
 #bibliography("sources.bib", style: "bib-style.csl")

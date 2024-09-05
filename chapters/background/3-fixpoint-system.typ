@@ -2,8 +2,6 @@
 
 == Systems of fixpoint equations
 
-// TODO: Relation to nested fixpoints?
-
 We will now define what is a system of fixpoint equations and what is its solution, following the definition given in @baldan_games. Intuitively this will be very similar to a normal system of equations, except for the fact that each equation is interpreted as a fixpoint equation. Since there can be more than one fixpoint we will also need to specify which kind of fixpoint the equation refers to, which we will do by using respectively the symbols $lfp$ and $gfp$ in subscript after the equal sign to denote the fact that we refer to the least or greatest fixpoint, respectively.
 
 #definition("system of fixpoint equation")[
@@ -38,9 +36,6 @@ We will now define what is a system of fixpoint equations and what is its soluti
 
 We can now define the solution for a system of fixpoint equations recursively, starting from the last variable, which is replaced in the rest of the system by a free variable representing the fixed parameter. Then one obtains a parametric system with one equation less. This is inductively solved and its solution, which is a function of the parameter, is replaced in the last equation. This produces a fixpoint equation with a single variable, which can be solved to determine the value of the last variable.
 
-// TODO: This is not sure
-// Intuitively this could be seen as considering the lattice L^n of $n$-tuples ordered according to the pointwise extension of $sub$, and the monotone function $tup(f)$ over them. The fixpoints of this function will then form a lattice, but we are interested only in one of them. Starting from the $n$-th equation and going backward, we will iteratively restrict this lattice to only those elements where $x_i$ is the least or the greatest of all fixpoints, depending on whether the $i$-th equation is a least of greatest fixpoint. This step will fix that element of the solution, and repeating it for every equation will yield the final unique solution.
-
 #definition("solution")[
   Let $(L, sub)$ be a complete lattice and $E$ be a system of $n$ fixpoint equations over $L$ and variables $x_i$ for $i in range(n)$. The solution of $E$ is $s = sol(E)$, with $s in L^n$ inductively defined as follows:
 
@@ -72,7 +67,6 @@ We can now define the solution for a system of fixpoint equations recursively, s
 ]
 
 Notice that the way the solution of a system of fixpoint equations is defined depends on the order of the equations. Indeed different orders can result in different solutions.
-// TODO: Connection with nested fixpoint operators?
 
 #example("different order of equations", label: <order-equations>)[
   Consider a system of equations $E'$ containing the same fixpoint equations as $E$, but with their order swapped:

@@ -22,8 +22,6 @@ We will also often refer to intervals over natural numbers, typically in order t
   We will refer to the set ${ 1, ..., n }$ with the shorthand $range(n)$.
 ]
 
-// TODO: Informal description?
-
 #definition("pointwise order")[
   Let $(X, sub)$ be a poset. The pointwise order $psub$ on $X^n$ is defined, for $tup(x), tup(x') in X^n$, by $tup(x) psub tup(x')$ if $forall i in range(n). x_i sub x'_i$.
 

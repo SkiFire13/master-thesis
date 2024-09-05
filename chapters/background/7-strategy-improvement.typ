@@ -126,8 +126,6 @@ The algorithm works by determining from which vertices player 1 can force a play
 
 It has been proven in @jurdzinski_improvement that this algorithm has a complexity of $O(|V| times |E|)$.
 
-// TODO: Small example of strategy iteration?
-
 === Local algorithm
 
 The strategy improvement algorithm has the downside of requiring to visit the whole graph. In some cases this might be an inconvenience, as the graph could be very large but only a small portion may need to be visited to determine the winner of a specific vertex of interest. For an extreme example, consider a disconnected graph, in which case the winner of a vertex only depends on its connected component and not on the whole graph.

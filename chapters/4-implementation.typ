@@ -13,7 +13,6 @@ Just like LCSFE, our implementation is written in Rust @rust, a modern systems p
 
 The most interesting features however are its _ownership_ system and its borrow checker, which allow the compiler to guarantee memory safety without a garbage collection or other kind of runtime support. The ownership system enforces that every value has exactly one _owner_, which is responsible for freeing up its resources, making classes of issues like use-after-free impossible, and others like memory leaking much more difficult to hit. The borrow checker instead rules how borrows can be created and used. Every variable can be borrowed, creating either a shared reference or an exclusive references, which are pointers with a special meaning for the compiler. The borrow checker ensures that at any point in time there can be either multiple shared references or one exclusive reference pointing to a variable, but not both. Coupled with the fact that only exclusive references allow mutations, this system guarantees that references always point to valid data.
 
-// TODO: Cite data oriented programming
 The borrowing rules however can become an obstacle when writing programs that perform lot of mutations, especially for programmers used to other imperative languages. It has been found however that data oriented designs in practice work pretty well with the borrow checker, due to the ability to replace pointers with indexes and thus restricting the places where borrows need to be created. This paradigm also helps creating cache efficient programs, which can often be faster. For this reason we tried to implement out algorithm with a data oriented design, which was mainly done by associating an auto-incrementing index to each vertex. Then informations associated with vertices, like their successors or remaining moves, was each stored in its own array indexed by the same index on vertices.
 
 == Structure of the implementation
@@ -281,7 +280,6 @@ The formula is satisfied
 
 We used this small example to get some empirical evidence that our implementation for $mu$-calculus is correct, as it gives the same result as the other tools, and to also show the process we used to run all the tools involved. From now on we will omit the specific commands we ran and instead will only report the time required to run them.
 
-// TODO: Explain gossip
 We then tested the second formula that was used in @flori, which uses the bigger "gossip" labelled transition system, also an example from mCRL2 which models a group of $n$ girls sharing gossips through phone calls. We tested up to $n = 5$, which leads to 9152 states and 183041 transitions, after which the transition system began growing too big. The formula tested was $nu x. diam(tt) tt and boxx(tt) x$, which represents the lack of deadlocks. It should be noted that formulas checking for absence of deadlock that are satisfied, like this one, are a worst case for local algorithms because they require visiting the whole graph, thus vanishing the advantage of local algorithms which consists in the possibility of visiting only the states that are relevant.
 
 #figure(

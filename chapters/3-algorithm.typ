@@ -1,7 +1,6 @@
 #import "../config/common.typ": *
 #import "@preview/cetz:0.2.2": canvas, draw
 
-// TODO: Better section title?
 = Symbolic local algorithm <section-algorithm>
 
 == Adapting the algorithm

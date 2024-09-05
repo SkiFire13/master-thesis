@@ -16,7 +16,6 @@ We start by defining what is a (complete) lattice and introducing some related c
 
 A common example of poset is $(bb(N), <=)$, the set of natural numbers, and $<=$ is the standard order relation.
 
-// TODO: Preorder?
 #example("Posets and Hasse diagrams")[
   Posets can conveniently be visualized using _Hasse diagrams_, like the ones in @poset-example. In such diagrams lines connecting two elements represent the one on top being greater than the one on the bottom. Lines that could be obtained by transitivity are instead left implicit due to the fact that the diagram represents a valid poset.
 
