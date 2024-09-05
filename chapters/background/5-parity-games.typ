@@ -121,7 +121,7 @@ It is also worth mentioning that the domain of a strategy for player $i$ on a to
 #definition("strategy induced instance")[
   Let $G = (V_0, V_1, E, p)$ be a parity game, $sigma$ be a strategy for player 0 and $tau$ be a strategy for player 1. An instance of the game $G$ induced by the strategies $sigma$ and $tau$ is a tuple $(G, sigma, tau)$.
 
-  Given a starting vertex $v_0 in V_0 union V_1$ an instance also uniquely defines a play, called an induced play, where if $v_i in S_G$ then the play is finite and stops at $v_i$, otherwise $v_(i+1) = sigma(v_i)$ if $v_i in V_0$ and $v_(i+1) = tau(v_i)$ if $v_i in V_1$.
+  Given a starting vertex $v_0 in V_0 union V_1$, an instance also uniquely defines a play, called an induced play, where if $v_i in S_G$ then the play is finite and stops at $v_i$, otherwise $v_(i+1) = sigma(v_i)$ if $v_i in V_0$ and $v_(i+1) = tau(v_i)$ if $v_i in V_1$.
 ]
 
 It can be proven that if an induced play is infinite then it will eventually reach a cycle and repeatedly visit those vertices in the same order, that is the play will be of the kind $v_0 ... v_k v_(k+1) ... v_n v_(k+1) ... v_n ...$.

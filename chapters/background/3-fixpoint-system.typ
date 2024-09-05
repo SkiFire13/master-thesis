@@ -22,8 +22,8 @@ We will now define what is a system of fixpoint equations and what is its soluti
 #notation("system of fixpoint equations as tuple")[
   The above system of fixpoint equations can be written as $tup(x) feq_tup(eta) tup(f)(tup(x))$, where:
   - $tup(x) = (x_1, ..., x_n)$;
-  - $tup(f) = (f_1, ..., f_n)$ but also seen as $tup(f): L^n -> L^n$ with $tup(f)(x_1, ..., x_n) = (f_1 (x_1), ..., f_n (x_n))$;
-  - $tup(eta) = (eta_1, ..., eta_n)$.
+  - $tup(eta) = (eta_1, ..., eta_n)$;
+  - $tup(f) = (f_1, ..., f_n)$ but can also be seen as $tup(f): L^n -> L^n$ with $tup(f)(x_1, ..., x_n) = (f_1 (x_1), ..., f_n (x_n))$.
 ]
 
 #notation("empty system of fixpoint equations")[
@@ -69,7 +69,7 @@ We can now define the solution for a system of fixpoint equations recursively, s
 Notice that the way the solution of a system of fixpoint equations is defined depends on the order of the equations. Indeed different orders can result in different solutions.
 
 #example("different order of equations", label: <order-equations>)[
-  Consider a system of equations $E'$ containing the same fixpoint equations as $E$, but with their order swapped:
+  Consider a system of equations $E'$ containing the same fixpoint equations as $E$ from @system-example, but with their order swapped:
   $
     syseq(
       x_1 &feq_nu x_1 and x_2 \

@@ -22,6 +22,8 @@ We will also often refer to intervals over natural numbers, typically in order t
   We will refer to the set ${ 1, ..., n }$ with the shorthand $range(n)$.
 ]
 
+Given a poset $X$ we can extend its order to $X^n$ by having the $psub$ relation hold for two tuples when the $sub$ relation holds for all the pair of elements. This is called _pointwise order_, and we will use it often later on.
+
 #definition("pointwise order")[
   Let $(X, sub)$ be a poset. The pointwise order $psub$ on $X^n$ is defined, for $tup(x), tup(x') in X^n$, by $tup(x) psub tup(x')$ if $forall i in range(n). x_i sub x'_i$.
 

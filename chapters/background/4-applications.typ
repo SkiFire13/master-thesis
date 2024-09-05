@@ -130,7 +130,7 @@ $
   }
 $
 
-$F$ can be thought as "refining" a relation by removing pairs to ensure that the bisimulation property holds for another step. This can be shown to be a monotonic operation, guaranteeing the existence of at least one fixpoint, including for our purposes the greatest fixpoint. Bisimulations can then be seen as the post-fixpoints of $F$, since for them the bisimulation property always holds and thus no pair need to be removed to make the property hold. Bisimilarity, being the greatest bisimulation, is thus the greatest fixpoint of $F$.
+$F$ can be thought as "refining" a relation by ensuring that the bisimulation property holds for another step. This can be shown to be a monotonic operation, guaranteeing the existence of at least one fixpoint, including for our purposes the greatest fixpoint. Bisimulations can then be seen as the post-fixpoints of $F$, since for them the bisimulation property always holds after any amount of steps and thus no pair needs to be removed to make the property hold. Bisimilarity, being the greatest bisimulation, is thus the greatest fixpoint of $F$.
 
 $
   bisim #h(0.3em) = nu R. F(R)
