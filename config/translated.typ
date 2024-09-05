@@ -17,7 +17,7 @@
   en: [ Academic year ],
 )
 
-#let dedication = (
-  it: "Dedica",
-  en: "Dedication",
+#let acknowledgements = (
+  it: "Ringraziamenti",
+  en: "Acknowledgements",
 )

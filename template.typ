@@ -2,7 +2,7 @@
 
 #import "preface/titlepage.typ": titlepage
 #import "preface/copyright.typ": copyright
-#import "preface/dedication.typ": dedication
+#import "preface/acknowledgements.typ": acknowledgements
 #import "preface/summary.typ": summary
 #import "preface/toc.typ": toc
 
@@ -56,7 +56,7 @@
     )
     copyright(candidate.name, title, date)
     pagebreak-to-right(weak: true)
-    dedication()
+    acknowledgements()
     pagebreak-to-right(weak: true)
     summary()
     pagebreak-to-right(weak: true)
