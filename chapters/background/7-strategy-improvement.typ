@@ -20,20 +20,20 @@ It should be noted that in general multiple relevance orderings can exist for a 
 ]
 
 #definition("reward ordering")[
-  Let $G = (V_0, V_1, E, p)$ be a parity game with a relevance ordering $<$, and let $v, u in V$. We write $u lt.curly v$ when $u < v$ and $v in V_+$ or $v < u$ and $u in V_-$.
+  Let $G = (V_0, V_1, E, p)$ be a parity game with a relevance ordering $<$, and let $v, u in V$. We write $u rwlt v$ when $u < v$ and $v in V_+$ or $v < u$ and $u in V_-$.
   $
-    u lt.curly v <=> (u < v and v in V_+) or (v < u and u in V_-)
+    u rwlt v <=> (u < v and v in V_+) or (v < u and u in V_-)
   $
 ]
 
 #definition("reward ordering on sets")[
-  Let $G = (V_0, V_1, E, p)$ be a parity game with a relevance ordering $<$ and let $P, Q subset.eq 2^V$ be two different sets of vertices. We write $P lt.curly Q$ if the following holds:
+  Let $G = (V_0, V_1, E, p)$ be a parity game with a relevance ordering $<$ and let $P, Q subset.eq 2^V$ be two different sets of vertices. We write $P rwlt Q$ if the following holds:
   $
     P != Q and "max"_< P symmdiff Q in (P sect V_-) union (Q sect V_+)
   $
 ]
 
-Intuitively $P lt.curly Q$ represents the reward for $P$ being less than the one for $Q$. The way this is determined is by looking at the vertices that are in either $P$ or $Q$ but not both, namely the symmetric set difference $P symmdiff Q$. The vertices that are in both are ignored because they will equally contribute to the reward of the two sets. From the symmetric difference it is then selected $v = max_< P symmdiff Q$, the greatest remaining vertex according to the relevance ordering. Then $P lt.curly Q$ holds when $v in P$ and $v in V_-$, representing the situation where $v$ is not favorable to player 0 and thus makes the reward of the left set worse, or when $v in Q$ and $v in V_+$, representing the situation where $v$ is favorable to player 0 and thus makes the reward of the right set better.
+Intuitively $P rwlt Q$ represents the reward for $P$ being less than the one for $Q$. The way this is determined is by looking at the vertices that are in either $P$ or $Q$ but not both, namely the symmetric set difference $P symmdiff Q$. The vertices that are in both are ignored because they will equally contribute to the reward of the two sets. From the symmetric difference it is then selected $v = max_< P symmdiff Q$, the greatest remaining vertex according to the relevance ordering. Then $P rwlt Q$ holds when $v in P$ and $v in V_-$, representing the situation where $v$ is not favorable to player 0 and thus makes the reward of the left set worse, or when $v in Q$ and $v in V_+$, representing the situation where $v$ is favorable to player 0 and thus makes the reward of the right set better.
 
 At the core of the algorithm there is the valuation phase computing the _play profiles_, which helps understanding how favorable a play is for each player. Moreover an ordering between play profiles is defined, with bigger values being more favorable to player 0 and lower ones being more favorable to player 1. In particular play profiles are based on three key values:
 
@@ -56,9 +56,9 @@ Given a valuation, we are then interested in determining whether a strategy for 
 #definition("play profile ordering")[
   Let $G = (V_0, V_1, E, p)$ be a parity game with a relevance ordering $<$, and $(u, P, e)$ and $(v, Q, f)$ be two play profiles. Then we define:
   $
-    (u, P, e) lt.curly (v, Q, f) <=> cases(
-      & u lt.curly v \
-      or ( & u = v and P lt.curly Q) \
+    (u, P, e) rwlt (v, Q, f) <=> cases(
+      & u rwlt v \
+      or ( & u = v and P rwlt Q) \
       or ( & u = v and P = Q and u in V_- and e < f) \
       or ( & u = v and P = Q and u in V_+ and e > f)
     )
@@ -66,7 +66,7 @@ Given a valuation, we are then interested in determining whether a strategy for 
 ]
 
 #theorem("optimal strategies")[
-  Let $G = (V_0, V_1, E, p)$ be a parity game with a relevance ordering $<$, $sigma$ and $tau$ be two strategies for respectively player 0 and 1 and $phi$ a valuation function for $(G, sigma, tau)$. The strategy $sigma$ is optimal against $tau$ if $forall u in V_0. forall v in u E. phi(v) lt.curly.eq phi(sigma(u))$. Dually, $tau$ is optimal against $sigma$ if $forall u in V_1. forall v in u E. phi(tau(u)) lt.curly.eq phi(v)$.
+  Let $G = (V_0, V_1, E, p)$ be a parity game with a relevance ordering $<$, $sigma$ and $tau$ be two strategies for respectively player 0 and 1 and $phi$ a valuation function for $(G, sigma, tau)$. The strategy $sigma$ is optimal against $tau$ if $forall u in V_0. forall v in u E. phi(v) rwle phi(sigma(u))$. Dually, $tau$ is optimal against $sigma$ if $forall u in V_1. forall v in u E. phi(tau(u)) rwle phi(v)$.
 ]
 
 Finally, an algorithm is given in @jurdzinski_improvement to compute, given a strategy for player 0, an optimal counter-strategy for player 1 along with a valuation for them.
@@ -78,7 +78,7 @@ Finally, an algorithm is given in @jurdzinski_improvement to compute, given a st
     For(cond: $v in V$, {
       State[$phi(v) = bot$]
     })
-    For(cond: [$w in V$ (ascending order with respect to $lt.curly$)], {
+    For(cond: [$w in V$ (ascending order with respect to $prec$)], {
       If(cond: $phi(w) = bot$, {
         State[$L = reach(H|_({v in V | v <= w}), w)$]
         If(cond: $E_H sect {w} times L != varempty$, {

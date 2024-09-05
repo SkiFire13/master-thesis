@@ -85,6 +85,8 @@
 
 #let dom = math.op("dom")
 
+#let rwlt = sym.prec
+#let rwle = sym.prec.eq // TODO: change this to sym.prec.curly.eq in new version
 #let valuation = mathstr("valuation")
 #let reach = mathstr("reach")
 #let subvaluation = mathstr("subvaluation")
