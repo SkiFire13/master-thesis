@@ -8,10 +8,12 @@
 #let acknowledgements() = page[
   #acknowledgements-bookmark
 
-  #align(right, box(width: 70%)[
-    "Program testing can be used to show the presence of bugs, but never to show their absence" \
-    ---  Edsger W. Dijkstra
-  ])
+  #show quote: box.with(width: 70%)
+  #show quote: align.with(right)
+  #set quote(block: true, quotes: true)
+  #quote(attribution: [Edsger W. Dijkstra])[
+    _Program testing can be used to show the presence of bugs, but never to show their absence_
+  ]
 
   #v(1cm)
 
