@@ -5,7 +5,7 @@
   #smallcaps[ #academic-year-prefix #academic-year ]
 ]
 
-#let titlepage(affiliation, title, supervisor, candidate, academic-year) = page(footer: footer(academic-year-prefix, academic-year))[
+#let titlepage(affiliation, title, supervisor, candidate, academic-year) = page(footer: [], margin: (bottom: 1.7cm))[
   #show: align.with(center)
 
   #text(size: 17pt, strong(affiliation.university))
@@ -38,5 +38,10 @@
 
       #candidate.id
     ]
+  ]
+
+  #align(center + bottom)[
+    #line(length: 90%)
+    #smallcaps[ #academic-year-prefix #academic-year ]
   ]
 ]

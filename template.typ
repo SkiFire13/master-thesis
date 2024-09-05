@@ -1,4 +1,4 @@
-#import "config/printed.typ": pagebreak-to-right, pagebreak-to-left, left-right-margins
+#import "config/printed.typ": pagebreak-to-right, pagebreak-to-left, left-right-margins, printed
 
 #import "preface/titlepage.typ": titlepage
 #import "preface/copyright.typ": copyright
@@ -54,6 +54,7 @@
       candidate,
       academic-year
     )
+    pagebreak-to-right(weak: true)
     copyright(candidate.name, title, date)
     pagebreak-to-right(weak: true)
     acknowledgements()
