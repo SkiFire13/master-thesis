@@ -22,7 +22,7 @@
       }
     }
     #set block(spacing: 1em)
-    *#name #env_counter.step(level: 2) #env_counter.display()*
+    *#name #env_counter.step(level: 2) #context env_counter.display()*
     #box[#figure(none, kind: name, supplement: name, numbering: (n) => [#counter(heading).display((..nums) => nums.pos().at(0)).#n])#label]
     (#subject).
     #set text(style: style)
