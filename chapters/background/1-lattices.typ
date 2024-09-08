@@ -110,7 +110,7 @@ A common example of poset is $(bb(N), <=)$, the set of natural numbers, and $<=$
 
 For example in @poset-example, in the poset $L$ the join between $c$ and $d$, that is $join {c, d}$, is $b$, while the join between $a$, $c$ and $d$ is $join {a, c, d} = top$.
 
-Meet and join do not always exist, for example in the poset $P$ the join between $x$ and $y$ does not exist because there is no element that is greater than both of them, while in the poset $Q$ the join between $n$ and $m$ doesn't exist because $p$, $q$ and $top$ are all greater than both $n$ and $m$, but none of them is smaller than the others. It can however be proven that when a join or meet exists, it is unique. For our purposes we will however be interested in posets where meet and join always exists, also commonly called _lattices_. The posets $P$ and $Q$ are thus not lattices, while $L$, $bb(N)_omega$ and $bb(B)$ are all lattices.
+Meet and join do not always exist, for example in the poset $P$ the join between $x$ and $y$ does not exist because there is no element that is greater than both of them, while in the poset $Q$ the join between $n$ and $m$ does not exist because $p$, $q$ and $top$ are all greater than both $n$ and $m$, but none of them is smaller than the others. It can however be proven that when a join or meet exists, it is unique. For our purposes we will however be interested in posets where meet and join always exists, also commonly called _lattices_. The posets $P$ and $Q$ are thus not lattices, while $L$, $bb(N)_omega$ and $bb(B)$ are all lattices.
 
 #definition("complete lattice")[
   Let $(L, sub)$ be a poset. It is also a lattice if meet and join exist for every pair of elements, that is given $x, y in L$ both $meet {x, y}$ and $join {x, y}$ are defined.
