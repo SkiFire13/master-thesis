@@ -13,7 +13,7 @@ We will start introducing some concepts that will help characterize how favorabl
   Let $G = (V_0, V_1, E, p)$ be a parity game. A relevance ordering $<$ is a total order that extends the partial order induced by the $p$ function. In particular $<$ is such that $forall u, v. p(u) < p(v) => u < v$.
 ]
 
-It should be noted that in general multiple relevance orderings can exist for a given parity game, and usually an arbitrary one can be picked. The specific choice can affect the efficiency, but it is unclear how this can affect
+It should be noted that in general multiple relevance orderings can exist for a given parity game, and usually an arbitrary one can be picked. The specific choice can affect the efficiency, but it is currently unclear how different choices impact on efficiency and if some heuristic can be devised to guide this choice.
 
 #definition("positive and negative vertices")[
   Let $G = (V_0, V_1, E, p)$ be a parity game. We define $V_+ = { v in V | p(v) "is even" }$ and $V_- = { v in V | p(v) "is odd" }$.
