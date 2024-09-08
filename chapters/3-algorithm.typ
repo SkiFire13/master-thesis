@@ -280,6 +280,7 @@ The way we do this is by considering how the operation of simplifying a formula 
 
 #example("formula iterator simplification")[
   Consider again an iterator for the formula $(a or b) and (c or d)$ in the following state:
+
   #figure(
     canvas({
       import draw: *
@@ -302,7 +303,8 @@ The way we do this is by considering how the operation of simplifying a formula 
     }),
     caption: [Example of formula iterator simplification]
   )
-  If it becomes known that the position represented by the atom $c$ is winning, then we might want to simplify the $c or d$ branch to just $c$, since $c$ will always be a best move for player 0. This is similar to assigning to $tt$ to $c$, resulting in $c or d$ also being $tt$, though from the point of view of the sequence of moves keeping $c$ is more intuitive since we ultimately want a winning move. Note however that we also want to update its current move, and since $c$ was already considered due to appearing on the left side of the $or$ formula, the new iterator is thus considered as having reached its end.
+
+  If it becomes known that the position represented by the atom $c$ is winning, then we might want to simplify the $c or d$ branch to just $c$, since $c$ will always be a best move for player 0. This is similar to assigning to $tt$ to $c$, resulting in $c or d$ also being $tt$, though, from the point of view of the sequence of moves, keeping $c$ is more intuitive since we ultimately want a winning move. Note however that we also want to update its current move, and since $c$ was already considered due to appearing on the left side of the $or$ formula, the new iterator is thus considered as having reached its end.
   
   From the point of view of the sequence of moves for the $and$ formula however, this is equivalent to discarding all the moves derived from the $d$ in the right subformula and instead considering only those derived from $c$, thus the original sequence with ${a,c}$, ${a,d}$, ${b,c}$ and ${b,d}$ would become just ${a,c}$ and ${b,c}$. Notice however how the iterator has already considered the move ${a,c}$, and thus it should advance to the next move ${b,c}$. This can be inferred by the fact that the right subformula has reached its end, so just like when advancing the $and$ formula, the left subformula is advanced to $b$ and the right subformula is resetted, which for a formula iterator consisting of just $c$ does nothing. Thus we end up with the following simplified formula iterator:
   #figure(
