@@ -173,7 +173,7 @@ These are implemented for every type of formula:
   - resetting the iterator means resetting the iterators of both subformulas.
 
 #example("formula iterator")[
-  Consider for example the formula $(a or b) and (c or d)$, where for sake of simplicity we have represented atoms with a single variable name. The sequence of its moves would then be ${a,c}$, ${a,d}$, ${b,c}$ and ${b,d}$. Initially the formula iterator would start with the following state, where red edges represent the currently active subformula of an $or$ formula:
+  Consider for example the formula $(a or b) and (c or d)$, where for sake of simplicity we have represented atoms by a single variable letter. The sequence of its moves would then be ${a,c}$, ${a,d}$, ${b,c}$ and ${b,d}$. Initially the formula iterator would start with the following state, where red edges represent the currently active subformula of an $or$ formula:
   #figure(
     canvas({
       import draw: *
