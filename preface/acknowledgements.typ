@@ -25,7 +25,7 @@
 
   #v(0.3cm)
 
-  I am particularly grateful to my parents Giuseppe and Maria and my sister Francesca for their love and support as they allowed me to chase my dreams.
+  I am particularly grateful to my parents Giuseppe and Maria Grazia and my sister Francesca for their love and support as they allowed me to chase my dreams.
 
   #v(0.3cm)
 
