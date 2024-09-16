@@ -66,7 +66,36 @@
   }
 
   {
-    set page(numbering: "1")
+    let header = context {
+      set text(size: 13pt)
+
+      let next_chapters = query(selector(heading.where(level: 1)).after(here()))
+
+      if next_chapters.len() > 0 and next_chapters.at(0).location().page() == here().page() {
+        align(right)[#counter(page).get().at(0)]
+      } else {
+        let chapter = query(selector(heading.where(level: 1)).before(here())).last()
+        if calc.rem(here().page(), 2) == 0 {
+          grid(
+            align: (left, right),
+            columns: (auto, 1fr),
+            [#counter(page).get().at(0)],
+            [#numbering("1", counter(heading).get().at(0)). #smallcaps(chapter.body)],
+          )
+        } else {
+          let subsection = query(selector(heading).before(here())).last()
+
+          grid(
+            align: (left, right),
+            columns: (1fr, auto),
+            [#numbering("1.1", ..counter(heading).get()). #smallcaps(subsection.body)],
+            [#counter(page).get().at(0)],
+          )
+        }
+      }
+    }
+
+    set page(numbering: "1", header: if printed { header }, footer: if printed { [] } else { none })
     counter(page).update(1)
     
     set heading(numbering: "1.1.1")
